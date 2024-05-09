@@ -1,7 +1,42 @@
-﻿@page "/"
+﻿@page "/register"
+@inject HttpClient Http
+@using Microsoft.AspNetCore.Components.Forms
+@using Core.Model
 
-<h3>Registration</h3>
+<EditForm Model="@application" OnValidSubmit="HandleValidSubmit">
+    <InputText id="name" @bind-Value="application.Parent.Name" />
+    <!-- Add other fields as required -->
+    <InputFile OnChange="HandleFileUpload" />
+    <button type="submit">Submit</button>
+</EditForm>
 
 @code {
+    private Application application = new Application { Parent = new Parent() };
 
+    private async Task HandleFileUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            using var content = new MultipartFormDataContent();
+            var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 1024 * 1024));
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+            content.Add(fileContent, "file", file.Name);
+
+            var response = await Http.PostAsync("https://localhost:7095/api/register/testupload" + application.ApplicationId, content);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("File upload successfully");
+            }
+            else
+            {
+                Console.WriteLine("Fail");
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Submit other form data if needed
+    }
 }
