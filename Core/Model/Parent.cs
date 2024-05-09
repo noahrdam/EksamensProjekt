@@ -14,6 +14,6 @@ namespace Core.Model
 
         public string Mail {  get; set; }
 
-        public Child Child { get; set; }
+        //public Child Child { get; set; }
     }
 }

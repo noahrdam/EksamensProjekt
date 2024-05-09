@@ -1,7 +1,107 @@
-﻿@page "/"
+﻿@page "/registration"
+@using Core.Model
+@inject HttpClient Http
 
 <h3>Registration</h3>
 
+
+<EditForm EditContext="@createEditContext" OnValidSubmit="@SaveApplication" class="row g-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+     <div class="col-md-6">
+        <label for="navn">Forælders Navn</label>
+        <InputTextArea id="navn" @bind-Value="application.Parent.Name" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="kræwnummer">Kræw Nummer</label>
+        <InputNumber id="kræwnummer" @bind-Value="application.Parent.KræwNumber" class="form-control" />
+    </div>
+    <div class="col-md-6">
+		    <label for="email">Forælders Email</label>
+		    <InputText id="email" @bind-Value="application.Parent.Mail" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="beenBefore">Been Before</label>
+        <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
+    </div>
+    <div class="col-md-6">
+        <label for="comment">Comment</label>
+        <InputTextArea id="comment" @bind-Value="application.Comment" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="consentForm">Consent Form URL</label>
+        <InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="childName">Child's Name</label>
+        <InputText id="childName" @bind-Value="application.Child.Name" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="childAge">Child's Age</label>
+        <InputNumber id="childAge" @bind-Value="application.Child.Age" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="clothingSize">Clothing Size</label>
+        <InputText id="clothingSize" @bind-Value="application.Child.ClothingSize" class="form-control" />
+    </div>
+    <div class="col-md-6">
+        <label for="interests">Interests</label>
+        <InputTextArea id="interests" @bind-Value="application.Child.Interests" class="form-control" />
+    </div>
+	
+    @* <div class="col-md-6">
+        <label for="firstPrio">First Priority Event</label>
+        <select @bind="application.FirstPrio" class="form-control">
+            @foreach (var event in events)
+            {
+            <option value="@event.Id">@event.Location, Week @event.Week (@event.From - @event.To)</option>
+        }
+        </select>
+
+    </div>
+
+    <!-- Dropdown for Second Priority Event -->
+    <div class="col-md-6">
+        <label for="secondPrio">Second Priority Event</label>
+        <select @bind="application.FirstPrio" class="form-control">
+            @foreach (var event in events)
+            {
+            <option value="@event.Id">@event.Location, Week @event.Week (@event.From - @event.To)</option>
+        }
+        </select>
+    </div> *@
+    <div class="col-md-12">
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+    </div>
+</EditForm>
+
 @code {
 
+    private Application application = new Application();
+    private Parent parent = new Parent();
+    private EditContext? createEditContext;
+    private string serverurl = "https://localhost:7095";
+    private List<Event> events = new List<Event>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        createEditContext = new EditContext(application);
+        events = await Http.GetFromJsonAsync<List<Event>>($"{serverurl}/api/registration/getallevents");
+
+    }   
+
+    private async Task SaveApplication()
+    {
+
+        var response = await Http.PostAsJsonAsync($"{serverurl}/api/registration/register", application);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Application submitted successfully");
+        }
+        else
+        {
+            Console.WriteLine("Failed to submit application");
+        }
+    }
 }

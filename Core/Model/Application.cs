@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Core.Model
 {
     public class Application
     {
+
+        public ObjectId Id { get; set; }
         public int ApplicationId { get; set; }
 
         public bool BeenBefore { get; set; }
@@ -16,12 +19,14 @@ namespace Core.Model
 
         public string ConsentForm { get; set; }
 
-        public Parent Parent { get; set; }
+        public Parent Parent { get; set; } = new Parent();  
 
-        public Admin Admin { get; set; }    
+        public Child Child { get; set; } = new Child();
+
+       // public Admin Admin { get; set; }    
 
         public Event FirstPrio { get; set; }
-
+           
         public Event SecondPrio { get; set; }
     }
 }

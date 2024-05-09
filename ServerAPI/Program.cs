@@ -1,3 +1,6 @@
+using ServerAPI.Repositories;
+using ServerAPI.Repositories.Interfaces;
+
 namespace ServerAPI
 {
     public class Program
@@ -10,9 +13,28 @@ namespace ServerAPI
 
             builder.Services.AddControllers();
 
+            builder.Services.AddSingleton<IRegistrationRepository, RegistrationRepository>();
+            builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
+
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("policy",
+                    policy =>
+                    {
+                        policy.AllowAnyOrigin();
+                        policy.AllowAnyMethod();
+                        policy.AllowAnyHeader();
+
+
+                    });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+
+            app.UseCors("policy");
 
             app.UseHttpsRedirection();
 

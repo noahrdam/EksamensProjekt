@@ -12,7 +12,7 @@ namespace Core.Model
 
         public string To { get; set; }
 
-        public string Week { get; set; }
+        public int Week { get; set; }
 
         public string Location { get; set; }
     }
