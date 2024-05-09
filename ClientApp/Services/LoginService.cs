@@ -1,6 +1,9 @@
-﻿namespace ClientApp.Services
+﻿using System.Net.Http.Json;
+using Core.Model;
+
+namespace ClientApp.Services
 {
-    public class LoginService
+    public class LoginService : ILoginService
     {
     }
 }

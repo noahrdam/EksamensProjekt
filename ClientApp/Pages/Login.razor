@@ -1,7 +1,100 @@
 ﻿@page "/login"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage // Inject local storage service
+@using Core.Model
 
-<h3>Login</h3>
+<h3>Admin Login</h3>
+<EditForm EditContext="@editContext" OnValidSubmit="@HandleLogin" class="p-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="mb-3">
+        <label for="LoginUsername">Username</label>
+        <InputText id="LoginUsername" @bind-Value="adminLogin.Username" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label for="LoginPassword">Password</label>
+        <InputText id="LoginPassword" @bind-Value="adminLogin.Password" type="password" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <button type="submit" class="btn btn-primary">Log in</button>
+    </div>
+    @if (!string.IsNullOrEmpty(loginMessage))
+    {
+        <div class="alert alert-info">@loginMessage</div>
+    }
+</EditForm>
 
 @code {
+    private Admin adminLogin = new Admin();
+    private EditContext? editContext;
+    private string loginMessage = "";
+    private readonly string serverUrl = "https://localhost:7095"; // Adjust to your API URL
+    private List<Admin>? admins;
 
+    protected override async Task OnInitializedAsync()
+    {
+        // Initialize the edit context and fetch all admins
+        editContext = new EditContext(adminLogin);
+
+        try
+        {
+            admins = await Http.GetFromJsonAsync<List<Admin>>($"{serverUrl}/api/admins/getall");
+        }
+        catch (Exception ex)
+        {
+            // Handle the case where the API is unreachable or errors occur
+            loginMessage = $"Error loading admins: {ex.Message}";
+            admins = null;
+        }
+    }
+
+    private async Task<bool> VerifyLogin(string username, string password)
+    {
+        try
+        {
+            return await Http.GetFromJsonAsync<bool>($"{serverUrl}/api/admins/verify?username={username}&password={password}");
+        }
+        catch (Exception)
+        {
+            return false; // Return false if there's an error during verification
+        }
+    }
+
+    private async Task<Admin?> GetAdmin(string username)
+    {
+        try
+        {
+            return await Http.GetFromJsonAsync<Admin>($"{serverUrl}/api/admins/getadmin?username={username}");
+        }
+        catch (Exception)
+        {
+            return null; // Return null if the user cannot be fetched
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        bool isVerified = await VerifyLogin(adminLogin.Username, adminLogin.Password);
+
+        if (isVerified)
+        {
+            // Attempt to fetch the full user details after verification
+            var thisUser = await GetAdmin(adminLogin.Username);
+            if (thisUser != null)
+            {
+                await localStorage.SetItemAsync("loginUser", thisUser);
+                loginMessage = "User logged in successfully";
+                NavigationManager.NavigateTo("/admin");
+            }
+            else
+            {
+                loginMessage = "User account could not be fetched after verification.";
+            }
+        }
+        else
+        {
+            loginMessage = "Failed to log in. Make sure you have an account.";
+        }
+    }
 }
