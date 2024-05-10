@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Core.Model
 {
     public class Application
     {
+        public ObjectId Id { get; set; }
+
         public int ApplicationId { get; set; }
 
         public bool BeenBefore { get; set; }
@@ -18,10 +17,9 @@ namespace Core.Model
 
         public Parent Parent { get; set; }
 
-        public Admin Admin { get; set; }    
+        public Child Child { get; set; }
 
-        public Event FirstPrio { get; set; }
+        public Event Event { get; set; }
 
-        public Event SecondPrio { get; set; }
     }
 }

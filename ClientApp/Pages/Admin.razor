@@ -1,7 +1,72 @@
 ﻿@page "/admin"
+@using Core.Model
+@inject HttpClient httpClient
+@inject IJSRuntime JS
 
-<h3>Admin</h3>
+<h1>Alle ansøgninger </h1>
+
+@if (applications == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!applications.Any())
+{
+    <p><em>No applications found.</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Kræv Nummer</th>
+                <th>Forældre navn</th>
+                <th>Mail</th>
+                <th>Samtykke</th>
+                <th>Barnets navn</th>
+                <th>Alder</th>
+                <th>Tøjstørrelse</th>
+                <th>Interesser</th>
+                <th>Fra</th>
+                <th>Til</th>
+                <th>Adresse</th>
+                
+               
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ap in applications)
+            {
+                <tr>
+                    <td>@ap.Parent.KræwNumber</td>
+                    <td>@ap.Parent.Name</td>
+                    <td>@ap.Parent.Mail</td>
+                    <td>@ap.ConsentForm</td>
+                    <td>@ap.Child.Name</td>
+                    <td>@ap.Child.Age</td>
+                    <td>@ap.Child.ClothingSize</td>
+                    <td>@ap.Child.Interests</td>
+                    <td>@ap.Event.From</td>
+                    <td>@ap.Event.To</td>
+                    <td>@ap.Event.Location</td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    private List<Application> applications;
 
-}
+    private string serverURL = "https://localhost:7095/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadApplications();
+    }
+
+    public async Task LoadApplications()
+    {
+            applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+}}
