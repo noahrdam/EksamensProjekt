@@ -7,5 +7,7 @@ namespace ServerAPI.Repositories.Interfaces
         void RegisterApplication(Application application);
 
         List<Event> GetEvents();
+
+        Parent AddParent(Parent parent);
     }
 }

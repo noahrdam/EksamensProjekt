@@ -5,169 +5,174 @@
 <h3>Registration for Cirkus Summarum Childcare</h3>
 
 <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-	<!-- Parent Information -->
-	<div class="card mb-3">
-		<div class="card-header">
-			<h4>Parent Information</h4>
-		</div>
-		<div class="card-body">
-			<div class="row">
-				<div class="col-md-6 mb-3">
-					<label for="parentName">Parent's Name</label>
-					<InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
-				</div>
-				<div class="col-md-6 mb-3">
-					<label for="parentEmail">Parent's Email</label>
-					<InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
-				</div>
-				<div class="col-md-6 mb-3">
-					<label for="parentCrewNumber">Parent's Crew Number</label>
-					<InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- Parent Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Parent Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="parentName">Parent's Name</label>
+                    <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="parentEmail">Parent's Email</label>
+                    <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="parentCrewNumber">Parent's Crew Number</label>
+                    <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<!-- Child Information -->
-	<div class="card mb-3">
-		<div class="card-header">
-			<h4>Child Information</h4>
-		</div>
-		<div class="card-body">
-			@foreach (var child in application.Children)
-			{
-				<div class="row mb-3">
-					<div class="col-md-6">
-						<label>Child's Name</label>
-						<InputText @bind-Value="child.Name" class="form-control" />
-					</div>
-					<div class="col-md-6">
-						<label>Child's Age</label>
-						<InputNumber @bind-Value="child.Age" class="form-control" />
-					</div>
-					<div class="col-md-6">
-						<label>Clothing Size</label>
-						<InputText @bind-Value="child.ClothingSize" class="form-control" />
-					</div>
-					<div class="col-md-6">
-						<label>Interests</label>
-						<InputTextArea @bind-Value="child.Interests" class="form-control" />
-					</div>
-					<div class="col-md-12 text-end mt-2">
-						<button class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Remove Child</button>
-					</div>
-				</div>
-			}
-			@if (application.Children.Count < 2)
-			{
-				<div class="row">
-					<div class="col-md-12">
-						<button class="btn btn-primary" @onclick="AddChild">Add Child</button>
-					</div>
-				</div>
-			}
-		</div>
-	</div>
+    <!-- Child Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Child Information</h4>
+        </div>
+        <div class="card-body">
+            @foreach (var child in application.Parent.Children)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>Child's Name</label>
+                        <InputText @bind-Value="child.Name" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Child's Age</label>
+                        <InputNumber @bind-Value="child.Age" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Clothing Size</label>
+                        <InputText @bind-Value="child.ClothingSize" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Interests</label>
+                        <InputTextArea @bind-Value="child.Interests" class="form-control" />
+                    </div>
+                    <div class="col-md-12 text-end mt-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Remove Child</button>
+                    </div>
+                </div>
+            }
+            @if (application.Parent.Children.Count < 2)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary" @onclick="AddChild">Add Child</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
-	<!-- Application Information -->
-	<div class="card mb-3">
-		<div class="card-header">
-			<h4>Application Information</h4>
-		</div>
-		<div class="card-body">
-			<div class="row">
-				<div class="col-md-6 mb-3">
-					<label for="consentForm">Parents consent</label>
-					<InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
-				</div>
-				<div class="col-md-6 mb-3">
-					<label for="comment">Comment</label>
-					<InputText id="comment" @bind-Value="application.Comment" class="form-control" />
-				</div>
-				<div class="col-md-6 mb-3">
-					<label for="beenBefore">Have you attended before?</label>
-					<InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
-				</div>
-			</div>
-		</div>
+    <!-- Application Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Application Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="consentForm">Parents consent</label>
+                    <InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="comment">Comment</label>
+                    <InputText id="comment" @bind-Value="application.Comment" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="beenBefore">Have you attended before?</label>
+                    <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
+                </div>
+            </div>
+        </div>
 
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="firstPrioEvent">First Priority</label>
+                    <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
+                        <option value="">Select Event</option>
+                        @foreach (var e in events)
+                        {
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="secondPrioEvent">Second Priority</label>
+                    <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
+                        <option value="">Select Event</option>
+                        @foreach (var e in events)
+                        {
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+        </div>
+    </div>
 
-		<div class="card-body">
-			<div class="row">
-				<div class="col-md-6 mb-3">
-					<label for="firstPrioEvent">First Priority</label>
-					<InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
-						<option value="">Select Event</option>
-						@foreach (var e in events)
-						{
-							<option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
-						}
-					</InputSelect>
-				</div>
-				<div class="col-md-6 mb-3">
-					<label for="secondPrioEvent">Second Priority</label>
-					<InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
-						<option value="">Select Event</option>
-						@foreach (var e in events)
-						{
-							<option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
-						}
-					</InputSelect>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Submit Button -->
-	<div class="row">
-		<div class="col-12 text-center">
-			<button type="submit" class="btn btn-primary">Submit</button>
-		</div>
-	</div>
+    <!-- Submit Button -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
 </EditForm>
 
 @code {
 
-	private Application application = new Application() { Parent = new Parent(), Children = new List<Child> { new Child() } };
-	private List<Event> events = new List<Event>();
-	private EditContext? createEditContext;
+    private Application application = new Application() { Parent = new Parent() };
+    private List<Event> events = new List<Event>();
+    private EditContext? createEditContext;
 
-	protected override async Task OnInitializedAsync()
-	{
-		createEditContext = new EditContext(application);
-		events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
+    protected override async Task OnInitializedAsync()
+    {
+        createEditContext = new EditContext(application);
+        events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
 
-	}
+        // Ensure there's always one child ready to be filled out
+        if (application.Parent.Children.Count == 0)
+        {
+            application.Parent.Children.Add(new Child());
+        }
+    }
 
+    private void AddChild()
+    {
+        if (application.Parent.Children.Count < 2)
+        {
+            application.Parent.Children.Add(new Child());
+        }
+    }
 
-	private void AddChild()
-	{
-		if (application.Children.Count < 2)
-		{
-			application.Children.Add(new Child());
-		}
-	}
+    private void RemoveChild(Child child)
+    {
+        application.Parent.Children.Remove(child);
+    }
 
-	private void RemoveChild(Child child)
-	{
-		application.Children.Remove(child);
-	}
+    private async Task SaveApplication()
+    {
+        // Map selected EventIds to actual Event objects
+        application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
+        application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
 
-	private async Task SaveApplication()
-	{
-		application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
-		application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
-		var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
-		if (response.IsSuccessStatusCode)
-		{
-			Console.WriteLine("Application submitted successfully");
-		}
-		else
-		{
-			Console.WriteLine("Failed to submit application");
-		}
-	}
+        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Application submitted successfully");
+        }
+        else
+        {
+            Console.WriteLine("Failed to submit application");
+        }
+    }
 }
