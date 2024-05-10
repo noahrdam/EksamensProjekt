@@ -1,7 +1,56 @@
 ﻿@page "/admin"
+@using Core.Model
+@inject HttpClient httpClient
+@inject IJSRuntime JS
 
 <h3>Admin</h3>
 
-@code {
+<h1>Ansøgninger</h1>
+<button @onclick="LoadApplications">Hent alle Applications</button>
 
+@if (applications == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (applications.Any())
+{
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @foreach (var ap in applications)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@ap.Parent.Name</h5>
+                        <p class="card-text">@ap.</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">BeenBefore: @ap.BeenBefore</li>
+                        <li class="list-group-item">Comment: @ap.Comment</li>
+@*                         <li class="list-group-item">Classroom: @ap.ConsentForm</li>
+ *@                        <li class="list-group-item">Parent: @ap.Parent</li>
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No applications found.</p>
+}
+
+
+@code {
+    private List<Application> applications;
+    private string serverURL = "https://localhost:7095/";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadApplications();
+    }
+
+    private async Task LoadApplications()
+    {
+        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+    }
 }
