@@ -14,7 +14,7 @@ namespace ServerAPI.Controllers
         }
 
         [HttpPost]
-        [Route("upload")]
+        [Route("upload/{applicationId}")]
         public async Task<IActionResult> UploadFile(int applicationId, IFormFile file)
         {
             if (file != null && file.Length > 0)
