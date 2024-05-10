@@ -23,7 +23,7 @@
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "file", file.Name);
 
-            var response = await Http.PostAsync("https://localhost:7095/api/register/testupload" + application.ApplicationId, content);
+            var response = await Http.PostAsync("https://localhost:7095/api/register/upload" + application.ApplicationId, content);
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("File upload successfully");
