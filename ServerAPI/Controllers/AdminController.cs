@@ -24,12 +24,12 @@ namespace ServerAPI.Controllers
         [Route("getall")]
         public List<Application> GetAllApplication()
         {
-          
-           var applications = mRepo.GetAllApplication();
-           return applications;
-            
-             
+
+            var applications = mRepo.GetAllApplication();
+            return applications;
+
+
         }
     }
-    }
+}
 

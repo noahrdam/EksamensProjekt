@@ -29,8 +29,8 @@ else
                 <th>Fra</th>
                 <th>Til</th>
                 <th>Adresse</th>
-                
-               
+
+
 
             </tr>
         </thead>
@@ -38,58 +38,23 @@ else
             @foreach (var ap in applications)
             {
                 <tr>
-                    <td>@ap.Parent.KræwNumber</td>
+                    <td>@ap.Parent.CrewNumber</td>
                     <td>@ap.Parent.Name</td>
                     <td>@ap.Parent.Mail</td>
                     <td>@ap.ConsentForm</td>
-                    <td>@ap.Child.Name</td>
-                    <td>@ap.Child.Age</td>
-                    <td>@ap.Child.ClothingSize</td>
-                    <td>@ap.Child.Interests</td>
-                    <td>@ap.Event.From</td>
-                    <td>@ap.Event.To</td>
-                    <td>@ap.Event.Location</td>
+                    <td>@ap.Parent.Children[0].Name</td>
+                    <td>@ap.Parent.Children[0].Age</td>
+                    <td>@ap.Parent.Children[0].Interests</td>
+                    <td>@ap.Parent.Children[0].ClothingSize</td>
+                    <td>@ap.FirstPrio.From</td>
+                    <td>@ap.FirstPrio.To</td>
+                    <td>@ap.FirstPrio.Location</td>
 
                 </tr>
             }
         </tbody>
     </table>
 }
-
-<h1>Ansøgninger</h1>
-<button @onclick="LoadApplications">Hent alle Applications</button>
-
-@if (applications == null)
-{
-    <p><em>Loading...</em></p>
-}
-else if (applications.Any())
-{
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        @foreach (var ap in applications)
-        {
-            <div class="col">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">@ap.Parent.Name</h5>
-                        <p class="card-text">@ap.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">BeenBefore: @ap.BeenBefore</li>
-                        <li class="list-group-item">Comment: @ap.Comment</li>
-@*                         <li class="list-group-item">Classroom: @ap.ConsentForm</li>
- *@                        <li class="list-group-item">Parent: @ap.Parent</li>
-                    </ul>
-                </div>
-            </div>
-        }
-    </div>
-}
-else
-{
-    <p>No applications found.</p>
-}
-
 
 @code {
     private List<Application> applications;
@@ -103,5 +68,7 @@ else
 
     public async Task LoadApplications()
     {
-            applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-}}
+        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+    }
+}
+

@@ -11,61 +11,37 @@ namespace ServerAPI
 
             // Add services to the container.
             builder.Services.AddControllers();
-       
             builder.Services.AddSingleton<ILoginRepository, LoginRepository>();
-          
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("policy",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin();
-                        policy.AllowAnyMethod();
-                        policy.AllowAnyHeader();
-
-            builder.Services.AddControllers();
             builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
-
             builder.Services.AddSingleton<IRegistrationRepository, RegistrationRepository>();
-            builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
 
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("policy",
-                    policy =>
-                    {
-                        policy.AllowAnyOrigin();
-                        policy.AllowAnyMethod();
-                        policy.AllowAnyHeader();
-
-
-                    });
+                                  policy =>
+                                  {
+                                      policy.AllowAnyOrigin();
+                                      policy.AllowAnyMethod();
+                                      policy.AllowAnyHeader();
+                                  });
             });
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            app.UseCors("policy");
 
-            app.UseRouting();
-
-            app.UseCors("policy");
-
-            app.UseAuthentication();
+            app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
-            app.UseHttpsRedirection();
+            app.UseCors("policy");
 
             app.MapControllers();
 
             app.Run();
 
-
-        }
-
+        } 
 
     }
 }

@@ -14,9 +14,9 @@ namespace ServerAPI.Repositories
 
         public RegistrationRepository()
         {
-            //var password = "4321";
-            //var mongoUri = $"mongodb+srv://eaa23fana:{password}@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
-            var mongoUri= "mongodb://localhost:27017";
+            var password = "4321";
+            var mongoUri = $"mongodb+srv://eaa23fana:{password}@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+            //var mongoUri= "mongodb://localhost:27017";
 
 
             try
