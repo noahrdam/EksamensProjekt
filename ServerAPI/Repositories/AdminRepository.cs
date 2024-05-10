@@ -14,7 +14,7 @@ namespace ServerAPI.Repositories
         public AdminRepository()
         {
 
-            var mongoUri = "mongodb+srv://noahrdam:3ppAuGCEF0ee9b6k@webshopdb.a704cgt.mongodb.net/?retryWrites=true&w=majority&appName=webshopDB";
+            var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
             //var mongoUri = "mongodb://localhost:27017";
 
 
@@ -51,6 +51,5 @@ namespace ServerAPI.Repositories
         {
             return collection.Find(Builders<Application>.Filter.Empty).ToList();
         }
-
     }
 }

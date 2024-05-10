@@ -4,6 +4,8 @@ using Core.Model;
 using MongoDB.Bson;
 using static System.Net.WebRequestMethods;
 using MongoDB.Driver;
+using static System.Net.Mime.MediaTypeNames;
+using Application = Core.Model.Application;
 
 namespace ServerAPI.Controllers
 {
@@ -22,8 +24,12 @@ namespace ServerAPI.Controllers
         [Route("getall")]
         public List<Application> GetAllApplication()
         {
-            return mRepo.GetAllApplication();
+          
+           var applications = mRepo.GetAllApplication();
+           return applications;
+            
+             
         }
-
     }
-}
+    }
+

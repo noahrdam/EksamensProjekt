@@ -12,6 +12,7 @@ namespace ServerAPI
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
 
             builder.Services.AddSingleton<IRegistrationRepository, RegistrationRepository>();
             builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
@@ -33,6 +34,9 @@ namespace ServerAPI
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            app.UseCors("policy");
+
+            app.UseRouting();
 
             app.UseCors("policy");
 
@@ -40,6 +44,7 @@ namespace ServerAPI
 
             app.UseAuthorization();
 
+            app.UseHttpsRedirection();
 
             app.MapControllers();
 
