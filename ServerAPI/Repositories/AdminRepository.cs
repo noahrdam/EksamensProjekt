@@ -51,5 +51,6 @@ namespace ServerAPI.Repositories
         {
             return collection.Find(Builders<Application>.Filter.Empty).ToList();
         }
+
     }
 }

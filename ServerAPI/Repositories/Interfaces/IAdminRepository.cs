@@ -8,6 +8,6 @@ namespace ServerAPI.Repositories.Interfaces
     public interface IAdminRepository
     {
         List<Application> GetAllApplication();
-    }
 
+    }
 }

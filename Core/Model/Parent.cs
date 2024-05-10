@@ -10,7 +10,7 @@ namespace Core.Model
     {
         public string Name { get; set; }
 
-        public int KræwNumber { get; set; }
+        public int CrewNumber { get; set; }
 
         public string Mail {  get; set; }
 

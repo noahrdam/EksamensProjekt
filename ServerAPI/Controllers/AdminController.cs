@@ -24,5 +24,6 @@ namespace ServerAPI.Controllers
         {
             return mRepo.GetAllApplication();
         }
+
     }
 }

@@ -19,14 +19,14 @@ namespace Core.Model
 
         public string ConsentForm { get; set; }
 
-        public Parent Parent { get; set; } = new Parent();  
+        public Parent Parent { get; set; } = new Parent();
 
-        public Child Child { get; set; } = new Child();
+		public List<Child> Children { get; set; } = new List<Child>();
 
-       // public Admin Admin { get; set; }    
+		// public Admin Admin { get; set; }    
 
-        public Event FirstPrio { get; set; }
-           
-        public Event SecondPrio { get; set; }
-    }
+		public Event FirstPrio { get; set; } = new Event();
+
+		public Event SecondPrio { get; set; } = new Event();
+	}
 }
