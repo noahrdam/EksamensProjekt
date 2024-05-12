@@ -2,29 +2,28 @@
 @using Core.Model
 @inject HttpClient Http
 
-<h3>Registration for Cirkus Summarum Childcare</h3>
+<h3>Tilmelding til Cirkus Summarum Børneklub</h3>
 
 <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
     <!-- Parent Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Parent Information</h4>
+            <h4>Forælder's Information</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="parentName">Parent's Name</label>
+                    <label for="parentName">Navn</label>
                     <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentEmail">Parent's Email</label>
+                    <label for="parentEmail">Email</label>
                     <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentCrewNumber">Parent's Crew Number</label>
+                    <label for="parentCrewNumber">Kræw Nummer</label>
                     <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
                 </div>
             </div>
@@ -34,30 +33,30 @@
     <!-- Child Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Child Information</h4>
+            <h4>Barnet's Information</h4>
         </div>
         <div class="card-body">
             @foreach (var child in application.Parent.Children)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label>Child's Name</label>
+                        <label>Navn</label>
                         <InputText @bind-Value="child.Name" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Child's Age</label>
-                        <InputNumber @bind-Value="child.Age" class="form-control" />
+                        <label>Alder</label>
+                        <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18" />
                     </div>
                     <div class="col-md-6">
-                        <label>Clothing Size</label>
+                        <label>T-Shirt Størrelse</label>
                         <InputText @bind-Value="child.ClothingSize" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Interests</label>
+                        <label>Interesser</label>
                         <InputTextArea @bind-Value="child.Interests" class="form-control" />
                     </div>
                     <div class="col-md-12 text-end mt-2">
-                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Remove Child</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
                     </div>
                 </div>
             }
@@ -65,7 +64,7 @@
             {
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-primary" @onclick="AddChild">Add Child</button>
+                        <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
                     </div>
                 </div>
             }
@@ -75,20 +74,20 @@
     <!-- Application Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Application Information</h4>
+            <h4>Ansøgningsoplysninger</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="consentForm">Parents consent</label>
+                    <label for="consentForm">Forælders Samtykkeerklæring</label>
                     <InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="comment">Comment</label>
+                    <label for="comment">Yderligere Kommentar</label>
                     <InputText id="comment" @bind-Value="application.Comment" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="beenBefore">Have you attended before?</label>
+                    <label for="beenBefore">Har I deltaget i de frivillig aktiviteter før?</label>
                     <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
                 </div>
             </div>
@@ -97,9 +96,9 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="firstPrioEvent">First Priority</label>
+                    <label for="firstPrioEvent">Første Prioritet</label>
                     <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
-                        <option value="">Select Event</option>
+                        <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
                             <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
@@ -107,9 +106,9 @@
                     </InputSelect>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="secondPrioEvent">Second Priority</label>
+                    <label for="secondPrioEvent">Anden Prioritet</label>
                     <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
-                        <option value="">Select Event</option>
+                        <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
                             <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
@@ -123,7 +122,7 @@
     <!-- Submit Button -->
     <div class="row">
         <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
         </div>
     </div>
 </EditForm>

@@ -16,7 +16,9 @@ namespace ClientApp
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             // Register the HttpClient
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+            builder.Services.AddSingleton<IRegistrationService, RegistrationService>();
 
             builder.Services.AddBlazoredLocalStorage();
 
