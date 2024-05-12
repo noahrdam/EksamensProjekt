@@ -1,7 +1,12 @@
-.page {
-    position: relative;
+.top-row {
+    background: rgb(34,193,195);
+    background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+    height: 9rem;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    position: relative; /* Ensure this is not fixed */
 }
 
 main {
@@ -12,29 +17,6 @@ main {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
 }
 
-.top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
-    display: flex;
-    align-items: center;
-}
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
-
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 
 @media (max-width: 640.98px) {
     .top-row {
@@ -75,3 +57,4 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+

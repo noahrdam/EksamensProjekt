@@ -1,0 +1,124 @@
+
+@font-face {
+    font-family: "Mister Sinatra Slim";
+    src: url('../fonts/MisterSinatra-Slim.ttf');
+}
+
+.hovedtitel {
+    font-family: "Mister Sinatra Slim";
+    margin-top: 80px;
+    text-align: center;
+}
+
+.header {
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure they extend fully horizontally */
+    text-align: center; /* Center-align all content within the header */
+}
+
+#login {
+    margin-left: auto; /* This ensures that login is pushed to the far right */
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+    #login:hover {
+    color: #fff;
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+                
+
+
+#knap {
+    display: block;
+    width: 500px;
+    margin: 0 auto;
+}
+
+.afsnit {
+    margin-left: 300px;
+    margin-top: 30px;
+    margin-right: 300px;
+}
+
+#logo2 {
+    max-width: 250px; /* Adjusted size */
+    height: auto;
+    margin-right: auto; /* This pushes all other elements to the right */
+    float: left;
+    padding-left: 50px;
+}
+
+#logo {
+    position: fixed; /* Fixes the logo's position relative to the viewport */
+    top: 10px; /* Adjust this value based on your design needs */
+    left: 50%; /* Centers the logo */
+    transform: translateX(-50%); /* Adjusts horizontal position to truly center it */
+    z-index: 1000; /* Ensures the logo stays above all other content */
+    max-width: 250px; /* Keeps your responsive size */
+    height: auto;
+}
+
+.titel {
+    font-family: "Mister Sinatra Slim";
+    margin-bottom: 10px;
+}
+
+
+.footer {
+    background-color: steelblue;
+    text-align: center; /* Center align the items in the footer */
+    padding: 20px 0; /* Add some padding to give space within the footer */
+    margin: 0;
+    width: 100%; /* Ensure they extend fully horizontally */
+}
+
+#ig,
+#fb {
+    color:white;
+    background-color: steelblue;
+    border-radius: 50%; /* Makes the button circular */
+    width: 50px; /* Fixed width */
+    height: 50px; /* Fixed height to maintain aspect ratio */
+    display: inline-flex; /* Inline-flex to keep the link inline and center content */
+    align-items: center; /* Center the icon vertically */
+    justify-content: center; /* Center the icon horizontally */
+    border: 1px solid #ccc; /* Optional: Adds a subtle border */
+    text-decoration: none; /* Removes underline from the link */
+}
+    #ig:hover,
+    #fb:hover {
+        background-color: #e3e3e3; /* Light grey background on hover */
+        border-color: #aaa; /* Darker border on hover */
+    }
+
+.bi-instagram,
+.bi-facebook {
+    font-size: 24px; /* Adjust icon size as necessary */
+}
+
+
+.top-row {
+    background: rgb(34,193,195);
+    background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: space-between; /* Make sure this aligns items as intended */
+    height: 9rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 0 20px; /* Add some padding on both ends */
+}

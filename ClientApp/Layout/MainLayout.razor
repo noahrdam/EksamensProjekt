@@ -1,16 +1,49 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<head>
+    <link rel="stylesheet" href="css/styles.css" />
+</head>
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @if (ShouldDisplayHeaderFooter())
+    {
+        <header class="header">
+            <div class="top-row">
+                <img id="logo2" src="muskelsvind-kraewet-logo-blaa-2x.png" alt="Kræwet logo">
+                <img id="logo" src="børneklubben_logo.png" alt="Børneklubben Logo">
+                <button id="login" class="bi bi-person-fill-lock" @onclick=Login>Login</button>
+            </div>
+        </header>
+    }
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
         <article class="content px-4">
             @Body
         </article>
     </main>
+
+    @if (ShouldDisplayHeaderFooter())
+    {
+        <footer class="footer">
+            <a id="fb" class="btn btn-outline-light btn-floating m-1" href="https://www.facebook.com/groups/4955203005/" role="button" target="_blank">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a id="ig" class="btn btn-outline-light btn-floating m-1" href="https://www.instagram.com/frivillig_muskelsvindfonden/" role="button" target="_blank">
+                <i class="bi bi-instagram"></i>
+            </a>
+        </footer>
+    }
 </div>
+
+@code {
+    private bool ShouldDisplayHeaderFooter()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        return uri.LocalPath == "/" || uri.LocalPath.ToLowerInvariant().Contains("registration");
+    }
+
+    private async Task Login()
+    {
+        NavigationManager.NavigateTo("/login", forceLoad: true);
+    }
+}
