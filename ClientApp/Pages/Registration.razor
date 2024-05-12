@@ -111,20 +111,20 @@
     <!-- Parent Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Parent Information</h4>
+            <h4>Forældres Information</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="parentName">Parent's Name</label>
+                    <label for="parentName">Forældres Navn</label>
                     <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentEmail">Parent's Email</label>
+                    <label for="parentEmail">Forældres Email</label>
                     <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentCrewNumber">Parent's Crew Number</label>
+                    <label for="parentCrewNumber">Forældres Kræw Nummer</label>
                     <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
                 </div>
             </div>
@@ -134,30 +134,30 @@
     <!-- Child Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Child Information</h4>
+            <h4>Barns Information</h4>
         </div>
         <div class="card-body">
             @foreach (var child in application.Parent.Children)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label>Child's Name</label>
+                        <label>Barns Navn</label>
                         <InputText @bind-Value="child.Name" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Child's Age</label>
+                        <label>Barns Alder</label>
                         <InputNumber @bind-Value="child.Age" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Clothing Size</label>
+                        <label>Tøjstørrelse</label>
                         <InputText @bind-Value="child.ClothingSize" class="form-control" />
                     </div>
                     <div class="col-md-6">
-                        <label>Interests</label>
+                        <label>Interesser</label>
                         <InputTextArea @bind-Value="child.Interests" class="form-control" />
                     </div>
                     <div class="col-md-12 text-end mt-2">
-                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Remove Child</button>
+                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
                     </div>
                 </div>
             }
@@ -165,7 +165,7 @@
             {
                 <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-primary" @onclick="AddChild">Add Child</button>
+                        <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
                     </div>
                 </div>
             }
@@ -175,20 +175,20 @@
     <!-- Application Information -->
     <div class="card mb-3">
         <div class="card-header">
-            <h4>Application Information</h4>
+            <h4>Ansøgnings Information</h4>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="consentForm">Parents consent</label>
+                    <label for="consentForm">Forældres signatur</label>
                     <InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="comment">Comment</label>
+                    <label for="comment">Kommentar</label>
                     <InputText id="comment" @bind-Value="application.Comment" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="beenBefore">Have you attended before?</label>
+                    <label for="beenBefore">Har du været med før?</label>
                     <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
                 </div>
             </div>
@@ -197,7 +197,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="firstPrioEvent">First Priority</label>
+                    <label for="firstPrioEvent">Første Prioritet</label>
                     <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
                         <option value="">Select Event</option>
                         @foreach (var e in events)
@@ -207,7 +207,7 @@
                     </InputSelect>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="secondPrioEvent">Second Priority</label>
+                    <label for="secondPrioEvent">Anden Prioritet</label>
                     <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
                         <option value="">Select Event</option>
                         @foreach (var e in events)
@@ -223,7 +223,7 @@
     <!-- Submit Button -->
     <div class="row">
         <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">Indsend</button>
         </div>
     </div>
 </EditForm>
@@ -272,6 +272,7 @@
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Application submitted successfully");
+            addDialog?.Close();
         }
         else
         {
@@ -284,4 +285,6 @@
 
         NavigationManager.NavigateTo("/login", forceLoad: true);
     }
+
+
 }
