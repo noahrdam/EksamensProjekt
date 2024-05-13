@@ -3,19 +3,38 @@
 @inject HttpClient httpClient
 @inject IJSRuntime JS
 
-<h1>Alle ansøgninger </h1>
+<h1>Alle ansøgninger</h1>
+
+<div>
+    <h3>Uger:</h3>
+    @foreach (var week in weeks)
+    {
+        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn btn-primary m-1">Uge @week</button>
+    }
+</div>
+
+@if (selectedWeek.HasValue)
+{
+    <div>
+        <h3>Perioder i uge @selectedWeek:</h3>
+        @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
+        {
+            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1">@period.From - @period.To</button>
+        }
+    </div>
+}
 
 @if (applications == null)
 {
     <p><em>Loading...</em></p>
 }
-else if (!applications.Any())
+else if (!filteredApplications.Any())
 {
     <p><em>No applications found.</em></p>
 }
 else
 {
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Kræv Nummer</th>
@@ -28,14 +47,10 @@ else
                 <th>Interesser</th>
                 <th>Første prio</th>
                 <th>Anden prio</th>
-                <th>Adresse</th>
-
-
-
             </tr>
         </thead>
         <tbody>
-            @foreach (var ap in applications)
+            @foreach (var ap in filteredApplications)
             {
                 <tr>
                     <td>@ap.Parent.CrewNumber</td>
@@ -46,10 +61,8 @@ else
                     <td>@ap.Parent.Children[0].Age</td>
                     <td>@ap.Parent.Children[0].ClothingSize</td>
                     <td>@ap.Parent.Children[0].Interests</td>
-                    <td>@ap.FirstPrio.From - @ap.FirstPrio.To</td>
-                    <td>@ap.SecondPrio.From - @ap.SecondPrio.To</td>
-                    <td>@ap.FirstPrio.Location</td>
-
+                    <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                    <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
                 </tr>
             }
         </tbody>
@@ -58,17 +71,61 @@ else
 
 @code {
     private List<Application> applications;
-
+    private List<Application> filteredApplications;
+    private List<Event> events;
+    private int? selectedWeek;
+    private int? selectedPeriod;
     private string serverURL = "https://localhost:7095/";
+    private List<int> weeks = new List<int> { 27, 28, 30, 31 };
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadApplications();
+        await LoadData();
     }
 
-    public async Task LoadApplications()
+    private async Task LoadData()
     {
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+        events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+        filteredApplications = applications;
+    }
+
+    private void FilterApplicationsByWeek(int week)
+    {
+        selectedWeek = week;
+        selectedPeriod = null;
+        FilterApplications();
+    }
+
+    private void FilterApplicationsByPeriod(int eventId)
+    {
+        selectedPeriod = eventId;
+        FilterApplications();
+    }
+
+    private void FilterApplications()
+    {
+        if (selectedWeek.HasValue)
+        {
+            filteredApplications = applications
+                .Where(ap => ap.FirstPrio.Week == selectedWeek.Value )
+                .ToList();
+
+            if (selectedPeriod.HasValue)
+            {
+                filteredApplications = filteredApplications
+                    .Where(ap => ap.FirstPrio.EventId == selectedPeriod.Value )
+                    .ToList();
+            }
+        }
+        else
+        {
+            filteredApplications = applications;
+        }
+    }
+
+    private List<Event> GetPeriodsForWeek(int week)
+    {
+        return events.Where(e => e.Week == week).ToList();
     }
 }
-

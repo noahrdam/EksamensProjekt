@@ -9,47 +9,43 @@ namespace ServerAPI.Repositories
     public class AdminRepository : IAdminRepository
     {
         private IMongoClient client;
-        private IMongoCollection<Application> collection;
+        private IMongoCollection<Application> applicationcollection;
+        private readonly IMongoCollection<Event> eventcollection;
 
         public AdminRepository()
         {
 
             var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
-            //var mongoUri = "mongodb://localhost:27017";
+            client = new MongoClient(mongoUri);
 
+            var database = client.GetDatabase("ChildClub");
 
-            try
-            {
-                client = new MongoClient(mongoUri);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("There was a problem connecting to your " +
-                    "Atlas cluster. Check that the URI includes a valid " +
-                    "username and password, and that your IP address is " +
-                    $"in the Access List. Message: {e.Message}");
-                Console.WriteLine(e);
-                Console.WriteLine();
-                return;
-            }
-
-
-
-
-            // Provide the name of the database and collection you want to use.
-            // If they don't already exist, the driver and Atlas will create them
-            // automatically when you first write data.
-            var dbName = "ChildClub";
-            var collectionName = "Application";
-
-            collection = client.GetDatabase(dbName)
-               .GetCollection<Application>(collectionName);
+            applicationcollection = database.GetCollection<Application>("Application");
+            eventcollection = database.GetCollection<Event>("Event");
 
         }
 
         public List<Application> GetAllApplication()
         {
-            return collection.Find(Builders<Application>.Filter.Empty).ToList();
+            return applicationcollection.Find(Builders<Application>.Filter.Empty).ToList();
         }
+
+        public List<Application> GetFilteredApplications(FilterDefinition<Application> filter)
+        {
+            return applicationcollection.Find(filter).ToList();
+        }
+
+        public List<Event> GetAllEvents()  
+        {
+            return eventcollection.Find(Builders<Event>.Filter.Empty).ToList();
+        }
+
+        public async Task UpdateApplication(Application application)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
+            await applicationcollection.ReplaceOneAsync(filter, application);
+        }
+
+
     }
 }
