@@ -220,11 +220,17 @@
     </div>
 
     <!-- Submit Button -->
-    <div class="row">
-        <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary">Indsend</button>
+        <div class="row">
+            <div class="col-12 text-center">
+                @if (!string.IsNullOrEmpty(submissionMessage))
+                {
+                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
+                        @submissionMessage
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
+            </div>
         </div>
-    </div>
 </EditForm>
 
 </ModalDialog>
@@ -272,7 +278,8 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Application submitted successfully");
+            submissionMessage = "Application submitted successfully!";
+            isSubmissionSuccessful = true;
             addDialog?.Close();
         }
         else
