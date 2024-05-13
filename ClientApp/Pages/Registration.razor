@@ -79,6 +79,19 @@
         perioderne.
     </p>
 </div>
+
+<div class="afsnit">
+    <h3 class="titel">Ansøgningen skal indeholde:</h3>
+    <p class="tekst">
+        <li>Barnets/børnenes fulde navn og alder</li>
+        <li>Forældrenes fulde navn (begge hvis de deltager som frivillig) og kræwnummer</li>
+        <li> Information om børnene: Hvad de synes er sjovt, hvad der gør dem glade, etc.</li>
+        <li> Trivselsinformation/særlige hensyn: Tager barnet medicin, har allergier, en diagnose, er sengevæder eller bøvler med et eller andet? (NB. Disse informationer vil ALDRIG blive brugt tilat sortere børn fra. Tværtimod vil vi gerne prøve at danne gruppesammensætningen, så de  børn der kæmper med nogle ting, får en god oplevelse).</li>
+        <li> Hvilken periode søger I om en/flere pladser? (Her må I gerne skrive både en første og en anden prioritet på.)</li>
+        <li> Pdf fil med underskrevet kontrakt af forældre der giver tilladelse til at barnet kan opholde sig i Børneklubben. Kontrakt skabelon kan findes <a href="https://form.jotform.com/241272000823038" target="_blank">her</a> </li>
+    </p>
+
+</div>
     
  
 <div class="afsnit">
@@ -201,7 +214,7 @@
                         <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
-                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
                         }
                     </InputSelect>
                 </div>
@@ -211,7 +224,7 @@
                         <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
-                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
                         }
                     </InputSelect>
                 </div>
