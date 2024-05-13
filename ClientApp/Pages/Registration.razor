@@ -107,7 +107,6 @@
 <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
     <!-- Parent Information -->
     <div class="card mb-3">
         <div class="card-header">
@@ -199,7 +198,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="firstPrioEvent">Første Prioritet</label>
                     <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
-                        <option value="">Select Event</option>
+                        <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
                             <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
@@ -209,7 +208,7 @@
                 <div class="col-md-6 mb-3">
                     <label for="secondPrioEvent">Anden Prioritet</label>
                     <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
-                        <option value="">Select Event</option>
+                        <option value="">Vælg Dato</option>
                         @foreach (var e in events)
                         {
                             <option value="@e.EventId">@e.Location, @e.From - @e.To (Week @e.Week)</option>
@@ -236,6 +235,8 @@
     private Application application = new Application() { Parent = new Parent() };
     private List<Event> events = new List<Event>();
     private EditContext? createEditContext;
+    private string submissionMessage = "";  // To store the message for the user
+    private bool isSubmissionSuccessful = false;  // To track if the submission was successful
 
     protected override async Task OnInitializedAsync()
     {
@@ -276,7 +277,8 @@
         }
         else
         {
-            Console.WriteLine("Failed to submit application");
+            submissionMessage = "Failed to submit application. Please try again.";
+            isSubmissionSuccessful = false;
         }
     }
 

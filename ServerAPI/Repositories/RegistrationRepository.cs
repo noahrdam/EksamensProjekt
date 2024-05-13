@@ -10,7 +10,6 @@ namespace ServerAPI.Repositories
         private IMongoClient client;
         private IMongoCollection<Application> applicationcollection;
         private IMongoCollection<Parent> parentcollection;
-        private IMongoCollection<Child> childrenCollection; // New collection for Children
 
         public RegistrationRepository()
         {
@@ -47,40 +46,50 @@ namespace ServerAPI.Repositories
 
             parentcollection = client.GetDatabase(dbName).GetCollection<Parent>(ParentCollectionName);
 
-            childrenCollection = client.GetDatabase(dbName).GetCollection<Child>(ChildrenCollectionName); // Initialize children collection
-
-
         }
 
-        public Parent AddParent(Parent parent)
+        public void AddParent(Parent parent)
         {
-            // Check if the parent already exists based on the unique identifier (e.g., CrewNumber)
             var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
             if (existingParent == null)
             {
-                // If the parent does not exist, determine the next ParentId
                 var maxParentId = 0;
-                if (parentcollection.CountDocuments(Builders<Parent>.Filter.Empty) > 0)
+                if (parentcollection.Count(Builders<Parent>.Filter.Empty) > 0)
                 {
                     maxParentId = parentcollection
                         .Find(Builders<Parent>.Filter.Empty)
                         .SortByDescending(p => p.ParentId)
                         .Limit(1)
-                        .FirstOrDefault()
+                        .ToList()[0]
                         .ParentId;
                 }
                 parent.ParentId = maxParentId + 1;
 
-                // Insert the new parent into the database
                 parentcollection.InsertOne(parent);
-                return parent; // Return the newly added parent with an ID
             }
-            return existingParent; // Return the existing parent if found
         }
 
         public void RegisterApplication(Application application)
         {
-            var parent = AddParent(application.Parent);
+
+            var parent = parentcollection.Find(p => p.CrewNumber == application.Parent.CrewNumber).FirstOrDefault();
+
+            if (parent != null)
+            {
+                if (parent.Children.Count + application.Parent.Children.Count > 2)
+                {
+                    return;
+                }
+                else
+                {
+                    application.Parent.ParentId = parent.ParentId;
+                    UpdateParent(parent);
+                }
+            }
+            else
+            {
+                AddParent(application.Parent);
+            }
 
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)
@@ -90,6 +99,23 @@ namespace ServerAPI.Repositories
             application.ApplicationId = max + 1;
 
             applicationcollection.InsertOne(application);
+        }
+
+        public void UpdateParent(Parent parent)
+        {
+            var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
+            if (existingParent != null && existingParent.Children.Count < 2)
+            {
+                // Update existing parent's children list if less than 2 children
+                foreach (var newChild in parent.Children)
+                {
+                    if (!existingParent.Children.Any(c => c.Name == newChild.Name))
+                    {
+                        existingParent.Children.Add(newChild);
+                    }
+                }
+                parentcollection.ReplaceOne(p => p.CrewNumber == existingParent.CrewNumber, existingParent);
+            }
         }
 
         public List<Event> GetEvents()

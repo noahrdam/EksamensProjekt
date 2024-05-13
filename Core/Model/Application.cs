@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,8 +22,8 @@ namespace Core.Model
 
         public Parent Parent { get; set; } = new Parent();
 
-		public Event FirstPrio { get; set; } = new Event();
+        public Event FirstPrio { get; set; } = new Event();
 
-		public Event SecondPrio { get; set; } = new Event();
+        public Event SecondPrio { get; set; } = new Event();
 	}
 }
