@@ -122,6 +122,12 @@
     <!-- Submit Button -->
     <div class="row">
         <div class="col-12 text-center">
+            @if (!string.IsNullOrEmpty(submissionMessage))
+            {
+                <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
+                    @submissionMessage
+                </div>
+            }
             <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
         </div>
     </div>
@@ -132,6 +138,8 @@
     private Application application = new Application() { Parent = new Parent() };
     private List<Event> events = new List<Event>();
     private EditContext? createEditContext;
+    private string submissionMessage = "";  // To store the message for the user
+    private bool isSubmissionSuccessful = false;  // To track if the submission was successful
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,11 +175,13 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Application submitted successfully");
+            submissionMessage = "Application submitted successfully!";
+            isSubmissionSuccessful = true;
         }
         else
         {
-            Console.WriteLine("Failed to submit application");
+            submissionMessage = "Failed to submit application. Please try again.";
+            isSubmissionSuccessful = false;
         }
     }
 }

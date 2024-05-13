@@ -13,9 +13,9 @@ namespace ServerAPI.Repositories
 
         public RegistrationRepository()
         {
-            //var password = "4321";
-            //var mongoUri = $"mongodb+srv://eaa23fana:{password}@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
-            var mongoUri= "mongodb://localhost:27017";
+            var password = "4321";
+            var mongoUri = $"mongodb+srv://eaa23fana:{password}@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+            //var mongoUri= "mongodb://localhost:27017";
 
 
             try
@@ -48,30 +48,25 @@ namespace ServerAPI.Repositories
 
         }
 
-        public Parent AddParent(Parent parent)
+        public void AddParent(Parent parent)
         {
-            // Check if the parent already exists based on the unique identifier (e.g., CrewNumber)
             var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
             if (existingParent == null)
             {
-                // If the parent does not exist, determine the next ParentId
                 var maxParentId = 0;
-                if (parentcollection.CountDocuments(Builders<Parent>.Filter.Empty) > 0)
+                if (parentcollection.Count(Builders<Parent>.Filter.Empty) > 0)
                 {
                     maxParentId = parentcollection
                         .Find(Builders<Parent>.Filter.Empty)
                         .SortByDescending(p => p.ParentId)
                         .Limit(1)
-                        .FirstOrDefault()
+                        .ToList()[0]
                         .ParentId;
                 }
                 parent.ParentId = maxParentId + 1;
 
-                // Insert the new parent into the database
                 parentcollection.InsertOne(parent);
-                return parent; 
             }
-            return existingParent; // Return the existing parent if found
         }
 
         public void RegisterApplication(Application application)
@@ -81,22 +76,19 @@ namespace ServerAPI.Repositories
 
             if (parent != null)
             {
-                // Check if the total number of children will exceed the allowed limit
                 if (parent.Children.Count + application.Parent.Children.Count > 2)
                 {
-                    // If it does, skip this application as it exceeds the limit
                     return;
                 }
                 else
                 {
-                    // Update the parent with new children if it doesn't exceed the limit
+                    application.Parent.ParentId = parent.ParentId;
                     UpdateParent(parent);
                 }
             }
             else
             {
-                // If the parent is not found, add them as a new parent
-                parent = AddParent(application.Parent);
+                AddParent(application.Parent);
             }
 
             var max = 0;
