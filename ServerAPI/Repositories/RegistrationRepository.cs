@@ -9,7 +9,7 @@ namespace ServerAPI.Repositories
     {
         private IMongoClient client;
         private IMongoCollection<Application> applicationcollection;
-        private IMongoCollection<Parent> parentcollection;
+        private IMongoCollection<Volunteer> parentcollection;
         private IMongoCollection<Child> childrenCollection; // New collection for Children
 
         public RegistrationRepository()
@@ -45,42 +45,42 @@ namespace ServerAPI.Repositories
 
             applicationcollection = client.GetDatabase(dbName).GetCollection<Application>(ApplicationCollectionName);
 
-            parentcollection = client.GetDatabase(dbName).GetCollection<Parent>(ParentCollectionName);
+            parentcollection = client.GetDatabase(dbName).GetCollection<Volunteer>(ParentCollectionName);
 
             childrenCollection = client.GetDatabase(dbName).GetCollection<Child>(ChildrenCollectionName); // Initialize children collection
 
 
         }
 
-        public Parent AddParent(Parent parent)
+        public Volunteer AddVolunteer(Volunteer Volunteer)
         {
             // Check if the parent already exists based on the unique identifier (e.g., CrewNumber)
-            var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
+            var existingParent = parentcollection.Find(p => p.CrewNumber == Volunteer.CrewNumber).FirstOrDefault();
             if (existingParent == null)
             {
                 // If the parent does not exist, determine the next ParentId
                 var maxParentId = 0;
-                if (parentcollection.CountDocuments(Builders<Parent>.Filter.Empty) > 0)
+                if (parentcollection.CountDocuments(Builders<Volunteer>.Filter.Empty) > 0)
                 {
                     maxParentId = parentcollection
-                        .Find(Builders<Parent>.Filter.Empty)
+                        .Find(Builders<Volunteer>.Filter.Empty)
                         .SortByDescending(p => p.ParentId)
                         .Limit(1)
                         .FirstOrDefault()
                         .ParentId;
                 }
-                parent.ParentId = maxParentId + 1;
+                Volunteer.ParentId = maxParentId + 1;
 
                 // Insert the new parent into the database
-                parentcollection.InsertOne(parent);
-                return parent; // Return the newly added parent with an ID
+                parentcollection.InsertOne(Volunteer);
+                return Volunteer; // Return the newly added parent with an ID
             }
             return existingParent; // Return the existing parent if found
         }
 
         public void RegisterApplication(Application application)
         {
-            var parent = AddParent(application.Parent);
+            var parent = AddVolunteer(application.Parent);
 
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)

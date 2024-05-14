@@ -51,5 +51,28 @@ namespace ServerAPI.Repositories
         {
             return collection.Find(Builders<Application>.Filter.Empty).ToList();
         }
+
+        public List<Application> GetApplicationsByDetails(string searchKeyword)
+        {
+            var filters = new List<FilterDefinition<Application>>();
+
+            // Tilføj regex-filtere for navn og mail
+            var nameFilter = Builders<Application>.Filter.Regex(ap => ap.Parent.Name, new BsonRegularExpression(searchKeyword, "i"));
+            var mailFilter = Builders<Application>.Filter.Regex(ap => ap.Parent.Mail, new BsonRegularExpression(searchKeyword, "i"));
+
+            filters.Add(nameFilter);
+            filters.Add(mailFilter);
+
+            // Prøv at konvertere searchKeyword til et heltal for CrewNumber
+            if (int.TryParse(searchKeyword, out int crewNumber))
+            {
+                var crewNumberFilter = Builders<Application>.Filter.Eq(ap => ap.Parent.CrewNumber, crewNumber);
+                filters.Add(crewNumberFilter);
+            }
+
+            var combinedFilter = Builders<Application>.Filter.Or(filters);
+
+            return collection.Find(combinedFilter).ToList();
+        }
     }
 }

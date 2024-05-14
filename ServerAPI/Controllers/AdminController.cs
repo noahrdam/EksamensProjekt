@@ -27,8 +27,13 @@ namespace ServerAPI.Controllers
 
             var applications = mRepo.GetAllApplication();
             return applications;
+        }
 
-
+        [HttpGet]
+        [Route("search")]
+        public List<Application> GetApplicationsByDetails([FromQuery] string searchKeyword)
+        {
+            return mRepo.GetApplicationsByDetails(searchKeyword);
         }
     }
 }

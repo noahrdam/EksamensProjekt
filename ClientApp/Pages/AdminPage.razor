@@ -1,9 +1,54 @@
 ﻿@page "/admin"
 @using Core.Model
+@using MongoDB.Bson
 @inject HttpClient httpClient
 @inject IJSRuntime JS
 
-<h1>Alle ansøgninger </h1>
+<h1>Ansøgninger</h1>
+
+<div class="col-6 mb-3">
+    <input type="text" @bind="searchText" placeholder="Skriv her..." />
+    <button @onclick="SearchApplications">Søg</button>
+</div>
+<h13><em>Søg efter Forældre navn/Mail/Kræv nummer</em></h13>
+
+<div class="col-12 mb-3">
+    <div class="checkbox-container">
+        <div>
+            <label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showParentName" /> Forældre navn</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showMail" /> Mail</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showConsent" /> Samtykke</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showChildName" /> Barnets navn</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showAge" /> Alder</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showClothingSize" /> Tøjstørrelse</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showInterests" /> Interesser</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showFrom" /> Fra</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showTo" /> Til</label>
+        </div>
+        <div>
+            <label><input type="checkbox" @bind="showAddress" /> Adresse</label>
+        </div>
+    </div>
+</div>
 
 @if (applications == null)
 {
@@ -11,55 +56,146 @@
 }
 else if (!applications.Any())
 {
-    <p><em>No applications found.</em></p>
+    <p><em>Ingen Ansøgninger fundet.</em></p>
 }
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Kræv Nummer</th>
-                <th>Forældre navn</th>
-                <th>Mail</th>
-                <th>Samtykke</th>
-                <th>Barnets navn</th>
-                <th>Alder</th>
-                <th>Tøjstørrelse</th>
-                <th>Interesser</th>
-                <th>Fra</th>
-                <th>Til</th>
-                <th>Adresse</th>
-
-
-
+                
+                @if (showCrewNumber)
+                {
+                    <th>Kræv Nummer</th>
+                }
+                @if (showParentName)
+                {
+                    <th>Forældre navn</th>
+                }
+                @if (showMail)
+                {
+                    <th>Mail</th>
+                }
+                @if (showConsent)
+                {
+                    <th>Samtykke</th>
+                }
+                @if (showChildName)
+                {
+                    <th>Barnets navn</th>
+                }
+                @if (showAge)
+                {
+                    <th>Alder</th>
+                }
+                @if (showClothingSize)
+                {
+                    <th>Tøjstørrelse</th>
+                }
+                @if (showInterests)
+                {
+                    <th>Interesser</th>
+                }
+                @if (showFrom)
+                {
+                    <th>Fra</th>
+                }
+                @if (showTo)
+                {
+                    <th>Til</th>
+                }
+                @if (showAddress)
+                {
+                    <th>Adresse</th>
+                }
+                <th>Venteliste</th>
+                <th>Prio. 1</th>
+                <th>Prio. 2</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var ap in applications)
             {
                 <tr>
-                    <td>@ap.Parent.CrewNumber</td>
-                    <td>@ap.Parent.Name</td>
-                    <td>@ap.Parent.Mail</td>
-                    <td>@ap.ConsentForm</td>
-                    <td>@ap.Parent.Children[0].Name</td>
-                    <td>@ap.Parent.Children[0].Age</td>
-                    <td>@ap.Parent.Children[0].Interests</td>
-                    <td>@ap.Parent.Children[0].ClothingSize</td>
-                    <td>@ap.FirstPrio.From</td>
-                    <td>@ap.FirstPrio.To</td>
-                    <td>@ap.FirstPrio.Location</td>
+                    
+                    @if (showCrewNumber)
+                    {
+                        <td>@ap.Parent.CrewNumber</td>
+                    }
+                    @if (showParentName)
+                    {
+                        <td>@ap.Parent.Name</td>
+                    }
+                    @if (showMail)
+                    {
+                        <td>@ap.Parent.Mail</td>
+                    }
+                    @if (showConsent)
+                    {
+                        <td>@ap.ConsentForm</td>
+                    }
+                    @if (showChildName)
+                    {
+                        <td>@ap.Parent.Children[0].Name</td>
+                    }
+                    @if (showAge)
+                    {
+                        <td>@ap.Parent.Children[0].Age</td>
+                    }
+                    @if (showClothingSize)
+                    {
+                        <td>@ap.Parent.Children[0].ClothingSize</td>
+                    }
+                    @if (showInterests)
+                    {
+                        <td>@ap.Parent.Children[0].Interests</td>
+                    }
+                    @if (showFrom)
+                    {
+                        <td>@ap.FirstPrio.From</td>
+                    }
+                    @if (showTo)
+                    {
+                        <td>@ap.FirstPrio.To</td>
+                    }
+                    @if (showAddress)
+                    {
+                        <td>@ap.FirstPrio.Location</td>
+                    }
 
+                    <td><input type="checkbox" @onchange="e => SelectRow(e, ap.Id)" /></td>
+                    <td><input type="checkbox" @onchange="e => SelectRow(e, ap.Id)" /></td>
+                    <td><input type="checkbox" @onchange="e => SelectRow(e, ap.Id)" /></td>
                 </tr>
             }
         </tbody>
     </table>
 }
+<div>
+<button @onclick="MoveApplications"> Godkend flytning af ansøgere</button>
+</div>
 
 @code {
     private List<Application> applications;
+    private HashSet<ObjectId> selectedApplicationIds = new HashSet<ObjectId>();
+
 
     private string serverURL = "https://localhost:7095/";
+
+    private string searchText = "";
+
+    private bool showCrewNumber = true;
+    private bool showParentName = true;
+    private bool showMail = true;
+    private bool showConsent = true;
+    private bool showChildName = true;
+    private bool showAge = true;
+    private bool showClothingSize = true;
+    private bool showInterests = true;
+    private bool showFrom = true;
+    private bool showTo = true;
+    private bool showAddress = true;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,5 +206,39 @@ else
     {
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
     }
+
+
+    private async Task SearchApplications()
+    {
+        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/search?searchKeyword={searchText}");
+    }
+
+    private void SelectRow(ChangeEventArgs e, ObjectId applicationId)
+    {
+        if ((bool)e.Value)
+        {
+            selectedApplicationIds.Add(applicationId);
+        }
+        else
+        {
+            selectedApplicationIds.Remove(applicationId);
+        }
+    }
+
+    private async Task MoveApplications()
+    {
+       
+    }
+
 }
 
+<style>
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        .checkbox-container > div {
+            margin-right: 15px;
+        }
+</style>

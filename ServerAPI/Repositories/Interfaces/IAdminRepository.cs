@@ -8,6 +8,8 @@ namespace ServerAPI.Repositories.Interfaces
     public interface IAdminRepository
     {
         List<Application> GetAllApplication();
+        List<Application> GetApplicationsByDetails(string searchKeyword);
     }
+    
 
 }
