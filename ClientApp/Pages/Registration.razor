@@ -15,26 +15,52 @@
 </div>
 
 <div class="afsnit">
-    <p class="tekst">
-        Børneklub på Cirkus Summarum 2024
-        Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
-        ca. 40 frivillige til at få hjulene til at køre rundt på den store legeplads foran cirkusteltet.
-        Men vidste du, at Cirkus Summarum har en børneklub? Det vil sige. at, hvis du godt kunne
-        tænke dig at være frivillig, men gerne skal have det til at gå op med familielivet, så kan du
-        tage dine børn med som frivillig på Cirkus Summarum. Det fungerer på den måde, at dine
-        børn bliver passet af andre frivillige i bagområdet (hvor vi har indrettet en børneklub), mens
-        du er frivillig. Når arbejdsdagen er ovre eller inden den begynder, kan man bruge tiden
-        sammen som familie på cirkuspladsen eller i den by, man nu er i.
+<p class="tekst">
+    Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
+    ca. 40 frivillige til at få hjulene til at køre rundt på den store legeplads foran cirkusteltet.
+    Men vidste du, at Cirkus Summarum har en børneklub? Det vil sige. at, hvis du godt kunne
+    tænke dig at være frivillig, men gerne skal have det til at gå op med familielivet, så kan du
+    tage dine børn med som frivillig på Cirkus Summarum. Det fungerer på den måde, at dine
+    børn bliver passet af andre frivillige i bagområdet (hvor vi har indrettet en børneklub), mens
+    du er frivillig. Når arbejdsdagen er ovre eller inden den begynder, kan man bruge tiden
+    sammen som familie på cirkuspladsen eller i den by, man nu er i.
     </p>
 </div>
 
 <div class="afsnit">
+    <h3 class="titel">For dig mellem 16-18 år gammel:</h3>
     <p class="tekst">
-        Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
-        i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
-        cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
-        forældre og frivillige kan dele informationer med hinanden.
+        Er du mellem 16 og 18 år og brænder for at gøre en forskel? Hos Cirkus Summarum værdsætter vi
+        også den energi og entusiasme, som unge frivillige bringer til vores arrangement. Selvom du
+        er for gammel til at deltage i vores børneklub, har du stadig muligheden for at være en vigtig
+        del af vores team og opleve cirkuslivet bag kulisserne. Som frivillig i denne aldersgruppe vil
+        du arbejde side om side med andre frivillige, hvor du vil hjælpe med at sikre, at alt går glat
+        på og omkring cirkuspladsen. Det er en  fantastisk chance for at udvikle nye færdigheder, møde
+        nye mennesker og bidrage til et festligt og inkluderende miljø.
     </p>
+
+
+    <p class="tekst">
+        For at sikre en tryg og ansvarlig deltagelse skal vi have en underskrevet
+        tilladelse fra dine forældre eller værger. Denne formular bekræfter, at de er indforstået med
+        din rolle som frivillig og de forpligtelser, det indebærer. Vi ser frem til
+        at byde dig velkommen som en del af vores cirkusfamilie! Dit engagement som ung frivillig er
+        ikke bare en hjælp til os – det er en essentiel del af magien ved Cirkus Summarum. Tilmeld dig 
+        i dag og gør klar til en uforglemmelig sommer, hvor du ikke bare er tilskuer, men en aktiv del
+        af forestillingen!
+    </p>
+</div>
+
+
+<button id="knap" class="btn btn-primary" @onclick="() => addYouthDialog.Open()">Send ansøgning for ung frivillig</button>
+
+<div class="afsnit">
+<p class="tekst">
+    Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
+    i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
+    cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
+    forældre og frivillige kan dele informationer med hinanden.
+</p>
 </div>
 
 <div class="afsnit">
@@ -113,72 +139,72 @@
 
 <ModalDialog @ref="@addDialog" Title="Send ansøgning for dit barn til Børneklubben">
 
-    <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
-        <!-- Parent Information -->
-        <div class="card mb-3">
-            <div class="card-header">
-                <h4>Forældres Information</h4>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="parentName">Forældres Navn</label>
-                        <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="parentEmail">Forældres Email</label>
-                        <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="parentCrewNumber">Forældres Kræw Nummer</label>
-                        <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
-                    </div>
+<EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <!-- Volunteer Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Forældres Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="VolunteerName">Forældres Navn</label>
+                    <InputText id="VolunteerName" @bind-Value="application.Volunteer.Name" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="VolunteerEmail">Forældres Email</label>
+                    <InputText id="VolunteerEmail" @bind-Value="application.Volunteer.Mail" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="VolunteerCrewNumber">Forældres Kræw Nummer</label>
+                    <InputNumber id="VolunteerCrewNumber" @bind-Value="application.Volunteer.CrewNumber" class="form-control" />
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Child Information -->
-        <div class="card mb-3">
-            <div class="card-header">
-                <h4>Barns Information</h4>
-            </div>
-            <div class="card-body">
-                @foreach (var child in application.Parent.Children)
-                {
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label>Barns Navn</label>
-                            <InputText @bind-Value="child.Name" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label>Barns Alder</label>
-                            <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18" />
-                        </div>
-                        <div class="col-md-6">
-                            <label>Tøjstørrelse</label>
-                            <InputText @bind-Value="child.ClothingSize" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label>Interesser</label>
-                            <InputTextArea @bind-Value="child.Interests" class="form-control" />
-                        </div>
-                        <div class="col-md-12 text-end mt-2">
-                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
-                        </div>
-                    </div>
-                }
-                @if (application.Parent.Children.Count < 2)
-                {
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
-                        </div>
-                    </div>
-                }
-            </div>
+    <!-- Child Information -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Barns Information</h4>
         </div>
+        <div class="card-body">
+            @foreach (var child in application.Volunteer.Children)
+            {
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label>Barns Navn</label>
+                        <InputText @bind-Value="child.Name" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Barns Alder</label>
+                            <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18"/>
+                    </div>
+                    <div class="col-md-6">
+                        <label>Tøjstørrelse</label>
+                        <InputText @bind-Value="child.ClothingSize" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Interesser</label>
+                        <InputTextArea @bind-Value="child.Interests" class="form-control" />
+                    </div>
+                    <div class="col-md-12 text-end mt-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
+                    </div>
+                </div>
+            }
+            @if (application.Volunteer.Children.Count < 2)
+            {
+                <div class="row">
+                    <div class="col-md-12">
+                        <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
         <!-- Application Information -->
         <div class="card mb-3">
@@ -198,36 +224,96 @@
                 </div>
             </div>
 
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="firstPrioEvent">Første Prioritet</label>
+                    <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
+                        <option value="">Vælg Dato</option>
+                        @foreach (var e in events)
+                        {
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="secondPrioEvent">Anden Prioritet</label>
+                    <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
+                        <option value="">Vælg Dato</option>
+                        @foreach (var e in events)
+                        {
+                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+        </div>
+                <!-- Signature -->
+    <div class="card-body">
+        <h3>Signature</h3>
+        <canvas id="signature-pad" width="400" height="200" style="border:1px solid #000000;"></canvas>
+        <button type="button" class="btn btn-secondary mt-2" @onclick="ClearSignature">Clear</button>
+    </div>
+</div>
+    </div>
+
+        <div class="card-body">
+            <InputCheckbox @bind-Value="userConsent" class="form-check-input" />
+            <label for="userConsent" class="form-check-label">
+                Jeg er indforstået med, at de datoer jeg tilmelder mine børn til børneklubben, er de dage jeg selv arbejder som frivillig.
+            </label>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row">
+            <div class="col-12 text-center">
+                @if (!string.IsNullOrEmpty(submissionMessage))
+                {
+                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
+                        @submissionMessage
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary" disabled="@(!userConsent)">Indsend Ansøgning</button>
+            </div>
+        </div>
+</EditForm>
+
+</ModalDialog>
+
+
+<ModalDialog @ref="addYouthDialog" Title="Send ansøgning for ung frivillig">
+    <EditForm EditContext="createYouthEditContext" OnValidSubmit="SaveYouthApplication" class="container mt-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Youth Volunteer Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Ung Frivillig Information</h4>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="firstPrioEvent">Første Prioritet</label>
-                        <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
-                            <option value="">Vælg Dato</option>
-                            @foreach (var e in events)
-                            {
-                                <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
-                            }
-                        </InputSelect>
+                        <label for="YouthName">Ung Frivilligs Navn</label>
+                        <InputText id="YouthName" @bind-Value="youthVolunteer.Name" class="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="secondPrioEvent">Anden Prioritet</label>
-                        <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
-                            <option value="">Vælg Dato</option>
-                            @foreach (var e in events)
-                            {
-                                <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
-                            }
-                        </InputSelect>
+                        <label for="YouthEmail">Ung Frivilligs Email</label>
+                        <InputText id="YouthEmail" @bind-Value="youthVolunteer.Mail" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="YouthCrewNumber">Ung Frivilligs Kræw Nummer</label>
+                        <InputNumber id="YouthCrewNumber" @bind-Value="youthVolunteer.CrewNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ConsentForm">Forældres Signatur</label>
+                        <InputText id="ConsentForm" @bind-Value="youthVolunteer.ConsentForm" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ParentName">Forældres Navn</label>
+                        <InputText id="ParentName" @bind-Value="youthVolunteer.ParentName" class="form-control" />
                     </div>
                 </div>
-            </div>
-
-            <!-- Signature -->
-            <div class="card-body">
-                <h3>Signature</h3>
-                <canvas id="signature-pad" width="400" height="200" style="border:1px solid #000000;"></canvas>
-                <button type="button" class="btn btn-secondary mt-2" @onclick="ClearSignature">Clear</button>
             </div>
         </div>
 
@@ -244,26 +330,31 @@
             </div>
         </div>
     </EditForm>
-
 </ModalDialog>
 
 @code {
     private ModalDialog? addDialog { get; set; }
-    private Application application = new Application() { Parent = new Volunteer() };
+    private ModalDialog? addYouthDialog { get; set; }
+    private Application application = new Application() { Volunteer = new Volunteer() };
+    private YouthVolunteer youthVolunteer = new YouthVolunteer();
     private List<Event> events = new List<Event>();
     private EditContext? createEditContext;
+    private EditContext? createYouthEditContext;
     private string submissionMessage = "";  // To store the message for the user
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
+    private bool userConsent = false;  // To track if the user has checked the consent box
+
 
     protected override async Task OnInitializedAsync()
     {
         createEditContext = new EditContext(application);
+        createYouthEditContext = new EditContext(youthVolunteer);
         events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
 
         // Ensure there's always one child ready to be filled out
-        if (application.Parent.Children.Count == 0)
+        if (application.Volunteer.Children.Count == 0)
         {
-            application.Parent.Children.Add(new Child());
+            application.Volunteer.Children.Add(new Child());
         }
 
      
@@ -280,19 +371,26 @@
 
     private void AddChild()
     {
-        if (application.Parent.Children.Count < 2)
+        if (application.Volunteer.Children.Count < 2)
         {
-            application.Parent.Children.Add(new Child());
+            application.Volunteer.Children.Add(new Child());
         }
     }
 
     private void RemoveChild(Child child)
     {
-        application.Parent.Children.Remove(child);
+        application.Volunteer.Children.Remove(child);
     }
 
     private async Task SaveApplication()
     {
+
+        if (!userConsent)
+        {
+            submissionMessage = "Du skal acceptere vilkårene for at fortsætte.";
+            isSubmissionSuccessful = false;
+            return;
+        }
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
@@ -322,6 +420,23 @@ application.FinalDate = application.FirstPrio;
     private async Task ClearSignature()
     {
         await JS.InvokeVoidAsync("clearSignaturePad");
+    }
+
+    private async Task SaveYouthApplication()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
+        if (response.IsSuccessStatusCode)
+        {
+            submissionMessage = "Youth application submitted successfully!";
+            isSubmissionSuccessful = true;
+            addYouthDialog?.Close();
+            
+        }
+        else
+        {
+            submissionMessage = "Failed to submit youth application. Please try again.";
+            isSubmissionSuccessful = false;
+        }
     }
 
     private async Task Login()

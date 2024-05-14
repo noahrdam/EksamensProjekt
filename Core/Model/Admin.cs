@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 namespace Core.Model
 {
 
-
     public class Admin
     {
         //[BsonId]

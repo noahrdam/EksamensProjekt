@@ -9,7 +9,7 @@ namespace ServerAPI.Repositories
     {
         private IMongoClient client;
         private IMongoCollection<Application> applicationcollection;
-        private IMongoCollection<Volunteer> parentcollection;
+        private IMongoCollection<Volunteer> volunteercollection;
 
         public RegistrationRepository()
         {
@@ -36,59 +36,59 @@ namespace ServerAPI.Repositories
             
             var dbName = "ChildClub";
             var ApplicationCollectionName = "Application";
-            var ParentCollectionName = "Volunteer";
+            var VolunteerCollectionName = "Volunteer";
+            var ChildrenCollectionName = "Children"; // Name for the children collection
 
 
             applicationcollection = client.GetDatabase(dbName).GetCollection<Application>(ApplicationCollectionName);
 
-            parentcollection = client.GetDatabase(dbName).GetCollection<Volunteer>(ParentCollectionName);
+            volunteercollection = client.GetDatabase(dbName).GetCollection<Volunteer>(VolunteerCollectionName);
 
         }
 
-        public void AddParent(Volunteer parent)
+        public void AddVolunteer(Volunteer volunteer)
         {
-            var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
-            if (existingParent == null)
+            var existingVolunteer = volunteercollection.Find(v => v.CrewNumber == volunteer.CrewNumber).FirstOrDefault();
+            if (existingVolunteer == null)
             {
                 var maxParentId = 0;
-                if (parentcollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
+                if (volunteercollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
                 {
-                    maxParentId = parentcollection
+                    maxParentId = volunteercollection
                         .Find(Builders<Volunteer>.Filter.Empty)
                         .SortByDescending(p => p.ParentId)
                         .Limit(1)
                         .ToList()[0]
                         .ParentId;
                 }
-                parent.ParentId = maxParentId + 1;
+                volunteer.ParentId = maxParentId + 1;
 
-                parentcollection.InsertOne(parent);
+                volunteercollection.InsertOne(volunteer);
             }
         }
 
         public void RegisterApplication(Application application)
         {
 
-            var parent = parentcollection.Find(p => p.CrewNumber == application.Parent.CrewNumber).FirstOrDefault();
+            var volunteer = volunteercollection.Find(p => p.CrewNumber == application.Volunteer.CrewNumber).FirstOrDefault();
 
-            if (parent != null)
+            if (volunteer != null)
             {
-                if (parent.Children.Count + application.Parent.Children.Count > 2)
+                if (volunteer.Children.Count + application.Volunteer.Children.Count > 2)
                 {
                     return;
-                }
-                else
+                }                else
                 {
-                    application.Parent.ParentId = parent.ParentId;
-                    UpdateParent(parent);
+                    application.Volunteer.ParentId = volunteer.ParentId;
+                    UpdateVolunteer(volunteer);
                 }
             }
             else
             {
-                AddParent(application.Parent);
+                AddVolunteer(application.Volunteer);
             }
 
-
+            // Assign a new application ID
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)
             {
@@ -96,23 +96,45 @@ namespace ServerAPI.Repositories
             }
             application.ApplicationId = max + 1;
 
+            // Insert the application into the collection
             applicationcollection.InsertOne(application);
         }
 
-        public void UpdateParent(Volunteer parent)
+        public void UpdateVolunteer(Volunteer volunteer)
         {
-            var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
-            if (existingParent != null && existingParent.Children.Count < 2)
+            var existingVolunteer = volunteercollection.Find(p => p.CrewNumber == volunteer.CrewNumber).FirstOrDefault();
+            if (existingVolunteer != null && existingVolunteer.Children.Count < 2)
             {
                 // Update existing parent's children list if less than 2 children
-                foreach (var newChild in parent.Children)
+                foreach (var newChild in volunteer.Children)
                 {
-                    if (!existingParent.Children.Any(c => c.Name == newChild.Name))
+                    if (!existingVolunteer.Children.Any(c => c.Name == newChild.Name))
                     {
-                        existingParent.Children.Add(newChild);
+                        existingVolunteer.Children.Add(newChild);
                     }
                 }
-                parentcollection.ReplaceOne(p => p.CrewNumber == existingParent.CrewNumber, existingParent);
+                volunteercollection.ReplaceOne(p => p.CrewNumber == existingVolunteer.CrewNumber, existingVolunteer);
+            }
+        }
+
+        public void AddYouthVolunteer(YouthVolunteer youthVolunteer)
+        {
+            var existingVolunteer = volunteercollection.Find(v => v.CrewNumber == youthVolunteer.CrewNumber).FirstOrDefault();
+            if (existingVolunteer == null)
+            {
+                var maxParentId = 0;
+                if (volunteercollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
+                {
+                    maxParentId = volunteercollection
+                        .Find(Builders<Volunteer>.Filter.Empty)
+                        .SortByDescending(p => p.ParentId)
+                        .Limit(1)
+                        .ToList()[0]
+                        .ParentId;
+                }
+                youthVolunteer.ParentId = maxParentId + 1;
+
+                volunteercollection.InsertOne(youthVolunteer);
             }
         }
 
