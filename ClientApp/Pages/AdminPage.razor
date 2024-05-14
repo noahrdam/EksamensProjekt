@@ -1,7 +1,6 @@
 ﻿@page "/admin"
 @using Core.Model
 @inject HttpClient httpClient
-@inject IJSRuntime JS
 
 <h1>Alle ansøgninger</h1>
 
@@ -47,6 +46,7 @@ else
                 <th>Interesser</th>
                 <th>Første prio</th>
                 <th>Anden prio</th>
+                <th>Signature</th> 
             </tr>
         </thead>
         <tbody>
@@ -63,6 +63,16 @@ else
                     <td>@ap.Parent.Children[0].Interests</td>
                     <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
                     <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(ap.ConsentForm))
+                        {
+                            <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                        }
+                        else
+                        {
+                            <p>No signature</p>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
@@ -108,13 +118,13 @@ else
         if (selectedWeek.HasValue)
         {
             filteredApplications = applications
-                .Where(ap => ap.FirstPrio.Week == selectedWeek.Value )
+                .Where(ap => ap.FirstPrio.Week == selectedWeek.Value)
                 .ToList();
 
             if (selectedPeriod.HasValue)
             {
                 filteredApplications = filteredApplications
-                    .Where(ap => ap.FirstPrio.EventId == selectedPeriod.Value )
+                    .Where(ap => ap.FirstPrio.EventId == selectedPeriod.Value)
                     .ToList();
             }
         }

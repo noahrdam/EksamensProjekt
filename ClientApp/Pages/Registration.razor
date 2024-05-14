@@ -2,6 +2,7 @@
 @using Core.Model
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <head>
     <link rel="stylesheet" href="css/styles.css" />
@@ -14,34 +15,34 @@
 </div>
 
 <div class="afsnit">
-<p class="tekst">
-    Børneklub på Cirkus Summarum 2024
-    Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
-    ca. 40 frivillige til at få hjulene til at køre rundt på den store legeplads foran cirkusteltet.
-    Men vidste du, at Cirkus Summarum har en børneklub? Det vil sige. at, hvis du godt kunne
-    tænke dig at være frivillig, men gerne skal have det til at gå op med familielivet, så kan du
-    tage dine børn med som frivillig på Cirkus Summarum. Det fungerer på den måde, at dine
-    børn bliver passet af andre frivillige i bagområdet (hvor vi har indrettet en børneklub), mens
-    du er frivillig. Når arbejdsdagen er ovre eller inden den begynder, kan man bruge tiden
-    sammen som familie på cirkuspladsen eller i den by, man nu er i.
+    <p class="tekst">
+        Børneklub på Cirkus Summarum 2024
+        Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
+        ca. 40 frivillige til at få hjulene til at køre rundt på den store legeplads foran cirkusteltet.
+        Men vidste du, at Cirkus Summarum har en børneklub? Det vil sige. at, hvis du godt kunne
+        tænke dig at være frivillig, men gerne skal have det til at gå op med familielivet, så kan du
+        tage dine børn med som frivillig på Cirkus Summarum. Det fungerer på den måde, at dine
+        børn bliver passet af andre frivillige i bagområdet (hvor vi har indrettet en børneklub), mens
+        du er frivillig. Når arbejdsdagen er ovre eller inden den begynder, kan man bruge tiden
+        sammen som familie på cirkuspladsen eller i den by, man nu er i.
     </p>
 </div>
 
 <div class="afsnit">
-<p class="tekst">
-    Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
-    i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
-    cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
-    forældre og frivillige kan dele informationer med hinanden.
-</p>
+    <p class="tekst">
+        Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
+        i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
+        cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
+        forældre og frivillige kan dele informationer med hinanden.
+    </p>
 </div>
 
-<div class ="afsnit">
+<div class="afsnit">
     <h3 class="titel">Hvornår:</h3>
     <p class="tekst">
-    Børneklub er i ugerne; Ballerup: 27 og 28 og Aarhus i 30 og 31. Det vil sige, at man kan søge
+        Børneklub er i ugerne; Ballerup: 27 og 28 og Aarhus i 30 og 31. Det vil sige, at man kan søge
         om en plads i følgende perioder:
-</p>
+    </p>
     <li>Uge 27, den 3. juli til 7. juli: Enten onsdag-fredag, lørdag til søndag eller hele ugen.</li>
     <li>Uge 27, den 3. juli til 7. juli: Enten onsdag-fredag, lørdag til søndag eller hele ugen.</li>
     <li>Uge 28, den 10. til 14. juli: Enten onsdag-fredag, lørdag til søndag eller hele ugen.</li>
@@ -53,16 +54,16 @@
 <div class="afsnit">
     <h3 class="titel">Hvad kan du forvente:</h3>
     <p class="tekst">
-    Til jer, som ansøger om en hel uge, vil vores udgangspunkt være, at I får plads en uge –
-    i stedet for 2-3 dage. Vi håber, men kan ikke garantere, at dette giver plads til alle.
-    Hvad kan du forvente:
-</p>
+        Til jer, som ansøger om en hel uge, vil vores udgangspunkt være, at I får plads en uge –
+        i stedet for 2-3 dage. Vi håber, men kan ikke garantere, at dette giver plads til alle.
+        Hvad kan du forvente:
+    </p>
 
-<li>Du bliver en del af en skøn og hyggelig cirkus familie og det bliver dine børn også, hvor der er masser af leg og hyggeligt samvær.</li>
-<li>Du er sammen med dine børn om morgenen inden din vagt starter og igen når du har fri om aftenen – ligesom i det offentlige 😊</li>
-<li>Mødetiderne er som udgangspunkt: onsdage, torsdage og fredage kl. 07:30/11:30 – 18:30. Lørdage og søndage kl. 7:30 – 18:30</li>
-<li>Vi gør derfor opmærksom på, at nogle af dagene er nogle lange arbejdsdage og det kan være lange dage og mange timer væk fra forældre.</li>
-</div>  
+    <li>Du bliver en del af en skøn og hyggelig cirkus familie og det bliver dine børn også, hvor der er masser af leg og hyggeligt samvær.</li>
+    <li>Du er sammen med dine børn om morgenen inden din vagt starter og igen når du har fri om aftenen – ligesom i det offentlige 😊</li>
+    <li>Mødetiderne er som udgangspunkt: onsdage, torsdage og fredage kl. 07:30/11:30 – 18:30. Lørdage og søndage kl. 7:30 – 18:30</li>
+    <li>Vi gør derfor opmærksom på, at nogle af dagene er nogle lange arbejdsdage og det kan være lange dage og mange timer væk fra forældre.</li>
+</div>
 
 <div class="afsnit">
     <h3 class="titel">Ansøgningsprocedure:</h3>
@@ -90,10 +91,8 @@
         <li> Hvilken periode søger I om en/flere pladser? (Her må I gerne skrive både en første og en anden prioritet på.)</li>
         <li> Pdf fil med underskrevet kontrakt af forældre der giver tilladelse til at barnet kan opholde sig i Børneklubben. Kontrakt skabelon kan findes <a href="https://form.jotform.com/241272000823038" target="_blank">her</a> </li>
     </p>
-
 </div>
-    
- 
+
 <div class="afsnit">
     <h3 class="titel">Her er reglerne for medlemskab i børneklubben:</h3>
 
@@ -101,9 +100,8 @@
     <li>Man må kun have sine egne børn med i børneklubben</li>
     <li>Max to børn pr. voksen frivillig</li>
     <li>Man må max have fem dage i børneklubben (en cirkusuge)</li>
-
 </div>
-    
+
 <div class="afsnit">
     <h3 class="titel">Tilbagemelding og svar:</h3>
 
@@ -113,126 +111,127 @@
     </p>
 </div>
 
-    
-
 <ModalDialog @ref="@addDialog" Title="Send ansøgning for dit barn til Børneklubben">
 
-<EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <!-- Parent Information -->
-    <div class="card mb-3">
-        <div class="card-header">
-            <h4>Forældres Information</h4>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="parentName">Forældres Navn</label>
-                    <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="parentEmail">Forældres Email</label>
-                    <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="parentCrewNumber">Forældres Kræw Nummer</label>
-                    <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
-                </div>
+    <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <!-- Parent Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Forældres Information</h4>
             </div>
-        </div>
-    </div>
-
-    <!-- Child Information -->
-    <div class="card mb-3">
-        <div class="card-header">
-            <h4>Barns Information</h4>
-        </div>
-        <div class="card-body">
-            @foreach (var child in application.Parent.Children)
-            {
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label>Barns Navn</label>
-                        <InputText @bind-Value="child.Name" class="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Barns Alder</label>
-                            <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18"/>
-                    </div>
-                    <div class="col-md-6">
-                        <label>Tøjstørrelse</label>
-                        <InputText @bind-Value="child.ClothingSize" class="form-control" />
-                    </div>
-                    <div class="col-md-6">
-                        <label>Interesser</label>
-                        <InputTextArea @bind-Value="child.Interests" class="form-control" />
-                    </div>
-                    <div class="col-md-12 text-end mt-2">
-                        <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
-                    </div>
-                </div>
-            }
-            @if (application.Parent.Children.Count < 2)
-            {
+            <div class="card-body">
                 <div class="row">
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
+                    <div class="col-md-6 mb-3">
+                        <label for="parentName">Forældres Navn</label>
+                        <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="parentEmail">Forældres Email</label>
+                        <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="parentCrewNumber">Forældres Kræw Nummer</label>
+                        <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
                     </div>
                 </div>
-            }
-        </div>
-    </div>
-
-    <!-- Application Information -->
-    <div class="card mb-3">
-        <div class="card-header">
-            <h4>Ansøgnings Information</h4>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="consentForm">Forældres signatur</label>
-                    <InputText id="consentForm" @bind-Value="application.ConsentForm" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="comment">Kommentar</label>
-                    <InputText id="comment" @bind-Value="application.Comment" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="beenBefore">Har du været med før?</label>
-                    <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
-                </div>
             </div>
         </div>
 
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="firstPrioEvent">Første Prioritet</label>
-                    <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
-                        <option value="">Vælg Dato</option>
-                        @foreach (var e in events)
-                        {
-                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
-                        }
-                    </InputSelect>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="secondPrioEvent">Anden Prioritet</label>
-                    <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
-                        <option value="">Vælg Dato</option>
-                        @foreach (var e in events)
-                        {
-                            <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
-                        }
-                    </InputSelect>
-                </div>
+        <!-- Child Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Barns Information</h4>
+            </div>
+            <div class="card-body">
+                @foreach (var child in application.Parent.Children)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label>Barns Navn</label>
+                            <InputText @bind-Value="child.Name" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Barns Alder</label>
+                            <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Tøjstørrelse</label>
+                            <InputText @bind-Value="child.ClothingSize" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Interesser</label>
+                            <InputTextArea @bind-Value="child.Interests" class="form-control" />
+                        </div>
+                        <div class="col-md-12 text-end mt-2">
+                            <button type="button" class="btn btn-outline-danger btn-sm" @onclick="() => RemoveChild(child)">Fjern Barn</button>
+                        </div>
+                    </div>
+                }
+                @if (application.Parent.Children.Count < 2)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-primary" @onclick="AddChild">Tilføj Barn</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
-    </div>
 
-    <!-- Submit Button -->
+        <!-- Application Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Ansøgnings Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="consentForm">Kommentar</label>
+                        <InputText id="comment" @bind-Value="application.Comment" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="beenBefore">Har du været med før?</label>
+                        <InputCheckbox id="beenBefore" @bind-Value="application.BeenBefore" class="form-check-input" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstPrioEvent">Første Prioritet</label>
+                        <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
+                            <option value="">Vælg Dato</option>
+                            @foreach (var e in events)
+                            {
+                                <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                            }
+                        </InputSelect>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="secondPrioEvent">Anden Prioritet</label>
+                        <InputSelect id="secondPrioEvent" @bind-Value="application.SecondPrio.EventId" class="form-control">
+                            <option value="">Vælg Dato</option>
+                            @foreach (var e in events)
+                            {
+                                <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature -->
+            <div class="card-body">
+                <h3>Signature</h3>
+                <canvas id="signature-pad" width="400" height="200" style="border:1px solid #000000;"></canvas>
+                <button type="button" class="btn btn-secondary mt-2" @onclick="ClearSignature">Clear</button>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
                 @if (!string.IsNullOrEmpty(submissionMessage))
@@ -244,10 +243,9 @@
                 <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
             </div>
         </div>
-</EditForm>
+    </EditForm>
 
 </ModalDialog>
-
 
 @code {
     private ModalDialog? addDialog { get; set; }
@@ -266,6 +264,17 @@
         if (application.Parent.Children.Count == 0)
         {
             application.Parent.Children.Add(new Child());
+        }
+
+     
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Initialize signature pad
+            await JS.InvokeVoidAsync("initializeSignaturePad", "signature-pad");
         }
     }
 
@@ -288,6 +297,10 @@
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
 
+        // Get signature data URL
+        var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl");
+        application.ConsentForm = signatureDataUrl;
+
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
@@ -302,11 +315,13 @@
         }
     }
 
-    private async Task Login()
+    private async Task ClearSignature()
     {
-
-        NavigationManager.NavigateTo("/login", forceLoad: true);
+        await JS.InvokeVoidAsync("clearSignaturePad");
     }
 
-
+    private async Task Login()
+    {
+        NavigationManager.NavigateTo("/login", forceLoad: true);
+    }
 }

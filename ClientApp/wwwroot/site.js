@@ -1,4 +1,6 @@
-﻿function allowDrop(ev) {
+﻿console.log("site.js has been loaded");
+
+function allowDrop(ev) {
     ev.preventDefault();
 }
 
@@ -16,3 +18,4 @@ function drop(ev, targetId) {
     }
     DotNet.invokeMethodAsync('ClientApp', 'UpdateApplicationPeriod', data, targetId);
 }
+
