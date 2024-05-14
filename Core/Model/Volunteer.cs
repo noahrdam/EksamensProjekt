@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace Core.Model
 {
+    [BsonDiscriminator(RootClass = true)]
+    [BsonKnownTypes(typeof(ParentVolunteer), typeof(YouthVolunteer))]
     public class Volunteer
     {
         public ObjectId Id { get; set; }
@@ -16,8 +19,6 @@ namespace Core.Model
         public int CrewNumber { get; set; }
 
         public string Mail {  get; set; }
-
-		public List<Child> Children { get; set; } = new List<Child>();
 
     }
 }

@@ -20,7 +20,7 @@ namespace Core.Model
 
         public string ConsentForm { get; set; }
 
-        public Volunteer Volunteer { get; set; } = new Volunteer();
+        public ParentVolunteer ParentVolunteer { get; set; } = new ParentVolunteer();
 
         public Event FirstPrio { get; set; } = new Event();
 

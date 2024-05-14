@@ -52,13 +52,13 @@ else
             @foreach (var ap in filteredApplications)
             {
                 <tr>
-                    <td>@ap.Volunteer.CrewNumber</td>
-                    <td>@ap.Volunteer.Name</td>
-                    <td>@ap.Volunteer.Mail</td>
-                    <td>@ap.Volunteer.Children[0].Name</td>
-                    <td>@ap.Volunteer.Children[0].Age</td>
-                    <td>@ap.Volunteer.Children[0].ClothingSize</td>
-                    <td>@ap.Volunteer.Children[0].Interests</td>
+                    <td>@ap.ParentVolunteer.CrewNumber</td>
+                    <td>@ap.ParentVolunteer.Name</td>
+                    <td>@ap.ParentVolunteer.Mail</td>
+                    <td>@ap.ParentVolunteer.Children[0].Name</td>
+                    <td>@ap.ParentVolunteer.Children[0].Age</td>
+                    <td>@ap.ParentVolunteer.Children[0].ClothingSize</td>
+                    <td>@ap.ParentVolunteer.Children[0].Interests</td>
                     <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
                     <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
                     <td>

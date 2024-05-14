@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Core.Model
 {
-    [BsonDiscriminator("YouthVolunteer")]
-    public class YouthVolunteer : Volunteer
+    [BsonDiscriminator("ParentVolunteer")]
+    public class ParentVolunteer : Volunteer
     {
-        public string ConsentForm { get; set; }
-
-        public string ParentName { get; set; }
+        public List<Child> Children { get; set; } = new List<Child>();
     }
 }
