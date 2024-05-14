@@ -79,8 +79,7 @@ namespace ServerAPI.Repositories
                 if (volunteer.Children.Count + application.Volunteer.Children.Count > 2)
                 {
                     return;
-                }
-                else
+                }                else
                 {
                     application.Volunteer.ParentId = volunteer.ParentId;
                     UpdateVolunteer(volunteer);
