@@ -48,20 +48,21 @@ namespace ServerAPI.Repositories
 
         public void AddVolunteer(Volunteer volunteer)
         {
-            var existingVolunteer = volunteercollection.Find(v => v.CrewNumber == volunteer.CrewNumber).FirstOrDefault();
-            if (existingVolunteer == null)
+            var existingParent = volunteercollection.Find(p => p.CrewNumber == volunteer.CrewNumber).FirstOrDefault();
+            if (existingParent == null)
             {
-                var maxParentId = 0;
+                var maxVolunteerId = 0;
                 if (volunteercollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
                 {
-                    maxParentId = volunteercollection
+                    maxVolunteerId = volunteercollection
                         .Find(Builders<Volunteer>.Filter.Empty)
-                        .SortByDescending(p => p.ParentId)
+                        .SortByDescending(p => p.VolunteerId)
+                        .Limit(1)
                         .Limit(1)
                         .ToList()[0]
-                        .ParentId;
+                        .VolunteerId;
                 }
-                volunteer.ParentId = maxParentId + 1;
+                volunteer.VolunteerId = maxVolunteerId + 1;
 
                 volunteercollection.InsertOne(volunteer);
             }
@@ -69,22 +70,27 @@ namespace ServerAPI.Repositories
 
         public void RegisterApplication(Application application)
         {
-
             var volunteer = volunteercollection.Find(p => p.CrewNumber == application.Volunteer.CrewNumber).FirstOrDefault();
 
             if (volunteer != null)
             {
-                if (volunteer.Children.Count + application.Volunteer.Children.Count > 2)
+                application.Volunteer.VolunteerId = volunteer.VolunteerId;  // Link the application to the existing parent ID
+
+                // Check if adding a new child would exceed the limit of 2 children per parent
+                if (volunteer.Children.Count < 2)
                 {
-                    return;
-                }                else
+                    // Update parent with the new child only if they have fewer than 2 children
+                    UpdateVolunteer(volunteer, application.Volunteer.Children[0]);
+                }
+                else
                 {
-                    application.Volunteer.ParentId = volunteer.ParentId;
-                    UpdateVolunteer(volunteer);
+                    // Optionally, handle the case where a parent already has 2 children and is attempting to add more
+                    throw new Exception("A parent can only apply for two children.");
                 }
             }
             else
             {
+                // If it's a new parent, add them
                 AddVolunteer(application.Volunteer);
             }
 
@@ -100,19 +106,12 @@ namespace ServerAPI.Repositories
             applicationcollection.InsertOne(application);
         }
 
-        public void UpdateVolunteer(Volunteer volunteer)
+
+        public void UpdateVolunteer(Volunteer existingVolunteer, Child newChild)
         {
-            var existingVolunteer = volunteercollection.Find(p => p.CrewNumber == volunteer.CrewNumber).FirstOrDefault();
-            if (existingVolunteer != null && existingVolunteer.Children.Count < 2)
+            if (!existingVolunteer.Children.Any(c => c.Name == newChild.Name))
             {
-                // Update existing parent's children list if less than 2 children
-                foreach (var newChild in volunteer.Children)
-                {
-                    if (!existingVolunteer.Children.Any(c => c.Name == newChild.Name))
-                    {
-                        existingVolunteer.Children.Add(newChild);
-                    }
-                }
+                existingVolunteer.Children.Add(newChild);
                 volunteercollection.ReplaceOne(p => p.CrewNumber == existingVolunteer.CrewNumber, existingVolunteer);
             }
         }
@@ -122,17 +121,17 @@ namespace ServerAPI.Repositories
             var existingVolunteer = volunteercollection.Find(v => v.CrewNumber == youthVolunteer.CrewNumber).FirstOrDefault();
             if (existingVolunteer == null)
             {
-                var maxParentId = 0;
+                var maxVolunteerId = 0;
                 if (volunteercollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
                 {
-                    maxParentId = volunteercollection
+                    maxVolunteerId = volunteercollection
                         .Find(Builders<Volunteer>.Filter.Empty)
-                        .SortByDescending(p => p.ParentId)
+                        .SortByDescending(p => p.VolunteerId)
                         .Limit(1)
                         .ToList()[0]
-                        .ParentId;
+                        .VolunteerId;
                 }
-                youthVolunteer.ParentId = maxParentId + 1;
+                youthVolunteer.VolunteerId = maxVolunteerId + 1;
 
                 volunteercollection.InsertOne(youthVolunteer);
             }

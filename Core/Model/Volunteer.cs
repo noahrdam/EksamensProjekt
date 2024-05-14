@@ -10,7 +10,7 @@ namespace Core.Model
     public class Volunteer
     {
         public ObjectId Id { get; set; }
-        public int ParentId { get; set; }
+        public int VolunteerId { get; set; }
         public string Name { get; set; }
 
         public int CrewNumber { get; set; }
