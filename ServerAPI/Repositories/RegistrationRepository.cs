@@ -90,6 +90,7 @@ namespace ServerAPI.Repositories
                 AddVolunteer(application.Volunteer);
             }
 
+            // Assign a new application ID
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)
             {
@@ -97,6 +98,7 @@ namespace ServerAPI.Repositories
             }
             application.ApplicationId = max + 1;
 
+            // Insert the application into the collection
             applicationcollection.InsertOne(application);
         }
 

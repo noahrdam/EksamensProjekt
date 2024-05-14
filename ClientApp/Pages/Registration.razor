@@ -258,6 +258,13 @@
         </div>
     </div>
 
+        <div class="card-body">
+            <InputCheckbox @bind-Value="userConsent" class="form-check-input" />
+            <label for="userConsent" class="form-check-label">
+                Jeg er indforstået med, at de datoer jeg tilmelder mine børn til børneklubben, er de dage jeg selv arbejder som frivillig.
+            </label>
+        </div>
+
     <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
@@ -267,7 +274,7 @@
                         @submissionMessage
                     </div>
                 }
-                <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
+                <button type="submit" class="btn btn-primary" disabled="@(!userConsent)">Indsend Ansøgning</button>
             </div>
         </div>
 </EditForm>
@@ -337,6 +344,8 @@
     private EditContext? createYouthEditContext;
     private string submissionMessage = "";  // To store the message for the user
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
+    private bool userConsent = false;  // To track if the user has checked the consent box
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -366,6 +375,13 @@
 
     private async Task SaveApplication()
     {
+
+        if (!userConsent)
+        {
+            submissionMessage = "Du skal acceptere vilkårene for at fortsætte.";
+            isSubmissionSuccessful = false;
+            return;
+        }
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
