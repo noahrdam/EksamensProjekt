@@ -20,10 +20,13 @@ namespace Core.Model
 
         public string ConsentForm { get; set; }
 
-        public Parent Parent { get; set; } = new Parent();
+        public Volunteer Parent { get; set; } = new Volunteer();
 
         public Event FirstPrio { get; set; } = new Event();
 
         public Event SecondPrio { get; set; } = new Event();
-	}
+
+        public Event FinalDate { get; set; } = new Event(); 
+
+    }
 }

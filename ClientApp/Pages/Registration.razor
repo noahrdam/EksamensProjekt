@@ -251,7 +251,7 @@
 
 @code {
     private ModalDialog? addDialog { get; set; }
-    private Application application = new Application() { Parent = new Parent() };
+    private Application application = new Application() { Parent = new Volunteer() };
     private List<Event> events = new List<Event>();
     private EditContext? createEditContext;
     private string submissionMessage = "";  // To store the message for the user
@@ -288,6 +288,9 @@
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
 
+        // Ensure FinalDate is set to FirstPrio if not explicitly set
+        application.FinalDate = application.FirstPrio;
+
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
@@ -297,7 +300,8 @@
         }
         else
         {
-            submissionMessage = "Failed to submit application. Please try again.";
+            var errorMessage = await response.Content.ReadAsStringAsync();
+            submissionMessage = $"Failed to submit application: {errorMessage}";
             isSubmissionSuccessful = false;
         }
     }
