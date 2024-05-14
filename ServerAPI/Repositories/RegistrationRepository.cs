@@ -71,26 +71,31 @@ namespace ServerAPI.Repositories
 
         public void RegisterApplication(Application application)
         {
-
             var parent = parentcollection.Find(p => p.CrewNumber == application.Parent.CrewNumber).FirstOrDefault();
 
             if (parent != null)
             {
-                if (parent.Children.Count + application.Parent.Children.Count > 2)
+                application.Parent.ParentId = parent.ParentId;  // Link the application to the existing parent ID
+
+                // Check if adding a new child would exceed the limit of 2 children per parent
+                if (parent.Children.Count < 2)
                 {
-                    return;
+                    // Update parent with the new child only if they have fewer than 2 children
+                    UpdateParent(parent, application.Parent.Children[0]);
                 }
                 else
                 {
-                    application.Parent.ParentId = parent.ParentId;
-                    UpdateParent(parent);
+                    // Optionally, handle the case where a parent already has 2 children and is attempting to add more
+                    throw new Exception("A parent can only apply for two children.");
                 }
             }
             else
             {
+                // If it's a new parent, add them
                 AddParent(application.Parent);
             }
 
+            // Assign a new application ID
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)
             {
@@ -98,22 +103,16 @@ namespace ServerAPI.Repositories
             }
             application.ApplicationId = max + 1;
 
+            // Insert the application into the collection
             applicationcollection.InsertOne(application);
         }
 
-        public void UpdateParent(Parent parent)
+
+        public void UpdateParent(Parent existingParent, Child newChild)
         {
-            var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
-            if (existingParent != null && existingParent.Children.Count < 2)
+            if (!existingParent.Children.Any(c => c.Name == newChild.Name))
             {
-                // Update existing parent's children list if less than 2 children
-                foreach (var newChild in parent.Children)
-                {
-                    if (!existingParent.Children.Any(c => c.Name == newChild.Name))
-                    {
-                        existingParent.Children.Add(newChild);
-                    }
-                }
+                existingParent.Children.Add(newChild);
                 parentcollection.ReplaceOne(p => p.CrewNumber == existingParent.CrewNumber, existingParent);
             }
         }
