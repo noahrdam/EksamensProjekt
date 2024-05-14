@@ -38,14 +38,14 @@ else
             @foreach (var ap in applications)
             {
                 <tr>
-                    <td>@ap.Parent.CrewNumber</td>
-                    <td>@ap.Parent.Name</td>
-                    <td>@ap.Parent.Mail</td>
+                    <td>@ap.Volunteer.CrewNumber</td>
+                    <td>@ap.Volunteer.Name</td>
+                    <td>@ap.Volunteer.Mail</td>
                     <td>@ap.ConsentForm</td>
-                    <td>@ap.Parent.Children[0].Name</td>
-                    <td>@ap.Parent.Children[0].Age</td>
-                    <td>@ap.Parent.Children[0].ClothingSize</td>
-                    <td>@ap.Parent.Children[0].Interests</td>
+                    <td>@ap.Volunteer.Children[0].Name</td>
+                    <td>@ap.Volunteer.Children[0].Age</td>
+                    <td>@ap.Volunteer.Children[0].ClothingSize</td>
+                    <td>@ap.Volunteer.Children[0].Interests</td>
                     <td>@ap.FirstPrio.From - @ap.FirstPrio.To</td>
                     <td>@ap.SecondPrio.From - @ap.SecondPrio.To</td>
                     <td>@ap.FirstPrio.Location</td>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core.Model
 {
-    public class Parent
+    public class Volunteer
     {
         public ObjectId Id { get; set; }
         public int ParentId { get; set; }

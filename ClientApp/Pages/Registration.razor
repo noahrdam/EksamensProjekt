@@ -15,7 +15,6 @@
 
 <div class="afsnit">
 <p class="tekst">
-    Børneklub på Cirkus Summarum 2024
     Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
     ca. 40 frivillige til at få hjulene til at køre rundt på den store legeplads foran cirkusteltet.
     Men vidste du, at Cirkus Summarum har en børneklub? Det vil sige. at, hvis du godt kunne
@@ -26,6 +25,33 @@
     sammen som familie på cirkuspladsen eller i den by, man nu er i.
     </p>
 </div>
+
+<div class="afsnit">
+    <h3 class="titel">For dig mellem 16-18 år gammel:</h3>
+    <p class="tekst">
+        Er du mellem 16 og 18 år og brænder for at gøre en forskel? Hos Cirkus Summarum værdsætter vi
+        også den energi og entusiasme, som unge frivillige bringer til vores arrangement. Selvom du
+        er for gammel til at deltage i vores børneklub, har du stadig muligheden for at være en vigtig
+        del af vores team og opleve cirkuslivet bag kulisserne. Som frivillig i denne aldersgruppe vil
+        du arbejde side om side med andre frivillige, hvor du vil hjælpe med at sikre, at alt går glat
+        på og omkring cirkuspladsen. Det er en  fantastisk chance for at udvikle nye færdigheder, møde
+        nye mennesker og bidrage til et festligt og inkluderende miljø.
+    </p>
+
+
+    <p class="tekst">
+        For at sikre en tryg og ansvarlig deltagelse skal vi have en underskrevet
+        tilladelse fra dine forældre eller værger. Denne formular bekræfter, at de er indforstået med
+        din rolle som frivillig og de forpligtelser, det indebærer. Vi ser frem til
+        at byde dig velkommen som en del af vores cirkusfamilie! Dit engagement som ung frivillig er
+        ikke bare en hjælp til os – det er en essentiel del af magien ved Cirkus Summarum. Tilmeld dig 
+        i dag og gør klar til en uforglemmelig sommer, hvor du ikke bare er tilskuer, men en aktiv del
+        af forestillingen!
+    </p>
+</div>
+
+
+<button id="knap" class="btn btn-primary" @onclick="() => addYouthDialog.Open()">Send ansøgning for ung frivillig</button>
 
 <div class="afsnit">
 <p class="tekst">
@@ -120,7 +146,7 @@
 <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <!-- Parent Information -->
+    <!-- Volunteer Information -->
     <div class="card mb-3">
         <div class="card-header">
             <h4>Forældres Information</h4>
@@ -128,16 +154,16 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="parentName">Forældres Navn</label>
-                    <InputText id="parentName" @bind-Value="application.Parent.Name" class="form-control" />
+                    <label for="VolunteerName">Forældres Navn</label>
+                    <InputText id="VolunteerName" @bind-Value="application.Volunteer.Name" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentEmail">Forældres Email</label>
-                    <InputText id="parentEmail" @bind-Value="application.Parent.Mail" class="form-control" />
+                    <label for="VolunteerEmail">Forældres Email</label>
+                    <InputText id="VolunteerEmail" @bind-Value="application.Volunteer.Mail" class="form-control" />
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="parentCrewNumber">Forældres Kræw Nummer</label>
-                    <InputNumber id="parentCrewNumber" @bind-Value="application.Parent.CrewNumber" class="form-control" />
+                    <label for="VolunteerCrewNumber">Forældres Kræw Nummer</label>
+                    <InputNumber id="VolunteerCrewNumber" @bind-Value="application.Volunteer.CrewNumber" class="form-control" />
                 </div>
             </div>
         </div>
@@ -149,7 +175,7 @@
             <h4>Barns Information</h4>
         </div>
         <div class="card-body">
-            @foreach (var child in application.Parent.Children)
+            @foreach (var child in application.Volunteer.Children)
             {
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -173,7 +199,7 @@
                     </div>
                 </div>
             }
-            @if (application.Parent.Children.Count < 2)
+            @if (application.Volunteer.Children.Count < 2)
             {
                 <div class="row">
                     <div class="col-md-12">
@@ -249,37 +275,93 @@
 </ModalDialog>
 
 
+<ModalDialog @ref="addYouthDialog" Title="Send ansøgning for ung frivillig">
+    <EditForm EditContext="createYouthEditContext" OnValidSubmit="SaveYouthApplication" class="container mt-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Youth Volunteer Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Ung Frivillig Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="YouthName">Ung Frivilligs Navn</label>
+                        <InputText id="YouthName" @bind-Value="youthVolunteer.Name" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="YouthEmail">Ung Frivilligs Email</label>
+                        <InputText id="YouthEmail" @bind-Value="youthVolunteer.Mail" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="YouthCrewNumber">Ung Frivilligs Kræw Nummer</label>
+                        <InputNumber id="YouthCrewNumber" @bind-Value="youthVolunteer.CrewNumber" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ConsentForm">Forældres Signatur</label>
+                        <InputText id="ConsentForm" @bind-Value="youthVolunteer.ConsentForm" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="ParentName">Forældres Navn</label>
+                        <InputText id="ParentName" @bind-Value="youthVolunteer.ParentName" class="form-control" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="row">
+            <div class="col-12 text-center">
+                @if (!string.IsNullOrEmpty(submissionMessage))
+                {
+                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
+                        @submissionMessage
+                    </div>
+                }
+                <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
+            </div>
+        </div>
+    </EditForm>
+</ModalDialog>
+
+
 @code {
     private ModalDialog? addDialog { get; set; }
-    private Application application = new Application() { Parent = new Parent() };
+    private ModalDialog? addYouthDialog { get; set; }
+    private Application application = new Application() { Volunteer = new Volunteer() };
+    private YouthVolunteer youthVolunteer = new YouthVolunteer();
     private List<Event> events = new List<Event>();
     private EditContext? createEditContext;
+    private EditContext? createYouthEditContext;
     private string submissionMessage = "";  // To store the message for the user
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
 
     protected override async Task OnInitializedAsync()
     {
         createEditContext = new EditContext(application);
+        createYouthEditContext = new EditContext(youthVolunteer);
         events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
 
         // Ensure there's always one child ready to be filled out
-        if (application.Parent.Children.Count == 0)
+        if (application.Volunteer.Children.Count == 0)
         {
-            application.Parent.Children.Add(new Child());
+            application.Volunteer.Children.Add(new Child());
         }
     }
 
     private void AddChild()
     {
-        if (application.Parent.Children.Count < 2)
+        if (application.Volunteer.Children.Count < 2)
         {
-            application.Parent.Children.Add(new Child());
+            application.Volunteer.Children.Add(new Child());
         }
     }
 
     private void RemoveChild(Child child)
     {
-        application.Parent.Children.Remove(child);
+        application.Volunteer.Children.Remove(child);
     }
 
     private async Task SaveApplication()
@@ -298,6 +380,24 @@
         else
         {
             submissionMessage = "Failed to submit application. Please try again.";
+            isSubmissionSuccessful = false;
+        }
+    }
+
+    private async Task SaveYouthApplication()
+    {
+        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
+        if (response.IsSuccessStatusCode)
+        {
+            submissionMessage = "Youth application submitted successfully!";
+            isSubmissionSuccessful = true;
+            youthVolunteer.IsYouth = true;
+            addYouthDialog?.Close();
+            
+        }
+        else
+        {
+            submissionMessage = "Failed to submit youth application. Please try again.";
             isSubmissionSuccessful = false;
         }
     }

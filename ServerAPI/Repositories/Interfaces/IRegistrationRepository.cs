@@ -8,6 +8,8 @@ namespace ServerAPI.Repositories.Interfaces
 
         List<Event> GetEvents();
 
-        void AddParent(Parent parent);
+        void AddVolunteer(Volunteer volunteer);
+
+        void AddYouthVolunteer(YouthVolunteer youthVolunteer);
     }
 }

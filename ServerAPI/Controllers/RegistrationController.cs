@@ -23,6 +23,13 @@ namespace ServerAPI.Controllers
             mRepo.RegisterApplication(application);
         }
 
+        [HttpPost]
+        [Route("registerYouthVolunteer")]
+        public void RegisterYouthVolunteer(YouthVolunteer youthVolunteer)
+        {
+            mRepo.AddYouthVolunteer(youthVolunteer);
+        }
+
         [HttpGet]
         [Route("getallevents")]
         public List<Event> GetEvents()
