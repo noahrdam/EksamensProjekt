@@ -9,7 +9,7 @@ namespace ServerAPI.Repositories
     {
         private IMongoClient client;
         private IMongoCollection<Application> applicationcollection;
-        private IMongoCollection<Parent> parentcollection;
+        private IMongoCollection<Volunteer> parentcollection;
 
         public RegistrationRepository()
         {
@@ -33,31 +33,28 @@ namespace ServerAPI.Repositories
                 return;
             }
 
-            // Provide the name of the database and collection you want to use.
-            // If they don't already exist, the driver and Atlas will create them
-            // automatically when you first write data.
+            
             var dbName = "ChildClub";
             var ApplicationCollectionName = "Application";
-            var ParentCollectionName = "Parent";
-            var ChildrenCollectionName = "Children"; // Name for the children collection
+            var ParentCollectionName = "Volunteer";
 
 
             applicationcollection = client.GetDatabase(dbName).GetCollection<Application>(ApplicationCollectionName);
 
-            parentcollection = client.GetDatabase(dbName).GetCollection<Parent>(ParentCollectionName);
+            parentcollection = client.GetDatabase(dbName).GetCollection<Volunteer>(ParentCollectionName);
 
         }
 
-        public void AddParent(Parent parent)
+        public void AddParent(Volunteer parent)
         {
             var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
             if (existingParent == null)
             {
                 var maxParentId = 0;
-                if (parentcollection.Count(Builders<Parent>.Filter.Empty) > 0)
+                if (parentcollection.Count(Builders<Volunteer>.Filter.Empty) > 0)
                 {
                     maxParentId = parentcollection
-                        .Find(Builders<Parent>.Filter.Empty)
+                        .Find(Builders<Volunteer>.Filter.Empty)
                         .SortByDescending(p => p.ParentId)
                         .Limit(1)
                         .ToList()[0]
@@ -91,6 +88,7 @@ namespace ServerAPI.Repositories
                 AddParent(application.Parent);
             }
 
+
             var max = 0;
             if (applicationcollection.Count(Builders<Application>.Filter.Empty) > 0)
             {
@@ -101,7 +99,7 @@ namespace ServerAPI.Repositories
             applicationcollection.InsertOne(application);
         }
 
-        public void UpdateParent(Parent parent)
+        public void UpdateParent(Volunteer parent)
         {
             var existingParent = parentcollection.Find(p => p.CrewNumber == parent.CrewNumber).FirstOrDefault();
             if (existingParent != null && existingParent.Children.Count < 2)
