@@ -3,11 +3,11 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
-<h1>Alle ansøgninger</h1>
-
 <head>
-    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/styles.css" />
 </head>
+
+<h1>Alle ansøgninger</h1>
 
 <div style="text-align: right;">
     <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
@@ -17,11 +17,7 @@
     <h3>Uger:</h3>
     @foreach (var week in weeks)
     {
-        var weekCount = GetApplicationCountForWeek(week);
-        var weekClass = GetButtonClassForWeekCount(weekCount);
-        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
-            Uge @week (@weekCount)
-        </button>
+        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn btn-primary m-1">Uge @week</button>
     }
 </div>
 
@@ -31,11 +27,7 @@
         <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
-            var periodCount = GetApplicationCountForPeriod(period.EventId);
-            var periodClass = GetButtonClassForPeriodCount(periodCount);
-            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
-                @period.From - @period.To (@periodCount)
-            </button>
+            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1">@period.From - @period.To</button>
         }
     </div>
 }
@@ -118,21 +110,14 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            await LoadData();
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error loading data: {ex.Message}");
-        }
+        await LoadData();
     }
 
     private async Task LoadData()
     {
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-        filteredApplications = applications ?? new List<Application>();
+        filteredApplications = applications;
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -165,43 +150,13 @@ else
         }
         else
         {
-            filteredApplications = applications ?? new List<Application>();
+            filteredApplications = applications;
         }
     }
 
     private List<Event> GetPeriodsForWeek(int week)
     {
-        return (events ?? new List<Event>()).Where(e => e.Week == week).ToList();
-    }
-
-    private int GetApplicationCountForWeek(int week)
-    {
-        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.Week == week);
-    }
-
-    private int GetApplicationCountForPeriod(int eventId)
-    {
-        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.EventId == eventId);
-    }
-
-    private string GetButtonClassForWeekCount(int count)
-    {
-        if (count < 13)
-            return "btn-green";
-        else if (count < 18)
-            return "btn-yellow";
-        else
-            return "btn-red";
-    }
-
-    private string GetButtonClassForPeriodCount(int count)
-    {
-        if (count < 6)
-            return "btn-green";
-        else if (count < 10)
-            return "btn-yellow";
-        else
-            return "btn-red";
+        return events.Where(e => e.Week == week).ToList();
     }
 
     private async Task UpdateFinalDate(Application application, string prio)
@@ -226,8 +181,8 @@ else
         }
     }
 
-     private async Task ToYouthPage()
- {
-     NavigationManager.NavigateTo("/youth", forceLoad: true);
- }
+    private async Task ToYouthPage()
+    {
+        NavigationManager.NavigateTo("/youth", forceLoad: true);
+    }
 }
