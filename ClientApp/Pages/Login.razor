@@ -4,26 +4,35 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage // Inject local storage service
 @using Core.Model
 
-<h3>Admin Login</h3>
-<EditForm EditContext="@editContext" OnValidSubmit="@HandleLogin" class="p-3">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="mb-3">
-        <label for="LoginUsername">Username</label>
-        <InputText id="LoginUsername" @bind-Value="adminLogin.Username" class="form-control" />
+<head>
+    <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<div class="login-container">
+    <div class="login-card">
+        <img id="loginlogo" src="børneklubben_logo.png" alt="Børneklubben Logo">
+        <h3>Admin Login</h3>
+        <EditForm EditContext="@editContext" OnValidSubmit="@HandleLogin">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div>
+                <label for="LoginUsername">Username</label>
+                <InputText id="LoginUsername" @bind-Value="adminLogin.Username" class="form-control" />
+            </div>
+            <div>
+                <label for="LoginPassword">Password</label>
+                <InputText id="LoginPassword" @bind-Value="adminLogin.Password" type="password" class="form-control" />
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Log in</button>
+            </div>
+            @if (!string.IsNullOrEmpty(loginMessage))
+            {
+                <div class="alert alert-info">@loginMessage</div>
+            }
+        </EditForm>
     </div>
-    <div class="mb-3">
-        <label for="LoginPassword">Password</label>
-        <InputText id="LoginPassword" @bind-Value="adminLogin.Password" type="password" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <button type="submit" class="btn btn-primary">Log in</button>
-    </div>
-    @if (!string.IsNullOrEmpty(loginMessage))
-    {
-        <div class="alert alert-info">@loginMessage</div>
-    }
-</EditForm>
+</div>
 
 @code {
     private Admin adminLogin = new Admin();
