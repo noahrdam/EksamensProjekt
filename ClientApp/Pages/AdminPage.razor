@@ -10,7 +10,7 @@
 <h1>Alle ansøgninger</h1>
 
 <div style="text-align: right;">
-<button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
 </div>
 
 <div>
@@ -181,8 +181,8 @@ else
         }
     }
 
-     private async Task ToYouthPage()
- {
-     NavigationManager.NavigateTo("/youth", forceLoad: true);
- }
+    private async Task ToYouthPage()
+    {
+        NavigationManager.NavigateTo("/youth", forceLoad: true);
+    }
 }
