@@ -3,14 +3,10 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
-<head>
-    <link rel="stylesheet" href="css/styles.css" />
-</head>
-
 <h1>Alle ansøgninger</h1>
 
 <div style="text-align: right;">
-<button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
 </div>
 
 <div>
@@ -32,6 +28,50 @@
     </div>
 }
 
+<div class="col-12 mb-3">
+    <div class="checkbox-container">
+        <span>
+            <label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showParentName" /> Forældre navn</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showMail" /> Mail</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showConsent" /> Samtykke</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showChildName" /> Barnets navn</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showAge" /> Alder</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showClothingSize" /> Tøjstørrelse</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showInterests" /> Interesser</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showComment" /> Kommentar</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showFirstPriority" /> 1. Prioritet</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showSecondPriority" /> 2. Prioritet</label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showFinalDate" /> Endelig Dato </label>
+        </span>
+        <span>
+            <label><input type="checkbox" @bind="showEditFinalDate" /> Rediger Endelig Dato</label>
+        </span>
+    </div>
+</div>
+
 @if (applications == null)
 {
     <p><em>Loading...</em></p>
@@ -45,18 +85,58 @@ else
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Kræv Nummer</th>
-                <th>Forældre navn</th>
-                <th>Mail</th>
-                <th>Barn Navn</th>
-                <th>Barn Alder</th>
-                <th>Barn Tøjstørrelse</th>
-                <th>Barn Interesser</th>
-                <th>Første prio</th>
-                <th>Anden prio</th>
-                <th>Endelig dato</th>
-                <th>Opdater endelige dato</th>
-                <th>Samtykke</th>
+                @if (showCrewNumber)
+                {
+                    <th>Kræv Nummer</th>
+                }
+                @if (showParentName)
+                {
+                    <th>Forældre navn</th>
+                }
+                @if (showMail)
+                {
+                    <th>Mail</th>
+                }
+                @if (showChildName)
+                {
+                    <th>Barn Navn</th>
+                }
+                @if (showAge)
+                {
+                    <th>Barn Alder</th>
+                }
+                @if (showClothingSize)
+                {
+                    <th>Barn Tøjstørrelse</th>
+                }
+                @if (showInterests)
+                {
+                    <th>Barn Interesser</th>
+                }
+                @if (showComment)
+				{
+					<th>Kommentar</th>
+				}
+                @if (showFirstPriority)
+                {
+                    <th>Første prio</th>
+                }
+                @if (showSecondPriority)
+                {
+                    <th>Anden prio</th>
+                }
+                @if (showFinalDate)
+                {
+                    <th>Endelig dato</th>
+                }
+                @if (showEditFinalDate)
+                {
+                    <th>Opdater endelige dato</th>
+                }
+                @if (showConsent)
+                {
+                    <th>Samtykke</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -65,33 +145,73 @@ else
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
                     <tr>
-                        <td>@ap.ParentVolunteer.CrewNumber</td>
-                        <td>@ap.ParentVolunteer.Name</td>
-                        <td>@ap.ParentVolunteer.Mail</td>
-                        <td>@child.Name</td>
-                        <td>@child.Age</td>
-                        <td>@child.ClothingSize</td>
-                        <td>@child.Interests</td>
-                        <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
-                        <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
-                        <td>@ap.FinalDate.From - @ap.FinalDate.To (Uge @ap.FinalDate.Week)</td>
-                        <td>
-                            <select class="form-select" @onchange="(e) => UpdateFinalDate(ap, e.Value.ToString())">
-                                <option value="">Vælg prioritet</option>
-                                <option value="1">First Priority</option>
-                                <option value="2">Second Priority</option>
-                            </select>
-                        </td>
-                        <td>
-                            @if (!string.IsNullOrEmpty(ap.ConsentForm))
-                            {
-                                <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
-                            }
-                            else
-                            {
-                                <p>No signature</p>
-                            }
-                        </td>
+                        @if (showCrewNumber)
+                        {
+                            <td>@ap.ParentVolunteer.CrewNumber</td>
+                        }
+                        @if (showParentName)
+                        {
+                            <td>@ap.ParentVolunteer.Name</td>
+                        }
+                        @if (showMail)
+                        {
+                            <td>@ap.ParentVolunteer.Mail</td>
+                        }
+                        @if (showChildName)
+                        {
+                            <td>@child.Name</td>
+                        }
+                        @if (showAge)
+                        {
+                            <td>@child.Age</td>
+                        }
+                        @if (showClothingSize)
+                        {
+                            <td>@child.ClothingSize</td>
+                        }
+                        @if (showInterests)
+                        {
+                            <td>@child.Interests</td>
+                        }
+                        @if (showComment)
+						{
+							<td>@ap.Comment</td>
+						}
+                        @if (showFirstPriority)
+                        {
+                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                        }
+                        @if (showSecondPriority)
+                        {
+                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                        }
+                        @if (showFinalDate)
+                        {
+                            <td>@ap.FinalDate.From - @ap.FinalDate.To (Uge @ap.FinalDate.Week)</td>
+                        }
+                        @if (showEditFinalDate)
+                        {
+                            <td>
+                                <select class="form-select" @onchange="(e) => UpdateFinalDate(ap, e.Value.ToString())">
+                                    <option value="">Vælg prioritet</option>
+                                    <option value="1">First Priority</option>
+                                    <option value="2">Second Priority</option>
+                                </select>
+                            </td>
+                        }
+                        @if (showConsent)
+                        {
+                            <td>
+                                @if (!string.IsNullOrEmpty(ap.ConsentForm))
+                                {
+                                    <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                                }
+                                else
+                                {
+                                    <p>No signature</p>
+                                }
+                            </td>
+                        }
                     </tr>
                 }
             }
@@ -107,6 +227,20 @@ else
     private int? selectedPeriod;
     private string serverURL = "https://localhost:7095/";
     private List<int> weeks = new List<int> { 27, 28, 30, 31 };
+
+    private bool showCrewNumber = true;
+    private bool showParentName = true;
+    private bool showMail = true;
+    private bool showConsent = true;
+    private bool showChildName = true;
+    private bool showAge = true;
+    private bool showClothingSize = false;
+    private bool showInterests = false;
+    private bool showComment = true;
+    private bool showFirstPriority = true;
+    private bool showSecondPriority = true;
+    private bool showFinalDate = true;
+    private bool showEditFinalDate = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -181,8 +315,8 @@ else
         }
     }
 
-     private async Task ToYouthPage()
- {
-     NavigationManager.NavigateTo("/youth", forceLoad: true);
- }
+    private async Task ToYouthPage()
+    {
+        NavigationManager.NavigateTo("/youth", forceLoad: true);
+    }
 }
