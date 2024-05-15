@@ -16,6 +16,9 @@ namespace ServerAPI.Repositories.Interfaces
 
         void UpdateFinalDate(Application application);
 
+        List<YouthVolunteer> GetAllYouthVolunteers();
+
+
     }
 
 }
