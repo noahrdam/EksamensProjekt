@@ -3,21 +3,25 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
-<head>
-    <link rel="stylesheet" href="css/styles.css" />
-</head>
-
 <h1>Alle ansøgninger</h1>
 
+<head>
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
 <div style="text-align: right;">
-<button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
 </div>
 
 <div>
     <h3>Uger:</h3>
     @foreach (var week in weeks)
     {
-        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn btn-primary m-1">Uge @week</button>
+        var weekCount = GetApplicationCountForWeek(week);
+        var weekClass = GetButtonClassForWeekCount(weekCount);
+        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
+            Uge @week (@weekCount)
+        </button>
     }
 </div>
 
@@ -27,7 +31,11 @@
         <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
-            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1">@period.From - @period.To</button>
+            var periodCount = GetApplicationCountForPeriod(period.EventId);
+            var periodClass = GetButtonClassForPeriodCount(periodCount);
+            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
+                @period.From - @period.To (@periodCount)
+            </button>
         }
     </div>
 }
@@ -54,7 +62,7 @@ else
                 <th>Interesser</th>
                 <th>Første prio</th>
                 <th>Anden prio</th>
-                <th>Samtykke</th> 
+                <th>Samtykke</th>
             </tr>
         </thead>
         <tbody>
@@ -97,14 +105,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadData();
+        try
+        {
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error loading data: {ex.Message}");
+        }
     }
 
     private async Task LoadData()
     {
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-        filteredApplications = applications;
+        filteredApplications = applications ?? new List<Application>();
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -124,7 +139,7 @@ else
     {
         if (selectedWeek.HasValue)
         {
-            filteredApplications = applications
+            filteredApplications = (applications ?? new List<Application>())
                 .Where(ap => ap.FirstPrio.Week == selectedWeek.Value)
                 .ToList();
 
@@ -137,13 +152,43 @@ else
         }
         else
         {
-            filteredApplications = applications;
+            filteredApplications = applications ?? new List<Application>();
         }
     }
 
     private List<Event> GetPeriodsForWeek(int week)
     {
-        return events.Where(e => e.Week == week).ToList();
+        return (events ?? new List<Event>()).Where(e => e.Week == week).ToList();
+    }
+
+    private int GetApplicationCountForWeek(int week)
+    {
+        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.Week == week);
+    }
+
+    private int GetApplicationCountForPeriod(int eventId)
+    {
+        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.EventId == eventId);
+    }
+
+    private string GetButtonClassForWeekCount(int count)
+    {
+        if (count < 13)
+            return "btn-green";
+        else if (count < 18)
+            return "btn-yellow";
+        else
+            return "btn-red";
+    }
+
+    private string GetButtonClassForPeriodCount(int count)
+    {
+        if (count < 6)
+            return "btn-green";
+        else if (count < 10)
+            return "btn-yellow";
+        else
+            return "btn-red";
     }
 
     private async Task ToYouthPage()
