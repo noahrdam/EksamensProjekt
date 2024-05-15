@@ -14,7 +14,8 @@ namespace ServerAPI.Repositories.Interfaces
 
         Task UpdateApplication(Application application);
 
-        void UpdateFinalDate(int applicationId, int finalDatePriority);
+        void UpdateFinalDate(Application application);
+
     }
 
 }

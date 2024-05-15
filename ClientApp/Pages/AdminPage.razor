@@ -39,39 +39,52 @@ else
                 <th>Kræv Nummer</th>
                 <th>Forældre navn</th>
                 <th>Mail</th>
-                <th>Barnets navn</th>
-                <th>Alder</th>
-                <th>Tøjstørrelse</th>
-                <th>Interesser</th>
+                <th>Barn Navn</th>
+                <th>Barn Alder</th>
+                <th>Barn Tøjstørrelse</th>
+                <th>Barn Interesser</th>
                 <th>Første prio</th>
                 <th>Anden prio</th>
-                <th>Samtykke</th> 
+                <th>Endelig dato</th>
+                <th>Opdater endelige dato</th>
+                <th>Samtykke</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var ap in filteredApplications)
             {
-                <tr>
-                    <td>@ap.ParentVolunteer.CrewNumber</td>
-                    <td>@ap.ParentVolunteer.Name</td>
-                    <td>@ap.ParentVolunteer.Mail</td>
-                    <td>@ap.ParentVolunteer.Children[0].Name</td>
-                    <td>@ap.ParentVolunteer.Children[0].Age</td>
-                    <td>@ap.ParentVolunteer.Children[0].ClothingSize</td>
-                    <td>@ap.ParentVolunteer.Children[0].Interests</td>
-                    <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
-                    <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(ap.ConsentForm))
-                        {
-                            <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
-                        }
-                        else
-                        {
-                            <p>No signature</p>
-                        }
-                    </td>
-                </tr>
+                @foreach (var child in ap.ParentVolunteer.Children)
+                {
+                    <tr>
+                        <td>@ap.ParentVolunteer.CrewNumber</td>
+                        <td>@ap.ParentVolunteer.Name</td>
+                        <td>@ap.ParentVolunteer.Mail</td>
+                        <td>@child.Name</td>
+                        <td>@child.Age</td>
+                        <td>@child.ClothingSize</td>
+                        <td>@child.Interests</td>
+                        <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                        <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                        <td>@ap.FinalDate.From - @ap.FinalDate.To (Uge @ap.FinalDate.Week)</td>
+                        <td>
+                            <select class="form-select" @onchange="(e) => UpdateFinalDate(ap, e.Value.ToString())">
+                                <option value="">Vælg prioritet</option>
+                                <option value="1">First Priority</option>
+                                <option value="2">Second Priority</option>
+                            </select>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(ap.ConsentForm))
+                            {
+                                <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                            }
+                            else
+                            {
+                                <p>No signature</p>
+                            }
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -116,13 +129,13 @@ else
         if (selectedWeek.HasValue)
         {
             filteredApplications = applications
-                .Where(ap => ap.FirstPrio.Week == selectedWeek.Value)
+                .Where(ap => ap.FinalDate.Week == selectedWeek.Value)
                 .ToList();
 
             if (selectedPeriod.HasValue)
             {
                 filteredApplications = filteredApplications
-                    .Where(ap => ap.FirstPrio.EventId == selectedPeriod.Value)
+                    .Where(ap => ap.FinalDate.EventId == selectedPeriod.Value)
                     .ToList();
             }
         }
@@ -135,5 +148,27 @@ else
     private List<Event> GetPeriodsForWeek(int week)
     {
         return events.Where(e => e.Week == week).ToList();
+    }
+
+    private async Task UpdateFinalDate(Application application, string prio)
+    {
+        if (prio == "1")
+        {
+            application.FinalDate = application.FirstPrio;
+        }
+        else if (prio == "2")
+        {
+            application.FinalDate = application.SecondPrio;
+        }
+
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Successfully updated final date");
+        }
+        else
+        {
+            Console.WriteLine("Error updating final date: " + response.ReasonPhrase);
+        }
     }
 }
