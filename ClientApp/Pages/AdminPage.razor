@@ -13,7 +13,11 @@
     <h3>Uger:</h3>
     @foreach (var week in weeks)
     {
-        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn btn-primary m-1">Uge @week</button>
+        var weekCount = GetApplicationCountForWeek(week);
+        var weekClass = GetButtonClassForWeekCount(weekCount);
+        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
+            Uge @week (@weekCount)
+        </button>
     }
 </div>
 
@@ -23,7 +27,11 @@
         <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
-            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1">@period.From - @period.To</button>
+            var periodCount = GetApplicationCountForPeriod(period.EventId);
+            var periodClass = GetButtonClassForPeriodCount(periodCount);
+            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
+                @period.From - @period.To (@periodCount)
+            </button>
         }
     </div>
 }
@@ -251,7 +259,8 @@ else
     {
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-        filteredApplications = applications;
+        filteredApplications = applications ?? new List<Application>();
+        UpdateApplicationCounts();
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -284,13 +293,51 @@ else
         }
         else
         {
-            filteredApplications = applications;
+            filteredApplications = applications ?? new List<Application>();
         }
     }
 
     private List<Event> GetPeriodsForWeek(int week)
     {
-        return events.Where(e => e.Week == week).ToList();
+        return (events ?? new List<Event>()).Where(e => e.Week == week).ToList();
+    }
+
+    private int GetApplicationCountForWeek(int week)
+{
+    // Tjek om 'applications' listen er null før forsøget på at anvende LINQ operationer
+    if (applications == null)
+    {
+        Console.WriteLine("Ingen applikationer er indlæst.");
+        return 0; // Returner 0, da der ikke kan være nogen applikationer at tælle
+    }
+
+    return applications.Where(ap => ap.FinalDate.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
+}
+
+
+    private int GetApplicationCountForPeriod(int eventId)
+    {
+        return applications.Where(ap => ap.FinalDate.EventId == eventId).Sum(ap => ap.ParentVolunteer.Children.Count);
+    }
+
+    private string GetButtonClassForWeekCount(int count)
+    {
+        if (count < 13)
+            return "btn-green";
+        else if (count < 18)
+            return "btn-yellow";
+        else
+            return "btn-red";
+    }
+
+    private string GetButtonClassForPeriodCount(int count)
+    {
+        if (count < 6)
+            return "btn-green";
+        else if (count < 10)
+            return "btn-yellow";
+        else
+            return "btn-red";
     }
 
     private async Task UpdateFinalDate(Application application, string prio)
@@ -307,11 +354,17 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("Successfully updated final date");
+            await LoadData(); // Reload data to reflect the update immediately
         }
-        else
+    }
+
+    private void UpdateApplicationCounts()
+    {
+        // Refresh week and period counts whenever data changes
+        foreach (var week in weeks)
         {
-            Console.WriteLine("Error updating final date: " + response.ReasonPhrase);
+            var count = GetApplicationCountForWeek(week);
+            Console.WriteLine($"Week {week}: {count} children based on FinalDate");
         }
     }
 
