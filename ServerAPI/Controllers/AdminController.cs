@@ -67,7 +67,12 @@ namespace ServerAPI.Controllers
             return Ok();
         }
 
-
+        [HttpPut]
+        [Route("updatefinaldate/{applicationId}")]
+        public void UpdateFinalDate(int applicationId, int finalDatePriority)
+        {
+            mRepo.UpdateFinalDate(applicationId, finalDatePriority);
+        }
 
     }
 }
