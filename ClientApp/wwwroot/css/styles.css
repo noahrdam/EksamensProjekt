@@ -152,4 +152,17 @@
     width: 150%;
 }
 
-    
+.btn.m-1.btn-red {
+    background-color: red !important;
+    color: white !important;
+}
+
+.btn.m-1.btn-green {
+    background-color: green !important;
+    color: white !important;
+}
+
+.btn.m-1.btn-yellow {
+    background-color: yellow !important;
+    color: black !important;
+}    
