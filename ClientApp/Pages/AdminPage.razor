@@ -56,39 +56,52 @@ else
                 <th>Kræv Nummer</th>
                 <th>Forældre navn</th>
                 <th>Mail</th>
-                <th>Barnets navn</th>
-                <th>Alder</th>
-                <th>Tøjstørrelse</th>
-                <th>Interesser</th>
+                <th>Barn Navn</th>
+                <th>Barn Alder</th>
+                <th>Barn Tøjstørrelse</th>
+                <th>Barn Interesser</th>
                 <th>Første prio</th>
                 <th>Anden prio</th>
+                <th>Endelig dato</th>
+                <th>Opdater endelige dato</th>
                 <th>Samtykke</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var ap in filteredApplications)
             {
-                <tr>
-                    <td>@ap.ParentVolunteer.CrewNumber</td>
-                    <td>@ap.ParentVolunteer.Name</td>
-                    <td>@ap.ParentVolunteer.Mail</td>
-                    <td>@ap.ParentVolunteer.Children[0].Name</td>
-                    <td>@ap.ParentVolunteer.Children[0].Age</td>
-                    <td>@ap.ParentVolunteer.Children[0].ClothingSize</td>
-                    <td>@ap.ParentVolunteer.Children[0].Interests</td>
-                    <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
-                    <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(ap.ConsentForm))
-                        {
-                            <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
-                        }
-                        else
-                        {
-                            <p>No signature</p>
-                        }
-                    </td>
-                </tr>
+                @foreach (var child in ap.ParentVolunteer.Children)
+                {
+                    <tr>
+                        <td>@ap.ParentVolunteer.CrewNumber</td>
+                        <td>@ap.ParentVolunteer.Name</td
+                        <td>@ap.ParentVolunteer.Mail</td>
+                        <td>@child.Name</td>
+                        <td>@child.Age</td>
+                        <td>@child.ClothingSize</td>
+                        <td>@child.Interests</td>
+                        <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                        <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                        <td>@ap.FinalDate.From - @ap.FinalDate.To (Uge @ap.FinalDate.Week)</td>
+                        <td>
+                            <select class="form-select" @onchange="async (e) => await UpdateFinalDate(ap, e.Value.ToString())">
+                                <option value="">Vælg prioritet</option>
+                                <option value="1">First Priority</option>
+                                <option value="2">Second Priority</option>
+                            </select>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(ap.ConsentForm))
+                            {
+                                <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                            }
+                            else
+                            {
+                                <p>No signature</p>
+                            }
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -105,14 +118,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            await LoadData();
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine($"Error loading data: {ex.Message}");
-        }
+        await LoadData();
     }
 
     private async Task LoadData()
@@ -120,6 +126,7 @@ else
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         filteredApplications = applications ?? new List<Application>();
+        UpdateApplicationCounts();
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -139,14 +146,14 @@ else
     {
         if (selectedWeek.HasValue)
         {
-            filteredApplications = (applications ?? new List<Application>())
-                .Where(ap => ap.FirstPrio.Week == selectedWeek.Value)
+            filteredApplications = applications
+                .Where(ap => ap.FinalDate.Week == selectedWeek.Value)
                 .ToList();
 
             if (selectedPeriod.HasValue)
             {
                 filteredApplications = filteredApplications
-                    .Where(ap => ap.FirstPrio.EventId == selectedPeriod.Value)
+                    .Where(ap => ap.FinalDate.EventId == selectedPeriod.Value)
                     .ToList();
             }
         }
@@ -162,13 +169,21 @@ else
     }
 
     private int GetApplicationCountForWeek(int week)
+{
+    // Tjek om 'applications' listen er null før forsøget på at anvende LINQ operationer
+    if (applications == null)
     {
-        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.Week == week);
+        Console.WriteLine("Ingen applikationer er indlæst.");
+        return 0; // Returner 0, da der ikke kan være nogen applikationer at tælle
     }
+
+    return applications.Where(ap => ap.FinalDate.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
+}
+
 
     private int GetApplicationCountForPeriod(int eventId)
     {
-        return (applications ?? new List<Application>()).Count(ap => ap.FirstPrio.EventId == eventId);
+        return applications.Where(ap => ap.FinalDate.EventId == eventId).Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
     private string GetButtonClassForWeekCount(int count)
@@ -189,6 +204,34 @@ else
             return "btn-yellow";
         else
             return "btn-red";
+    }
+
+    private async Task UpdateFinalDate(Application application, string prio)
+    {
+        if (prio == "1")
+        {
+            application.FinalDate = application.FirstPrio;
+        }
+        else if (prio == "2")
+        {
+            application.FinalDate = application.SecondPrio;
+        }
+
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData(); // Reload data to reflect the update immediately
+        }
+    }
+
+    private void UpdateApplicationCounts()
+    {
+        // Refresh week and period counts whenever data changes
+        foreach (var week in weeks)
+        {
+            var count = GetApplicationCountForWeek(week);
+            Console.WriteLine($"Week {week}: {count} children based on FinalDate");
+        }
     }
 
     private async Task ToYouthPage()
