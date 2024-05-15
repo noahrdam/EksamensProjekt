@@ -1,0 +1,106 @@
+﻿@page "/youth"
+@using Core.Model
+@inject HttpClient httpClient
+@inject NavigationManager NavigationManager
+
+<h3>Unge frivillige 16-18</h3>
+
+<div style="text-align: right;">
+    <button id="navigate" class="bi bi-arrow-left-circle-fill" @onclick=ToAdminPage>  Tilbage</button>
+</div>
+
+<div class="search-container">
+    <EditForm Model="this" OnValidSubmit="PerformSearch">
+        <div class="input-group">
+            <InputText class="form-control" placeholder="Søg efter kræw nummer eller navn" @bind-Value="searchTerm" />
+            <button type="submit" class="btn btn-primary">Søg</button>
+        </div>
+    </EditForm>
+</div>
+
+@if (youthVolunteers == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!filteredYouthVolunteers.Any())
+{
+    <p><em>No youth volunteers found.</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Kræv Nummer</th>
+                <th>Navn</th>
+                <th>Mail</th>
+                <th>Samtykke</th>
+                <th>Forældre navn</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var volunteer in filteredYouthVolunteers)
+            {
+                <tr>
+                    <td>@volunteer.CrewNumber</td>
+                    <td>@volunteer.Name</td>
+                    <td>@volunteer.Mail</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(volunteer.ConsentForm))
+                        {
+                            <img src="@volunteer.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                        }
+                        else
+                        {
+                            <p>No signature</p>
+                        }
+                    </td>
+                    <td>@volunteer.ParentName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<YouthVolunteer> youthVolunteers;
+    private List<YouthVolunteer> filteredYouthVolunteers;
+    private string searchTerm = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        youthVolunteers = await httpClient.GetFromJsonAsync<List<YouthVolunteer>>("https://localhost:7095/api/aps/getallyouthvolunteers");
+        filteredYouthVolunteers = youthVolunteers;
+    }
+
+    private void FilterVolunteers()
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            filteredYouthVolunteers = youthVolunteers;
+        }
+        else
+        {
+            var lowerSearchTerm = searchTerm.ToLower();
+            filteredYouthVolunteers = youthVolunteers
+                .Where(v => v.CrewNumber.ToString().Contains(lowerSearchTerm) || v.Name.ToLower().Contains(lowerSearchTerm))
+                .ToList();
+        }
+    }
+
+    private void PerformSearch()
+    {
+        FilterVolunteers();
+    }
+
+
+
+
+
+
+
+    private async Task ToAdminPage()
+    {
+        NavigationManager.NavigateTo("/admin", forceLoad: true);
+    }
+}

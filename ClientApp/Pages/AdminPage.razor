@@ -1,8 +1,13 @@
 ﻿@page "/admin"
 @using Core.Model
 @inject HttpClient httpClient
+@inject NavigationManager NavigationManager
 
 <h1>Alle ansøgninger</h1>
+
+<div style="text-align: right;">
+<button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+</div>
 
 <div>
     <h3>Uger:</h3>
@@ -135,5 +140,10 @@ else
     private List<Event> GetPeriodsForWeek(int week)
     {
         return events.Where(e => e.Week == week).ToList();
+    }
+
+    private async Task ToYouthPage()
+    {
+        NavigationManager.NavigateTo("/youth", forceLoad: true);
     }
 }

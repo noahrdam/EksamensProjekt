@@ -67,6 +67,13 @@ namespace ServerAPI.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("getallyouthvolunteers")]
+        public IActionResult GetAllYouthVolunteers()
+        {
+                var volunteers = mRepo.GetAllYouthVolunteers();
+                return Ok(volunteers);
+        }
 
 
     }
