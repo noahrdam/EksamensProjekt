@@ -47,6 +47,11 @@ namespace ServerAPI.Repositories
             await applicationcollection.ReplaceOneAsync(filter, application);
         }
 
-
+        public void UpdateFinalDate(Application application)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
+            var update = Builders<Application>.Update.Set(a => a.FinalDate, application.FinalDate);
+            applicationcollection.UpdateOneAsync(filter, update);
+        }
     }
 }

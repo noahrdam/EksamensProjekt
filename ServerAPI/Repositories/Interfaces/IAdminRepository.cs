@@ -12,8 +12,9 @@ namespace ServerAPI.Repositories.Interfaces
         List<Application> GetFilteredApplications(FilterDefinition<Application> filter);
         List<Event> GetAllEvents();
 
-        Task UpdateApplication(Application application);  
+        Task UpdateApplication(Application application);
 
+        void UpdateFinalDate(Application application);
 
     }
 
