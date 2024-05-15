@@ -178,17 +178,6 @@ else
         return applications.Where(ap => ap.FinalDate.EventId == eventId).Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
-        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine("Successfully updated final date");
-        }
-        else
-        {
-            Console.WriteLine("Error updating final date: " + response.ReasonPhrase);
-        }
-    }
-
     private async Task UpdateFinalDate(Application application, string prio)
     {
         if (prio == "1")
