@@ -169,7 +169,8 @@ namespace ServerAPI.Repositories
 
         public RegistrationRepository()
         {
-            var mongoUri = "mongodb://localhost:27017";
+            var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+            //var mongoUri = "mongodb://localhost:27017";
 
             try
             {
