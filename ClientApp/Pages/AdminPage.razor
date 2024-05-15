@@ -71,6 +71,14 @@ else
                             <p>No signature</p>
                         }
                     </td>
+                    <td>
+                        <!-- Dropdown or buttons to edit Final Date -->
+                        <select class="form-control" @onchange="(e) => UpdateFinalDate(ap, e.Value.ToString())">
+                            <option selected>Select Final Date</option>
+                            <option value="1">First Priority</option>
+                            <option value="2">Second Priority</option>
+                        </select>
+                    </td>
                 </tr>
             }
         </tbody>

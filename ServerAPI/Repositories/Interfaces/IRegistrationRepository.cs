@@ -11,5 +11,6 @@ namespace ServerAPI.Repositories.Interfaces
         void AddVolunteer(Volunteer volunteer);
 
         void AddYouthVolunteer(YouthVolunteer youthVolunteer);
+
     }
 }

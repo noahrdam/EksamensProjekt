@@ -47,6 +47,24 @@ namespace ServerAPI.Repositories
             await applicationcollection.ReplaceOneAsync(filter, application);
         }
 
+        public void UpdateFinalDate(int applicationId, int finalDatePriority)
+        {
+            var application = applicationcollection.Find(a => a.ApplicationId == applicationId).FirstOrDefault();
+            if (application != null)
+            {
+                if (finalDatePriority == 1)
+                {
+                    application.FinalDate = application.FirstPrio;
+                }
+                else if (finalDatePriority == 2)
+                {
+                    application.FinalDate = application.SecondPrio;
+                    applicationcollection.ReplaceOne(a => a.ApplicationId == applicationId, application);
+                }
+                
+            }
+        }
+
 
     }
 }
