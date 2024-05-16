@@ -177,7 +177,7 @@
                 {
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label>Barnetøs Navn</label>
+                            <label>Barnet's Navn</label>
                             <InputText @bind-Value="child.Name" class="form-control" />
                         </div>
                         <div class="col-md-6">
@@ -188,14 +188,14 @@
                             <label>Barnet's T-Shirt Størrelse</label>
                             <InputSelect @bind-Value="child.ClothingSize" class="form-control">
                                 <option value="">Vælg Størrelse</option>
-                                <option value="XS">96-108</option>
-                                <option value="S">110-116</option>
-                                <option value="M">116-122</option>
-                                <option value="L">122-128</option>
-                                <option value="XL">128-134</option>
-                                <option value="XXL">134-142</option>
-                                <option value="XXXL">142-152</option>
-                                <option value="XXXXL">152-164</option>
+                                <option value="96-108">96-108</option>
+                                <option value="110-116">110-116</option>
+                                <option value="116-122">116-122</option>
+                                <option value="122-128">122-128</option>
+                                <option value="128-134">128-134</option>
+                                <option value="134-142">134-142</option>
+                                <option value="142-152">142-152</option>
+                                <option value="152-164">152-164</option>
                             </InputSelect>
                         </div>
                         <div class="col-md-6">
@@ -312,6 +312,10 @@
                     <div class="col-md-6 mb-3">
                         <label for="YouthEmail">Ung Frivilligs Email</label>
                         <InputText id="YouthEmail" @bind-Value="youthVolunteer.Mail" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="VolunteerEmail">Forældres Telefonnummer</label>
+                        <InputText id="VolunteerEmail" @bind-Value="youthVolunteer.Phone" class="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="YouthCrewNumber">Ung Frivilligs Kræw Nummer</label>

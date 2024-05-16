@@ -14,6 +14,11 @@ namespace Core.Model
 
         public string ParentName { get; set; }
 
-        public DateTime DateOfConsent { get; set; }
+        public DateTime DateOfConsent { get; set; } = DateTime.Now;
+
+        public YouthVolunteer()
+        {
+            DateOfConsent = DateTime.Now;
+        }
     }
 }
