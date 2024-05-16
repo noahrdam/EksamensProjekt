@@ -156,6 +156,10 @@
                         <InputText id="VolunteerEmail" @bind-Value="application.ParentVolunteer.Mail" class="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label for="VolunteerEmail">Forældres Telefonnummer</label>
+                        <InputText id="VolunteerEmail" @bind-Value="application.ParentVolunteer.Phone" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
                         <label for="VolunteerCrewNumber">Forældres Kræw Nummer</label>
                         <InputNumber id="VolunteerCrewNumber" @bind-Value="application.ParentVolunteer.CrewNumber" class="form-control" />
                     </div>
@@ -181,8 +185,18 @@
                             <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18" />
                         </div>
                         <div class="col-md-6">
-                            <label>Tøjstørrelse</label>
-                            <InputText @bind-Value="child.ClothingSize" class="form-control" />
+                            <label>T-Shirt Størrelse</label>
+                            <InputSelect @bind-Value="child.ClothingSize" class="form-control">
+                                <option value="">Vælg Størrelse</option>
+                                <option value="XS">96-108</option>
+                                <option value="S">110-116</option>
+                                <option value="M">116-122</option>
+                                <option value="L">122-128</option>
+                                <option value="XL">128-134</option>
+                                <option value="XXL">134-142</option>
+                                <option value="XXXL">142-152</option>
+                                <option value="XXXXL">152-164</option>
+                            </InputSelect>
                         </div>
                         <div class="col-md-6">
                             <label>Interesser</label>
@@ -248,7 +262,9 @@
             </div>
             <!-- Signature -->
             <div class="card-body">
-                <h3>Signature</h3>
+                <p>Jeg tillader at mit barn må opholde sig i Børneklubben på valgte perioder<br />
+                <a href="https://cirkussummarum.dk/om-cirkus-summarum/politikker/?fbclid=IwAR2BVCuBm5SEeiTHfkOJ_BCp-TA7l3dKnv9CRu-niRV-9JO9YHz3k0xUm1o" target="_blank">Læs mere om vores politik her</a>
+                </p>
                 <canvas id="signature-pad" width="400" height="200" style="border:1px solid #000000;"></canvas>
                 <button type="button" class="btn btn-secondary mt-2" @onclick="ClearSignature">Clear</button>
             </div>
@@ -390,8 +406,7 @@
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
-        // Ensure FinalDate is set to FirstPrio if not explicitly set
-        application.FinalDate = application.FirstPrio;
+        
         // Get signature data URL
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
