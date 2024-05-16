@@ -177,15 +177,15 @@
                 {
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label>Barns Navn</label>
+                            <label>Barnetøs Navn</label>
                             <InputText @bind-Value="child.Name" class="form-control" />
                         </div>
                         <div class="col-md-6">
-                            <label>Barns Alder</label>
+                            <label>Barnet's Alder</label>
                             <InputNumber @bind-Value="child.Age" class="form-control" min="5" max="18" />
                         </div>
                         <div class="col-md-6">
-                            <label>T-Shirt Størrelse</label>
+                            <label>Barnet's T-Shirt Størrelse</label>
                             <InputSelect @bind-Value="child.ClothingSize" class="form-control">
                                 <option value="">Vælg Størrelse</option>
                                 <option value="XS">96-108</option>
@@ -199,7 +199,7 @@
                             </InputSelect>
                         </div>
                         <div class="col-md-6">
-                            <label>Interesser</label>
+                            <label>Barnet's Interesser</label>
                             <InputTextArea @bind-Value="child.Interests" class="form-control" />
                         </div>
                         <div class="col-md-12 text-end mt-2">
