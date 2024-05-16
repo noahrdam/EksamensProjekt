@@ -14,7 +14,7 @@ namespace ServerAPI.Repositories.Interfaces
 
         Task UpdateApplication(Application application);
 
-        void UpdateFinalDate(Application application);
+        void UpdateStatus(Application application);
 
         List<YouthVolunteer> GetAllYouthVolunteers();
 

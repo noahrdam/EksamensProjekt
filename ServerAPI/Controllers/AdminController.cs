@@ -75,11 +75,12 @@ namespace ServerAPI.Controllers
                 return Ok(volunteers);
         }
 
+
         [HttpPut]
-        [Route("updatefinaldate")]
-        public void UpdateFinalDate(Application application)
+        [Route("updatestatus")]
+        public void UpdateStatus(Application application)
         {
-            mRepo.UpdateFinalDate(application);
+            mRepo.UpdateStatus(application);
         }
 
     }

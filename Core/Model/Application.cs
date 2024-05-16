@@ -26,9 +26,14 @@ namespace Core.Model
 
         public Event SecondPrio { get; set; } = new Event();
 
-        public Event FinalDate { get; set; } = new Event(); 
+        public string Status { get; set; } = "Under behandling";
 
-        public DateTime DateOfApplication { get; set; }
+        public DateTime DateOfApplication { get; set; } = DateTime.Now;
+
+        public Application()
+        {
+            DateOfApplication = DateTime.Now; 
+        }
 
     }
 }

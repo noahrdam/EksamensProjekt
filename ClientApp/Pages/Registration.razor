@@ -156,6 +156,10 @@
                         <InputText id="VolunteerEmail" @bind-Value="application.ParentVolunteer.Mail" class="form-control" />
                     </div>
                     <div class="col-md-6 mb-3">
+                        <label for="VolunteerEmail">Forældres Telefonnummer</label>
+                        <InputText id="VolunteerEmail" @bind-Value="application.ParentVolunteer.Phone" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
                         <label for="VolunteerCrewNumber">Forældres Kræw Nummer</label>
                         <InputNumber id="VolunteerCrewNumber" @bind-Value="application.ParentVolunteer.CrewNumber" class="form-control" />
                     </div>
@@ -390,8 +394,7 @@
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
-        // Ensure FinalDate is set to FirstPrio if not explicitly set
-        application.FinalDate = application.FirstPrio;
+        
         // Get signature data URL
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
