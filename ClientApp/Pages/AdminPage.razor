@@ -212,6 +212,10 @@ else
                                 }
                             </td>
                         }
+                        <td>
+                            <button @* @onclick="() => EditApplication(ap)" *@><i class="bi bi-pencil"></i></button>
+                            <button @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+                        </td>
                     </tr>
                 }
             }
@@ -357,6 +361,15 @@ else
         {
             var count = GetApplicationCountForWeek(week);
             Console.WriteLine($"Week {week}: {count} children based on FinalDate");
+        }
+    }
+
+    private async Task DeleteApplication(int applicationId)
+    {
+        var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData(); // Reload data to reflect the update immediately
         }
     }
 

@@ -6,6 +6,7 @@ using static System.Net.WebRequestMethods;
 using MongoDB.Driver;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Core.Model.Application;
+using ServerAPI.Repositories;
 
 namespace ServerAPI.Controllers
 {
@@ -73,6 +74,13 @@ namespace ServerAPI.Controllers
         {
                 var volunteers = mRepo.GetAllYouthVolunteers();
                 return Ok(volunteers);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public void DeleteApplication(int id)
+        {
+             mRepo.DeleteApplication(id);
+            
         }
 
         [HttpPut]

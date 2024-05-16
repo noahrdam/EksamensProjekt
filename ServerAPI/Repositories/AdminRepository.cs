@@ -59,5 +59,12 @@ namespace ServerAPI.Repositories
             var volunteers = volunteercollection.Find(filter).ToList();
             return volunteers.ConvertAll(v => (YouthVolunteer)v);
         }
+
+        public void DeleteApplication(int applicationId)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, applicationId);
+            applicationcollection.DeleteOne(filter);
+        }
+
     }
 }

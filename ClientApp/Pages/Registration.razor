@@ -254,7 +254,7 @@
                             <option value="">Vælg Dato</option>
                             @foreach (var e in events)
                             {
-                                <option value="@e.EventId">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                                <option value="@e.EventId" disabled="@(application.FirstPrio.EventId == e.EventId)">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
                             }
                         </InputSelect>
                     </div>
