@@ -28,5 +28,7 @@ namespace Core.Model
 
         public Event FinalDate { get; set; } = new Event(); 
 
+        public DateTime DateOfApplication { get; set; }
+
     }
 }

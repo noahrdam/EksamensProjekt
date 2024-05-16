@@ -20,5 +20,7 @@ namespace Core.Model
 
         public string Mail {  get; set; }
 
+        public string Phone { get; set; }
+
     }
 }

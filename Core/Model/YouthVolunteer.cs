@@ -13,5 +13,7 @@ namespace Core.Model
         public string ConsentForm { get; set; }
 
         public string ParentName { get; set; }
+
+        public DateTime DateOfConsent { get; set; }
     }
 }
