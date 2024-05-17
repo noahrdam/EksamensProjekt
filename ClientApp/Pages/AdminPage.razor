@@ -72,10 +72,10 @@
             <label><input type="checkbox" @bind="showSecondPriority" /> 2. Prioritet</label>
         </span>
         <span>
-            <label><input type="checkbox" @bind="showFinalDate" /> Endelig Dato </label>
+			<label><input type="checkbox" @bind="showDate" /> Dato</label>
         </span>
         <span>
-            <label><input type="checkbox" @bind="showEditFinalDate" /> Rediger Endelig Dato</label>
+            <label><input type="checkbox" @bind="showEditFinalDate" />Status</label>
         </span>
     </div>
 </div>
@@ -137,13 +137,13 @@ else
                 {
                     <th>Opdater status</th>
                 }
-                @if (showFinalDate)
-				{
-					<th>Dato</th>
-				}
                 @if (showConsent)
                 {
                     <th>Samtykke</th>
+                }
+                @if (showDate)
+                {
+                    <th>Dato</th>
                 }
             </tr>
         </thead>
@@ -216,6 +216,10 @@ else
                                 }
                             </td>
                         }
+                        @if (showDate)
+                        {
+                            <td>@ap.DateOfApplication</td>
+                        }
                         <td>
                             <button @* @onclick="() => EditApplication(ap)" *@><i class="bi bi-pencil"></i></button>
                             <button @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
@@ -247,7 +251,6 @@ else
     private bool showComment = true;
     private bool showFirstPriority = true;
     private bool showSecondPriority = true;
-    private bool showFinalDate = true;
     private bool showEditFinalDate = true;
     private bool showDate = true;
 
