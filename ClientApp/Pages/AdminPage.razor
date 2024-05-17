@@ -137,6 +137,10 @@ else
                 {
                     <th>Opdater status</th>
                 }
+                @if (showFinalDate)
+				{
+					<th>Dato</th>
+				}
                 @if (showConsent)
                 {
                     <th>Samtykke</th>
@@ -245,6 +249,7 @@ else
     private bool showSecondPriority = true;
     private bool showFinalDate = true;
     private bool showEditFinalDate = true;
+    private bool showDate = true;
 
     protected override async Task OnInitializedAsync()
     {
