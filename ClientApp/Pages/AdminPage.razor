@@ -6,7 +6,7 @@
 <h1>Alle ansøgninger</h1>
 
 <div style="text-align: right;">
-    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>Til frivilige 16-18</button>
 </div>
 
 <div>
@@ -15,25 +15,25 @@
     {
         var weekCount = GetApplicationCountForWeek(week);
         var weekClass = GetButtonClassForWeekCount(weekCount);
-        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
-            Uge @week (@weekCount)
-        </button>
+            <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
+                Uge @week (@weekCount)
+            </button>
     }
 </div>
 
 @if (selectedWeek.HasValue)
 {
-    <div>
-        <h3>Perioder i uge @selectedWeek:</h3>
+        <div>
+            <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
             var periodCount = GetApplicationCountForPeriod(period.EventId);
             var periodClass = GetButtonClassForPeriodCount(periodCount);
-            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
+                    <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
                 @period.From - @period.To (@periodCount)
-            </button>
+                    </button>
         }
-    </div>
+        </div>
 }
 
 <div class="mb-3">
@@ -49,187 +49,160 @@
 
 <div class="col-12 mb-3">
     <div class="checkbox-container">
-        <span>
-            <label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showParentName" /> Forældre navn</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showMail" /> Mail</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showConsent" /> Samtykke</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showChildName" /> Barnets navn</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showAge" /> Alder</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showClothingSize" /> Tøjstørrelse</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showInterests" /> Interesser</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showComment" /> Kommentar</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showFirstPriority" /> 1. Prioritet</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showSecondPriority" /> 2. Prioritet</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showFinalDate" /> Endelig Dato </label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showEditFinalDate" /> Rediger Endelig Dato</label>
-        </span>
+        <span><label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label></span>
+        <span><label><input type="checkbox" @bind="showParentName" /> Forældre navn</label></span>
+        <span><label><input type="checkbox" @bind="showMail" /> Mail</label></span>
+        <span><label><input type="checkbox" @bind="showConsent" /> Samtykke</label></span>
+        <span><label><input type="checkbox" @bind="showChildName" /> Barnets navn</label></span>
+        <span><label><input type="checkbox" @bind="showAge" /> Alder</label></span>
+        <span><label><input type="checkbox" @bind="showClothingSize" /> Tøjstørrelse</label></span>
+        <span><label><input type="checkbox" @bind="showInterests" /> Interesser</label></span>
+        <span><label><input type="checkbox" @bind="showComment" /> Kommentar</label></span>
+        <span><label><input type="checkbox" @bind="showFirstPriority" /> 1. Prioritet</label></span>
+        <span><label><input type="checkbox" @bind="showSecondPriority" /> 2. Prioritet</label></span>
+        <span><label><input type="checkbox" @bind="showFinalDate" /> Endelig Dato</label></span>
+        <span><label><input type="checkbox" @bind="showEditFinalDate" /> Rediger Endelig Dato</label></span>
     </div>
 </div>
 
 @if (applications == null)
 {
-    <p><em>Loading...</em></p>
+        <p><em>Loading...</em></p>
 }
 else if (!filteredApplications.Any())
 {
-    <p><em>No applications found.</em></p>
+        <p><em>No applications found.</em></p>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
+        <table class="table table-striped">
+            <thead>
+                <tr>
                 @if (showCrewNumber)
                 {
-                    <th>Kræv Nummer</th>
+                            <th>Kræv Nummer</th>
                 }
                 @if (showParentName)
                 {
-                    <th>Forældre navn</th>
+                            <th>Forældre navn</th>
                 }
                 @if (showMail)
                 {
-                    <th>Mail</th>
+                            <th>Mail</th>
                 }
                 @if (showChildName)
                 {
-                    <th>Barn Navn</th>
+                            <th>Barn Navn</th>
                 }
                 @if (showAge)
                 {
-                    <th>Barn Alder</th>
+                            <th>Barn Alder</th>
                 }
                 @if (showClothingSize)
                 {
-                    <th>Barn Tøjstørrelse</th>
+                            <th>Barn Tøjstørrelse</th>
                 }
                 @if (showInterests)
                 {
-                    <th>Barn Interesser</th>
+                            <th>Barn Interesser</th>
                 }
                 @if (showComment)
                 {
-                    <th>Kommentar</th>
+                            <th>Kommentar</th>
                 }
                 @if (showFirstPriority)
                 {
-                    <th>Første prio</th>
+                            <th>Første prio</th>
                 }
                 @if (showSecondPriority)
                 {
-                    <th>Anden prio</th>
+                            <th>Anden prio</th>
                 }
                 @if (showEditFinalDate)
                 {
-                    <th>Opdater Status</th>
+                            <th>Opdater Status</th>
                 }
                 @if (showConsent)
                 {
-                    <th>Samtykke</th>
+                            <th>Samtykke</th>
                 }
-            </tr>
-        </thead>
-        <tbody>
+                </tr>
+            </thead>
+            <tbody>
             @foreach (var ap in filteredApplications)
             {
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
-                    <tr>
+                                <tr>
                         @if (showCrewNumber)
                         {
-                            <td>@ap.ParentVolunteer.CrewNumber</td>
+                                            <td>@ap.ParentVolunteer.CrewNumber</td>
                         }
                         @if (showParentName)
                         {
-                            <td>@ap.ParentVolunteer.Name</td>
+                                            <td>@ap.ParentVolunteer.Name</td>
                         }
                         @if (showMail)
                         {
-                            <td>@ap.ParentVolunteer.Mail</td>
+                                            <td>@ap.ParentVolunteer.Mail</td>
                         }
                         @if (showChildName)
                         {
-                            <td>@child.Name</td>
+                                            <td>@child.Name</td>
                         }
                         @if (showAge)
                         {
-                            <td>@child.Age</td>
+                                            <td>@child.Age</td>
                         }
                         @if (showClothingSize)
                         {
-                            <td>@child.ClothingSize</td>
+                                            <td>@child.ClothingSize</td>
                         }
                         @if (showInterests)
                         {
-                            <td>@child.Interests</td>
+                                            <td>@child.Interests</td>
                         }
                         @if (showComment)
                         {
-                            <td>@ap.Comment</td>
+                                            <td>@ap.Comment</td>
                         }
                         @if (showFirstPriority)
                         {
-                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
                         }
                         @if (showSecondPriority)
                         {
-                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
                         }
                         @if (showEditFinalDate)
                         {
-                            <td>
-                                <select class="form-select" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
-                                    <option value="">Status</option>
-                                    <option value="1">1. Prioritet</option>
-                                    <option value="2">2. Prioritet</option>
-                                    <option value="3">1. Prioritet Venteliste</option>
-                                    <option value="4">2. Prioritet Venteliste</option>
-                                </select>
-                            </td>
+                                            <td>
+                                                <select class="form-select" @bind="ap.Status" @bind:event="onchange">
+                                                    <option value="1.Prioritet">1. Prioritet</option>
+                                                    <option value="2.Prioritet">2. Prioritet</option>
+                                                    <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
+                                                    <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
+                                                </select>
+                                            </td>
                         }
                         @if (showConsent)
                         {
-                            <td>
+                                            <td>
                                 @if (!string.IsNullOrEmpty(ap.ConsentForm))
                                 {
-                                    <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                                                        <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
                                 }
                                 else
                                 {
-                                    <p>No signature</p>
+                                                        <p>No signature</p>
                                 }
-                            </td>
+                                            </td>
                         }
-                    </tr>
+                                </tr>
                 }
             }
-        </tbody>
-    </table>
+            </tbody>
+        </table>
 }
 
 @code {
@@ -290,16 +263,17 @@ else
 
     private void FilterApplications()
     {
-        if (!string.IsNullOrEmpty(selectedStatus))
-        {
-            filteredApplications = applications
-                .Where(ap => ap.Status == selectedStatus)
-                .ToList();
-        }
-        else
-        {
-            filteredApplications = applications ?? new List<Application>();
-        }
+        if (applications == null) return;
+
+        filteredApplications = applications
+            .Where(ap => string.IsNullOrEmpty(selectedStatus) || ap.Status == selectedStatus)
+            .Where(ap => !selectedWeek.HasValue ||
+                         (ap.FirstPrio.Week == selectedWeek && (ap.Status == "1.Prioritet" || ap.Status == "1.Prioritet Venteliste")) ||
+                         (ap.SecondPrio.Week == selectedWeek && (ap.Status == "2.Prioritet" || ap.Status == "2.Prioritet Venteliste")))
+            .Where(ap => !selectedPeriod.HasValue ||
+                         (ap.FirstPrio.EventId == selectedPeriod && (ap.Status == "1.Prioritet" || ap.Status == "1.Prioritet Venteliste")) ||
+                         (ap.SecondPrio.EventId == selectedPeriod && (ap.Status == "2.Prioritet" || ap.Status == "2.Prioritet Venteliste")))
+            .ToList();
     }
 
     private List<Event> GetPeriodsForWeek(int week)
@@ -309,69 +283,58 @@ else
 
     private int GetApplicationCountForWeek(int week)
     {
-        // Tjek om 'applications' listen er null før forsøget på at anvende LINQ operationer
-        if (applications == null)
-        {
-            Console.WriteLine("Ingen applikationer er indlæst.");
-            return 0; // Returner 0, da der ikke kan være nogen applikationer at tælle
-        }
+        if (applications == null) return 0;
 
-        return applications.Where(ap => ap.FirstPrio.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
+        return applications
+            .Where(ap => (ap.Status == "1.Prioritet" && ap.FirstPrio.Week == week) ||
+                         (ap.Status == "2.Prioritet" && ap.SecondPrio.Week == week) ||
+                         (ap.Status == "1.Prioritet Venteliste" && ap.FirstPrio.Week == week) ||
+                         (ap.Status == "2.Prioritet Venteliste" && ap.SecondPrio.Week == week))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
     private int GetApplicationCountForPeriod(int eventId)
     {
-        return applications.Where(ap => ap.FirstPrio.EventId == eventId).Sum(ap => ap.ParentVolunteer.Children.Count);
+        if (applications == null) return 0;
+
+        return applications
+            .Where(ap => (ap.Status == "1.Prioritet" && ap.FirstPrio.EventId == eventId) ||
+                         (ap.Status == "2.Prioritet" && ap.SecondPrio.EventId == eventId) ||
+                         (ap.Status == "1.Prioritet Venteliste" && ap.FirstPrio.EventId == eventId) ||
+                         (ap.Status == "2.Prioritet Venteliste" && ap.SecondPrio.EventId == eventId))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
     private string GetButtonClassForWeekCount(int count)
     {
-        if (count < 13)
-            return "btn-green";
-        else if (count < 18)
-            return "btn-yellow";
-        else
-            return "btn-red";
+        if (count < 13) return "btn-green";
+        if (count < 18) return "btn-yellow";
+        return "btn-red";
     }
 
     private string GetButtonClassForPeriodCount(int count)
     {
-        if (count < 6)
-            return "btn-green";
-        else if (count < 10)
-            return "btn-yellow";
-        else
-            return "btn-red";
+        if (count < 6) return "btn-green";
+        if (count < 10) return "btn-yellow";
+        return "btn-red";
     }
 
     private async Task UpdateStatus(Application application, string prio)
     {
-        if (prio == "1")
-        {
-            application.Status = "1.Prioritet";
-        }
-        else if (prio == "2")
-        {
-            application.Status = "2.Prioritet";
-        }
-        else if (prio == "3")
-        {
-            application.Status = "1.Prioritet Venteliste";
-        }
-        else if (prio == "4")
-        {
-            application.Status = "2.Prioritet Venteliste";
-        }
+        application.Status = prio;
 
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
         if (response.IsSuccessStatusCode)
         {
             await LoadData(); // Reload data to reflect the update immediately
+            FilterApplications(); // Ensure the filteredApplications list is updated after the reload
         }
     }
 
     private void UpdateApplicationCounts()
     {
+        if (applications == null) return;
+
         // Refresh week and period counts whenever data changes
         foreach (var week in weeks)
         {
@@ -380,7 +343,7 @@ else
         }
     }
 
-    private async Task ToYouthPage()
+    private void ToYouthPage()
     {
         NavigationManager.NavigateTo("/youth", forceLoad: true);
     }

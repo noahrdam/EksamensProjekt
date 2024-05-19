@@ -53,6 +53,13 @@ namespace ServerAPI.Repositories
             applicationcollection.UpdateOneAsync(filter, update);
         }
 
+        public async Task UpdateStatus(Application application)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
+            var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
+            await applicationcollection.UpdateOneAsync(filter, update);
+        }
+
         public List<YouthVolunteer> GetAllYouthVolunteers()
         {
             var filter = Builders<Volunteer>.Filter.Eq("_t", "YouthVolunteer");

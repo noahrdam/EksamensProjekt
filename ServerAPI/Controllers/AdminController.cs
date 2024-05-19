@@ -83,5 +83,18 @@ namespace ServerAPI.Controllers
             mRepo.UpdateStatus(application);
         }
 
+        [HttpPut]
+        [Route("updatestatus")]
+        public async Task<IActionResult> UpdateStatus([FromBody] Application application)
+        {
+            if (application == null)
+            {
+                return BadRequest();
+            }
+
+            await mRepo.UpdateStatus(application);
+            return Ok();
+        }
+
     }
 }

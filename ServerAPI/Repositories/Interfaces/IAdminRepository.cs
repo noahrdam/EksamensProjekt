@@ -14,7 +14,11 @@ namespace ServerAPI.Repositories.Interfaces
 
         Task UpdateApplication(Application application);
 
-        void UpdateStatus(Application application);
+        void UpdateFinalDate(Application application);
+
+        Task UpdateStatus(Application application);
+
+        void DeleteApplication(int id);
 
         List<YouthVolunteer> GetAllYouthVolunteers();
 
