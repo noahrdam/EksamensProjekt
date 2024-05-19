@@ -39,7 +39,7 @@
     private bool ShouldDisplayHeaderFooter()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        return uri.LocalPath == "/" || uri.LocalPath.ToLowerInvariant().Contains("registration");
+        return uri.LocalPath == "/" || uri.LocalPath.ToLowerInvariant().Contains("registration") || uri.LocalPath == "/status" || uri.LocalPath.ToLowerInvariant().Contains("status");
     }
 
     private async Task Login()
