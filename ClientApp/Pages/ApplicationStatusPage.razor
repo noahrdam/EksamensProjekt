@@ -47,6 +47,16 @@
                         <p><strong>Mail:</strong> @application.ParentVolunteer.Mail</p>
                         <p><strong>Barnets Navn:</strong> @(application.ParentVolunteer.Children.Any() ? application.ParentVolunteer.Children[0].Name : "N/A")</p>
                         <p><strong>Status:</strong> @application.Status</p>
+                        @if (application.Status == "2.Prioritet")
+                        {
+                            <p><strong>2.Prioritet:</strong> @application.SecondPrio.From - @application.SecondPrio.To (Uge @application.SecondPrio.Week)</p>
+                        }
+
+                        else if (application.Status == "1.Prioritet")
+                        {
+                            <p><strong>1.Prioritet:</strong> @application.FirstPrio.From - @application.FirstPrio.To (Uge @application.FirstPrio.Week)</p>
+                        }
+                        
                     </div>
                 </div>
             }
