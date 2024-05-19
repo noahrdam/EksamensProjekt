@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Core.Model;
 using ServerAPI.Repositories.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ServerAPI.Repositories
 {
@@ -22,7 +23,7 @@ namespace ServerAPI.Repositories
 
             applicationcollection = database.GetCollection<Application>("Application");
             eventcollection = database.GetCollection<Event>("Event");
-            volunteercollection = database.GetCollection<Volunteer>("Volunteer"); // Initialiser volunteercollection
+            volunteercollection = database.GetCollection<Volunteer>("Volunteer");
         }
 
         public List<Application> GetAllApplication()
@@ -46,18 +47,17 @@ namespace ServerAPI.Repositories
             await applicationcollection.ReplaceOneAsync(filter, application);
         }
 
-        public void UpdateStatus(Application application)
-        {
-            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
-            var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
-            applicationcollection.UpdateOneAsync(filter, update);
-        }
-
         public async Task UpdateStatus(Application application)
         {
             var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
             var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
             await applicationcollection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task DeleteApplication(int applicationId)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, applicationId);
+            await applicationcollection.DeleteOneAsync(filter);
         }
 
         public List<YouthVolunteer> GetAllYouthVolunteers()

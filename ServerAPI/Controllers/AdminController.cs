@@ -76,12 +76,6 @@ namespace ServerAPI.Controllers
         }
 
 
-        [HttpPut]
-        [Route("updatestatus")]
-        public void UpdateStatus(Application application)
-        {
-            mRepo.UpdateStatus(application);
-        }
 
         [HttpPut]
         [Route("updatestatus")]

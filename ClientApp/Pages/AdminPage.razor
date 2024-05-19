@@ -15,25 +15,25 @@
     {
         var weekCount = GetApplicationCountForWeek(week);
         var weekClass = GetButtonClassForWeekCount(weekCount);
-            <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
-                Uge @week (@weekCount)
-            </button>
+        <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
+            Uge @week (@weekCount)
+        </button>
     }
 </div>
 
 @if (selectedWeek.HasValue)
 {
-        <div>
-            <h3>Perioder i uge @selectedWeek:</h3>
+    <div>
+        <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
             var periodCount = GetApplicationCountForPeriod(period.EventId);
             var periodClass = GetButtonClassForPeriodCount(periodCount);
-                    <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
+            <button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
                 @period.From - @period.To (@periodCount)
-                    </button>
+            </button>
         }
-        </div>
+    </div>
 }
 
 <div class="mb-3">
@@ -67,142 +67,142 @@
 
 @if (applications == null)
 {
-        <p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else if (!filteredApplications.Any())
 {
-        <p><em>No applications found.</em></p>
+    <p><em>No applications found.</em></p>
 }
 else
 {
-        <table class="table table-striped">
-            <thead>
-                <tr>
+    <table class="table table-striped">
+        <thead>
+            <tr>
                 @if (showCrewNumber)
                 {
-                            <th>Kræv Nummer</th>
+                    <th>Kræv Nummer</th>
                 }
                 @if (showParentName)
                 {
-                            <th>Forældre navn</th>
+                    <th>Forældre navn</th>
                 }
                 @if (showMail)
                 {
-                            <th>Mail</th>
+                    <th>Mail</th>
                 }
                 @if (showChildName)
                 {
-                            <th>Barn Navn</th>
+                    <th>Barn Navn</th>
                 }
                 @if (showAge)
                 {
-                            <th>Barn Alder</th>
+                    <th>Barn Alder</th>
                 }
                 @if (showClothingSize)
                 {
-                            <th>Barn Tøjstørrelse</th>
+                    <th>Barn Tøjstørrelse</th>
                 }
                 @if (showInterests)
                 {
-                            <th>Barn Interesser</th>
+                    <th>Barn Interesser</th>
                 }
                 @if (showComment)
                 {
-                            <th>Kommentar</th>
+                    <th>Kommentar</th>
                 }
                 @if (showFirstPriority)
                 {
-                            <th>Første prio</th>
+                    <th>Første prio</th>
                 }
                 @if (showSecondPriority)
                 {
-                            <th>Anden prio</th>
+                    <th>Anden prio</th>
                 }
                 @if (showEditFinalDate)
                 {
-                            <th>Opdater Status</th>
+                    <th>Opdater Status</th>
                 }
                 @if (showConsent)
                 {
-                            <th>Samtykke</th>
+                    <th>Samtykke</th>
                 }
-                </tr>
-            </thead>
-            <tbody>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var ap in filteredApplications)
             {
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
-                                <tr>
+                    <tr>
                         @if (showCrewNumber)
                         {
-                                            <td>@ap.ParentVolunteer.CrewNumber</td>
+                            <td>@ap.ParentVolunteer.CrewNumber</td>
                         }
                         @if (showParentName)
                         {
-                                            <td>@ap.ParentVolunteer.Name</td>
+                            <td>@ap.ParentVolunteer.Name</td>
                         }
                         @if (showMail)
                         {
-                                            <td>@ap.ParentVolunteer.Mail</td>
+                            <td>@ap.ParentVolunteer.Mail</td>
                         }
                         @if (showChildName)
                         {
-                                            <td>@child.Name</td>
+                            <td>@child.Name</td>
                         }
                         @if (showAge)
                         {
-                                            <td>@child.Age</td>
+                            <td>@child.Age</td>
                         }
                         @if (showClothingSize)
                         {
-                                            <td>@child.ClothingSize</td>
+                            <td>@child.ClothingSize</td>
                         }
                         @if (showInterests)
                         {
-                                            <td>@child.Interests</td>
+                            <td>@child.Interests</td>
                         }
                         @if (showComment)
                         {
-                                            <td>@ap.Comment</td>
+                            <td>@ap.Comment</td>
                         }
                         @if (showFirstPriority)
                         {
-                                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
                         }
                         @if (showSecondPriority)
                         {
-                                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
                         }
                         @if (showEditFinalDate)
                         {
-                                            <td>
-                                                <select class="form-select" @bind="ap.Status" @bind:event="onchange">
-                                                    <option value="1.Prioritet">1. Prioritet</option>
-                                                    <option value="2.Prioritet">2. Prioritet</option>
-                                                    <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
-                                                    <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
-                                                </select>
-                                            </td>
+                            <td>
+                                <select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
+                                    <option value="1.Prioritet">1. Prioritet</option>
+                                    <option value="2.Prioritet">2. Prioritet</option>
+                                    <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
+                                    <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
+                                </select>
+                            </td>
                         }
                         @if (showConsent)
                         {
-                                            <td>
+                            <td>
                                 @if (!string.IsNullOrEmpty(ap.ConsentForm))
                                 {
-                                                        <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                                    <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
                                 }
                                 else
                                 {
-                                                        <p>No signature</p>
+                                    <p>No signature</p>
                                 }
-                                            </td>
+                            </td>
                         }
-                                </tr>
+                    </tr>
                 }
             }
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 }
 
 @code {

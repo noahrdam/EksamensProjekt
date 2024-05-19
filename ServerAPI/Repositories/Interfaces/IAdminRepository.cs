@@ -1,8 +1,7 @@
 ﻿using Core.Model;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using System.Collections.Generic;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ServerAPI.Repositories.Interfaces
 {
@@ -11,18 +10,9 @@ namespace ServerAPI.Repositories.Interfaces
         List<Application> GetAllApplication();
         List<Application> GetFilteredApplications(FilterDefinition<Application> filter);
         List<Event> GetAllEvents();
-
         Task UpdateApplication(Application application);
-
-        void UpdateFinalDate(Application application);
-
         Task UpdateStatus(Application application);
-
-        void DeleteApplication(int id);
-
+        Task DeleteApplication(int applicationId);
         List<YouthVolunteer> GetAllYouthVolunteers();
-
-
     }
-
 }
