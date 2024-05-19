@@ -3,11 +3,21 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
-<h3>Unge frivillige 16-18</h3>
+<head>
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
 
+
+<header>
 <div style="text-align: right;">
     <button id="navigate" class="bi bi-arrow-left-circle-fill" @onclick=ToAdminPage>  Tilbage</button>
 </div>
+</header>
+
+
+<h3>Unge frivillige 16-18</h3>
+
+
 
 <div class="search-container">
     <EditForm Model="this" OnValidSubmit="PerformSearch">
@@ -28,7 +38,7 @@ else if (!filteredYouthVolunteers.Any())
 }
 else
 {
-    <table class="table table-striped">
+    <table>
         <thead>
             <tr>
                 <th>Kræv Nummer</th>

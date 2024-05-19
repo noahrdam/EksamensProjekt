@@ -1,0 +1,165 @@
+/* Styling til tabellen */
+td, th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+    background-color: #ddd;
+    outline: 1px solid black; /* Tilføjer outline rundt om hele rækken */
+    outline-offset: -1px; /* For at justere outline og gøre det pænere */
+}
+
+th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: steelblue;
+    color: white;
+}
+
+
+/* Styling til navigate knap */
+#navigate {
+    margin-left: auto; /* This ensures that login is pushed to the far right */
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: right;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+    #navigate:hover {
+        background-color: #0b5ed7;
+    }
+
+/* Styling til knapper med forskellige farver */
+.btn.m-1.btn-red {
+    background-color: red !important;
+    color: white !important;
+}
+
+.btn.m-1.btn-green {
+    background-color: green !important;
+    color: white !important;
+}
+
+.btn.m-1.btn-yellow {
+    background-color: yellow !important;
+    color: black !important;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+#edit {
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+#delete {
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    background-color: #e81010;
+    border-color: #0d6efd;
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.margin {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.checkbox-button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Juster efter behov */
+    margin-bottom:10px;
+}
+
+.checkbox-input {
+    display: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    width: 150px; /* Juster bredden efter behov */
+    height: 50px; /* Juster højden efter behov */
+    font-size: 14px; /* Juster skriftstørrelsen efter behov */
+}
+
+.checkbox-input:checked + .checkbox-label {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+    color: #007bff;
+    position: relative;
+}
+
+    .checkbox-input:checked + .checkbox-label::before {
+        content: '\2713'; /* Unicode for check mark */
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        font-size: 16px;
+        color: #007bff;
+    }
+
+.checkbox-label:hover {
+    border-color: #007bff;
+    background-color: #e0f0ff;
+}
+
+#filterbutton {
+    margin-left: auto; /* This ensures that login is pushed to the far right */
+    cursor: pointer;
+    outline: 0;
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    display: inline-block;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: right;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    margin-bottom: 20px;
+}
