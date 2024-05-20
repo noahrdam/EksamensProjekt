@@ -180,8 +180,7 @@ else
                                 <select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
                                     <option value="1.Prioritet">1. Prioritet</option>
                                     <option value="2.Prioritet">2. Prioritet</option>
-                                    <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
-                                    <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
+                                    <option value="Venteliste">Venteliste</option>
                                 </select>
                             </td>
                         }
@@ -268,13 +267,12 @@ else
         filteredApplications = applications
             .Where(ap => string.IsNullOrEmpty(selectedStatus) || ap.Status == selectedStatus)
             .Where(ap => !selectedWeek.HasValue ||
-                         (ap.FirstPrio.Week == selectedWeek && (ap.Status == "1.Prioritet" || ap.Status == "1.Prioritet Venteliste")) ||
-                         (ap.SecondPrio.Week == selectedWeek && (ap.Status == "2.Prioritet" || ap.Status == "2.Prioritet Venteliste")))
+                         ((ap.FirstPrio.Week == selectedWeek || ap.SecondPrio.Week == selectedWeek) && ap.Status != "Venteliste"))
             .Where(ap => !selectedPeriod.HasValue ||
-                         (ap.FirstPrio.EventId == selectedPeriod && (ap.Status == "1.Prioritet" || ap.Status == "1.Prioritet Venteliste")) ||
-                         (ap.SecondPrio.EventId == selectedPeriod && (ap.Status == "2.Prioritet" || ap.Status == "2.Prioritet Venteliste")))
+                         ((ap.FirstPrio.EventId == selectedPeriod || ap.SecondPrio.EventId == selectedPeriod) && ap.Status != "Venteliste"))
             .ToList();
     }
+
 
     private List<Event> GetPeriodsForWeek(int week)
     {
@@ -286,10 +284,9 @@ else
         if (applications == null) return 0;
 
         return applications
-            .Where(ap => (ap.Status == "1.Prioritet" && ap.FirstPrio.Week == week) ||
-                         (ap.Status == "2.Prioritet" && ap.SecondPrio.Week == week) ||
-                         (ap.Status == "1.Prioritet Venteliste" && ap.FirstPrio.Week == week) ||
-                         (ap.Status == "2.Prioritet Venteliste" && ap.SecondPrio.Week == week))
+            .Where(ap => ap.Status != "Venteliste" &&
+                         ((ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                          (ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
@@ -298,12 +295,12 @@ else
         if (applications == null) return 0;
 
         return applications
-            .Where(ap => (ap.Status == "1.Prioritet" && ap.FirstPrio.EventId == eventId) ||
-                         (ap.Status == "2.Prioritet" && ap.SecondPrio.EventId == eventId) ||
-                         (ap.Status == "1.Prioritet Venteliste" && ap.FirstPrio.EventId == eventId) ||
-                         (ap.Status == "2.Prioritet Venteliste" && ap.SecondPrio.EventId == eventId))
+            .Where(ap => ap.Status != "Venteliste" &&
+                         ((ap.FirstPrio.EventId == eventId && ap.Status == "1.Prioritet") ||
+                          (ap.SecondPrio.EventId == eventId && ap.Status == "2.Prioritet")))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
+
 
     private string GetButtonClassForWeekCount(int count)
     {
