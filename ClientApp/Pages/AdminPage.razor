@@ -242,7 +242,9 @@ else
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         filteredApplications = applications ?? new List<Application>();
         UpdateApplicationCounts();
+        FilterApplications(); // Ensure to filter the applications after loading
     }
+
 
     private void FilterApplicationsByWeek(int week)
     {
@@ -270,11 +272,15 @@ else
         filteredApplications = applications
             .Where(ap => string.IsNullOrEmpty(selectedStatus) || ap.Status == selectedStatus)
             .Where(ap => !selectedWeek.HasValue ||
-                         ((ap.FirstPrio.Week == selectedWeek || ap.SecondPrio.Week == selectedWeek) && ap.Status != "Venteliste"))
+                         (ap.FirstPrio.Week == selectedWeek && ap.Status == "1.Prioritet") ||
+                         (ap.SecondPrio.Week == selectedWeek && ap.Status == "2.Prioritet"))
             .Where(ap => !selectedPeriod.HasValue ||
-                         ((ap.FirstPrio.EventId == selectedPeriod || ap.SecondPrio.EventId == selectedPeriod) && ap.Status != "Venteliste"))
-                         .OrderBy(ap => ap.Status == "Venteliste").ToList();
+                         (ap.FirstPrio.EventId == selectedPeriod && ap.Status == "1.Prioritet") ||
+                         (ap.SecondPrio.EventId == selectedPeriod && ap.Status == "2.Prioritet"))
+            .OrderBy(ap => ap.Status == "Venteliste")
+            .ToList();
     }
+
 
 
     private List<Event> GetPeriodsForWeek(int week)
