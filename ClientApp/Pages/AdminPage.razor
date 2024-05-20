@@ -133,7 +133,10 @@ else
             {
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
-                    <tr>
+
+                    var rowClass = ap.Status == "Venteliste" ? "venteliste-row" : "";
+
+                    <tr class="@rowClass">
                         @if (showCrewNumber)
                         {
                             <td>@ap.ParentVolunteer.CrewNumber</td>
@@ -270,7 +273,7 @@ else
                          ((ap.FirstPrio.Week == selectedWeek || ap.SecondPrio.Week == selectedWeek) && ap.Status != "Venteliste"))
             .Where(ap => !selectedPeriod.HasValue ||
                          ((ap.FirstPrio.EventId == selectedPeriod || ap.SecondPrio.EventId == selectedPeriod) && ap.Status != "Venteliste"))
-            .ToList();
+                         .OrderBy(ap => ap.Status == "Venteliste").ToList();
     }
 
 
