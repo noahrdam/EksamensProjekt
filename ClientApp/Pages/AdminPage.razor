@@ -228,7 +228,7 @@ else
                             </td>
                         }
                         <td>
-                            <button id="edit"><i class="bi bi-pencil"></i></button>
+                            <button id="edit" @onclick="() => EditApplication(ap.ApplicationId)"><i class="bi bi-pencil"></i></button>
                             <button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
@@ -238,6 +238,47 @@ else
     </table>
 }
 
+<ModalDialog @ref="editDialog" Title="Rediger Ansøgning">
+    <EditForm Model="selectedApplication" OnValidSubmit="SaveApplication" class="container mt-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        @if (selectedApplication.ParentVolunteer.Children != null && selectedApplication.ParentVolunteer.Children.Count > 0)
+        {
+            <div class="mb-3">
+                <label for="editChildName" class="form-label">Barnets Navn</label>
+                <InputText id="editChildName" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Name" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editChildAge" class="form-label">Alder</label>
+                <InputNumber id="editChildAge" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Age" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editClothingSize" class="form-label">Tøjstørrelse</label>
+                <InputText id="editClothingSize" @bind-Value="selectedApplication.ParentVolunteer.Children[0].ClothingSize" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editInterests" class="form-label">Interesser</label>
+                <InputText id="editInterests" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Interests" class="form-control" />
+            </div>
+        }
+        else
+        {
+            <p>No children available for editing.</p>
+        }
+
+        <div class="mb-3">
+            <label for="editComment" class="form-label">Kommentar</label>
+            <InputText id="editComment" @bind-Value="selectedApplication.Comment" class="form-control" />
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @onclick="editDialog.Close">Luk</button>
+            <button type="submit" class="btn btn-primary">Gem ændringer</button>
+        </div>
+    </EditForm>
+</ModalDialog>
+
+
 @code {
     private List<Application> applications;
     private List<Application> filteredApplications;
@@ -246,6 +287,9 @@ else
     private int? selectedPeriod;
     private string serverURL = "https://localhost:7095/";
     private List<int> weeks = new List<int> { 27, 28, 30, 31 };
+    private Application selectedApplication = new Application();
+    private ModalDialog? editDialog { get; set; }
+    private EditContext? editContext;
 
     private bool showCrewNumber = true;
     private bool showParentName = true;
@@ -275,6 +319,7 @@ else
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         filteredApplications = applications ?? new List<Application>();
         UpdateApplicationCounts();
+        editContext = new EditContext(selectedApplication);
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -318,11 +363,10 @@ else
 
     private int GetApplicationCountForWeek(int week)
     {
-        // Tjek om 'applications' listen er null før forsøget på at anvende LINQ operationer
         if (applications == null)
         {
             Console.WriteLine("Ingen applikationer er indlæst.");
-            return 0; // Returner 0, da der ikke kan være nogen applikationer at tælle
+            return 0;
         }
 
         return applications.Where(ap => ap.FirstPrio.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
@@ -367,13 +411,12 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
         }
     }
 
     private void UpdateApplicationCounts()
     {
-        // Refresh week and period counts whenever data changes
         foreach (var week in weeks)
         {
             var count = GetApplicationCountForWeek(week);
@@ -386,7 +429,7 @@ else
         var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
         }
     }
 
@@ -412,5 +455,25 @@ else
     private void ToHomePage()
     {
         NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private void EditApplication(int applicationId)
+    {
+        selectedApplication = applications.FirstOrDefault(a => a.ApplicationId == applicationId);
+        if (selectedApplication != null)
+        {
+            editContext = new EditContext(selectedApplication);
+            editDialog?.Open();
+        }
+    }
+
+    private async Task SaveApplication()
+    {
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updateapplication", selectedApplication);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData();
+            editDialog?.Close();
+        }
     }
 }
