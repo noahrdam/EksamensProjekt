@@ -165,4 +165,8 @@
 .btn.m-1.btn-yellow {
     background-color: yellow !important;
     color: black !important;
-}    
+}  
+
+.waitlist {
+    background-color: yellow;
+} 

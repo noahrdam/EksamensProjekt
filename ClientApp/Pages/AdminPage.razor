@@ -36,17 +36,6 @@
     </div>
 }
 
-<div class="mb-3">
-    <label for="statusFilter">Vælg status:</label>
-    <select id="statusFilter" class="form-select" @onchange="OnStatusChanged">
-        <option value="">Alle</option>
-        <option value="1.Prioritet">1. Prioritet</option>
-        <option value="2.Prioritet">2. Prioritet</option>
-        <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
-        <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
-    </select>
-</div>
-
 <div class="col-12 mb-3">
     <div class="checkbox-container">
         <span><label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label></span>
@@ -133,7 +122,7 @@ else
             {
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
-                    <tr>
+                    <tr class="@(ap.Status.Contains("Venteliste") ? "waitlist" : "")">
                         @if (showCrewNumber)
                         {
                             <td>@ap.ParentVolunteer.CrewNumber</td>
@@ -180,8 +169,8 @@ else
                                 <select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
                                     <option value="1.Prioritet">1. Prioritet</option>
                                     <option value="2.Prioritet">2. Prioritet</option>
-                                    <option value="1.Prioritet Venteliste">1. Prioritet Venteliste</option>
-                                    <option value="2.Prioritet Venteliste">2. Prioritet Venteliste</option>
+                                    <option value="1.Prioritet Venteliste">Venteliste - 1. Prioritet </option>
+                                    <option value="2.Prioritet Venteliste">Venteliste - 2. Prioritet</option>
                                 </select>
                             </td>
                         }
@@ -273,8 +262,10 @@ else
             .Where(ap => !selectedPeriod.HasValue ||
                          (ap.FirstPrio.EventId == selectedPeriod && (ap.Status == "1.Prioritet" || ap.Status == "1.Prioritet Venteliste")) ||
                          (ap.SecondPrio.EventId == selectedPeriod && (ap.Status == "2.Prioritet" || ap.Status == "2.Prioritet Venteliste")))
+            .OrderBy(ap => ap.Status.Contains("Venteliste"))
             .ToList();
     }
+
 
     private List<Event> GetPeriodsForWeek(int week)
     {
@@ -292,6 +283,8 @@ else
                          (ap.Status == "2.Prioritet Venteliste" && ap.SecondPrio.Week == week))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
+
+
 
     private int GetApplicationCountForPeriod(int eventId)
     {
