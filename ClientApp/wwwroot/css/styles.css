@@ -209,4 +209,23 @@ html, body {
     background-color: yellow;
 }
 
+.circle-green::before {
+    content: '??'; /* Green circle */
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.circle-yellow::before {
+    content: '??'; /* Yellow circle */
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.circle-red::before {
+    content: '??'; /* Red circle */
+    display: inline-block;
+    margin-right: 5px;
+}
+
+
 

@@ -26,13 +26,14 @@
 	<h3>Uger:</h3>
 	@foreach (var week in weeks)
 	{
-		var weekCount = GetApplicationCountForWeek(week);
-		var weekClass = GetButtonClassForWeekCount(weekCount);
+		var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(week);
+		var weekClass = GetButtonClassForWeekCount(weekdayCount + weekendCount);
 		<button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
-			Uge @week (@weekCount)
+			Uge @week (W: @weekdayCount / WE: @weekendCount)
 		</button>
 	}
 </div>
+
 
 @if (selectedWeek.HasValue)
 {
@@ -386,16 +387,28 @@ else
 		return (events ?? new List<Event>()).Where(e => e.Week == week).ToList();
 	}
 
-	private int GetApplicationCountForWeek(int week)
+	private (int, int) GetApplicationCountsForWeek(int week)
 	{
-		if (applications == null) return 0;
+		if (applications == null) return (0, 0);
 
-		return applications
+		var periodsWeekdays = new List<int> { 1, 3, 4, 6, 7, 9, 10, 12 }; // Event IDs for onsdag-søndag and onsdag-fredag
+		var periodsWeekends = new List<int> { 1, 2, 4, 5, 7, 8, 10, 11 }; // Event IDs for onsdag-søndag and lørdag-søndag
+
+		int weekdayCount = applications
 			.Where(ap => ap.Status != "Venteliste" &&
-							((ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
-								(ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
+							((periodsWeekdays.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+								(periodsWeekdays.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
 			.Sum(ap => ap.ParentVolunteer.Children.Count);
+
+		int weekendCount = applications
+			.Where(ap => ap.Status != "Venteliste" &&
+							((periodsWeekends.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+								(periodsWeekends.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
+			.Sum(ap => ap.ParentVolunteer.Children.Count);
+
+		return (weekdayCount, weekendCount);
 	}
+
 
 	private int GetApplicationCountForPeriod(int eventId)
 	{
@@ -442,7 +455,7 @@ else
 		// Refresh week and period counts whenever data changes
 		foreach (var week in weeks)
 		{
-			var count = GetApplicationCountForWeek(week);
+			var count = GetApplicationCountsForWeek(week);
 			Console.WriteLine($"Week {week}: {count} children based on FinalDate");
 		}
 	}
