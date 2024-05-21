@@ -9,9 +9,14 @@
     {
         <header class="header">
             <div class="top-row">
+                <a id="logo2" href="https://www.xn--krwet-tra.dk/ny/" target="_blank">
                 <img id="logo2" src="muskelsvind-kraewet-logo-blaa-2x.png" alt="Kræwet logo">
+                </a>
+
+                <a href="https://localhost:7094/">
                 <img id="logo" src="børneklubben_logo.png" alt="Børneklubben Logo">
                 <button id="login" class="bi bi-person-fill-lock" @onclick=Login>Login</button>
+                </a>
             </div>
         </header>
     }
@@ -39,7 +44,7 @@
     private bool ShouldDisplayHeaderFooter()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        return uri.LocalPath == "/" || uri.LocalPath.ToLowerInvariant().Contains("registration");
+        return uri.LocalPath == "/" || uri.LocalPath.ToLowerInvariant().Contains("registration") || uri.LocalPath == "/status" || uri.LocalPath.ToLowerInvariant().Contains("status");
     }
 
     private async Task Login()

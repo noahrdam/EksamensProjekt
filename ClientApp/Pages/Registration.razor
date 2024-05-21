@@ -14,6 +14,18 @@
     <button id="knap" class="btn btn-primary" @onclick="() => addDialog.Open()">Send ansøgning for dit barn til Børneklubben</button>
 </div>
 
+
+<div class="afsnit" style="text-align:center">
+    <p class="tekst">
+        Har du allerede sendt en ansøgning? Tjek dens status ved at trykke på knappen nedenfor!
+    </p>
+</div>
+
+<div style ="text-align:center">
+<button class="btn btn-primary" @onclick=ToStatusPage>Tjek ansøgnings status</button>
+</div>
+
+
 <div class="afsnit">
     <p class="tekst">
         Cirkus Summarum er Muskelsvindfondens børnearrangement, hvor der hver dag er tilknyttet
@@ -24,6 +36,15 @@
         børn bliver passet af andre frivillige i bagområdet (hvor vi har indrettet en børneklub), mens
         du er frivillig. Når arbejdsdagen er ovre eller inden den begynder, kan man bruge tiden
         sammen som familie på cirkuspladsen eller i den by, man nu er i.
+    </p>
+</div>
+
+<div class="afsnit">
+    <p class="tekst">
+        Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
+        i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
+        cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
+        forældre og frivillige kan dele informationer med hinanden.
     </p>
 </div>
 
@@ -52,14 +73,7 @@
 
 <button id="knap" class="btn btn-primary" @onclick="() => addYouthDialog.Open()">Send ansøgning for ung frivillig</button>
 
-<div class="afsnit">
-    <p class="tekst">
-        Børneklubben bemandes af fire frivillige inklusiv en frivillig chef, som har ansvaret for børnene
-        i løbet af dagen, herunder arrangere udflugter, sørge for børnene kan hjælpe til på
-        cirkuspladsen mv. Der vil blive oprettet Facebook-grupper for alle børneklubsperioderne, hvor
-        forældre og frivillige kan dele informationer med hinanden.
-    </p>
-</div>
+
 
 <div class="afsnit">
     <h3 class="titel">Hvornår:</h3>
@@ -463,5 +477,10 @@
     private async Task Login()
     {
         NavigationManager.NavigateTo("/login", forceLoad: true);
+    }
+
+    private async Task ToStatusPage()
+    {
+        NavigationManager.NavigateTo("/status", forceLoad: true);
     }
 }
