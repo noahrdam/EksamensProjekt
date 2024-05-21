@@ -183,6 +183,13 @@ html, body {
     font-family: Arial, sans-serif;
 }
 
+.wrapper {
+    min-height: calc(100vh - 200px); /* Juster denne værdi afhængigt af header + footer højde */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
 .btn.m-1.btn-red {
     background-color: red !important;
     color: white !important;
@@ -200,5 +207,6 @@ html, body {
 
 .waitlist {
     background-color: yellow;
-}    
+}
+
 
