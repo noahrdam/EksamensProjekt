@@ -48,7 +48,10 @@
 		}
 	</div>
 }
-
+else
+{
+	Console.WriteLine("No week selected");
+}
 <div class="margin">
 	<button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
 </div>
@@ -335,6 +338,7 @@ else
 	private async Task LoadData()
 	{
 		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+		events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
 		filteredApplications = applications ?? new List<Application>();
 		UpdateApplicationCounts();
 		FilterApplications(); // Ensure to filter the applications after loading
