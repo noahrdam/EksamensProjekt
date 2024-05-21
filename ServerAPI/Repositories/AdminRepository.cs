@@ -42,14 +42,14 @@ public class AdminRepository : IAdminRepository
         await applicationcollection.ReplaceOneAsync(filter, application);
     }
 
-    public async Task UpdateFinalDate(Application application)
-    {
-        var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
-        var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
-        await applicationcollection.UpdateOneAsync(filter, update);
-    }
+	public async Task UpdateStatus(Application application)
+	{
+		var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
+		var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
+		await applicationcollection.UpdateOneAsync(filter, update);
+	}
 
-    public List<YouthVolunteer> GetAllYouthVolunteers()
+	public List<YouthVolunteer> GetAllYouthVolunteers()
     {
         var filter = Builders<Volunteer>.Filter.Eq("_t", "YouthVolunteer");
         var volunteers = volunteercollection.Find(filter).ToList();
