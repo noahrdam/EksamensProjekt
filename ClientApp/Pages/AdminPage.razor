@@ -3,13 +3,26 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
-<h1>Alle ansøgninger</h1>
+<head>
+    <link rel="stylesheet" href="css/admin.css" />
+</head>
 
-<div style="text-align: right;">
-    <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick=ToYouthPage>  Til frivilige 16-18</button>
+<header>
+    <div style="text-align: right;">
+        <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick="ToYouthPage"> Til frivilige 16-18</button>
+        <button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage"></button>
+    </div>
+</header>
+
+<div class="margin">
+    <h1>Børneklubbens ansøgninger</h1>
 </div>
 
-<div>
+<div class="margin">
+    <button id="navigate" class="" @onclick="LoadData">Alle ansøgninger</button>
+</div>
+
+<div class="margin">
     <h3>Uger:</h3>
     @foreach (var week in weeks)
     {
@@ -23,7 +36,7 @@
 
 @if (selectedWeek.HasValue)
 {
-    <div>
+    <div class="margin">
         <h3>Perioder i uge @selectedWeek:</h3>
         @foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
         {
@@ -36,49 +49,48 @@
     </div>
 }
 
-<div class="col-12 mb-3">
-    <div class="checkbox-container">
-        <span>
-            <label><input type="checkbox" @bind="showCrewNumber" /> Kræv nummer</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showParentName" /> Forældre navn</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showMail" /> Mail</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showConsent" /> Samtykke</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showChildName" /> Barnets navn</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showAge" /> Alder</label>
+<div class="margin">
+    <button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
+</div>
 
-            <br />
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showClothingSize" /> Tøjstørrelse</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showInterests" /> Interesser</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showComment" /> Kommentar</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showFirstPriority" /> 1. Prioritet</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showSecondPriority" /> 2. Prioritet</label>
-        </span>
-        <span>
-			<label><input type="checkbox" @bind="showDate" /> Dato</label>
-        </span>
-        <span>
-            <label><input type="checkbox" @bind="showEditFinalDate" />Status</label>
-        </span>
+<div id="filters-container" class="margin @filterContainerClass">
+    <div class="checkbox-button-group">
+        <input type="checkbox" id="showCrewNumber" @bind="showCrewNumber" class="checkbox-input" />
+        <label for="showCrewNumber" class="checkbox-label">Kræv nummer</label>
+
+        <input type="checkbox" id="showParentName" @bind="showParentName" class="checkbox-input" />
+        <label for="showParentName" class="checkbox-label">Forældre navn</label>
+
+        <input type="checkbox" id="showMail" @bind="showMail" class="checkbox-input" />
+        <label for="showMail" class="checkbox-label">Mail</label>
+
+        <input type="checkbox" id="showConsent" @bind="showConsent" class="checkbox-input" />
+        <label for="showConsent" class="checkbox-label">Samtykke</label>
+
+        <input type="checkbox" id="showChildName" @bind="showChildName" class="checkbox-input" />
+        <label for="showChildName" class="checkbox-label">Barnets navn</label>
+
+        <input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
+        <label for="showAge" class="checkbox-label">Alder</label>
+    </div>
+    <div class="checkbox-button-group">
+        <input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
+        <label for="showClothingSize" class="checkbox-label">Tøjstørrelse</label>
+
+        <input type="checkbox" id="showInterests" @bind="showInterests" class="checkbox-input" />
+        <label for="showInterests" class="checkbox-label">Interesser</label>
+
+        <input type="checkbox" id="showComment" @bind="showComment" class="checkbox-input" />
+        <label for="showComment" class="checkbox-label">Kommentar</label>
+
+        <input type="checkbox" id="showFirstPriority" @bind="showFirstPriority" class="checkbox-input" />
+        <label for="showFirstPriority" class="checkbox-label">1. Prioritet</label>
+
+        <input type="checkbox" id="showSecondPriority" @bind="showSecondPriority" class="checkbox-input" />
+        <label for="showSecondPriority" class="checkbox-label">2. Prioritet</label>
+
+        <input type="checkbox" id="showEditFinalDate" @bind="showEditFinalDate" class="checkbox-input" />
+        <label for="showEditFinalDate" class="checkbox-label">Opdater Status</label>
     </div>
 </div>
 
@@ -92,7 +104,7 @@ else if (!filteredApplications.Any())
 }
 else
 {
-    <table class="table table-striped">
+    <table>
         <thead>
             <tr>
                 @if (showCrewNumber)
@@ -124,9 +136,9 @@ else
                     <th>Barn Interesser</th>
                 }
                 @if (showComment)
-				{
-					<th>Kommentar</th>
-				}
+                {
+                    <th>Kommentar</th>
+                }
                 @if (showFirstPriority)
                 {
                     <th>Første prio</th>
@@ -143,10 +155,7 @@ else
                 {
                     <th>Samtykke</th>
                 }
-                @if (showDate)
-                {
-                    <th>Dato</th>
-                }
+                <th>Rediger</th>
             </tr>
         </thead>
         <tbody>
@@ -184,9 +193,9 @@ else
                             <td>@child.Interests</td>
                         }
                         @if (showComment)
-						{
-							<td>@ap.Comment</td>
-						}
+                        {
+                            <td>@ap.Comment</td>
+                        }
                         @if (showFirstPriority)
                         {
                             <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
@@ -223,8 +232,8 @@ else
                             <td>@ap.DateOfApplication</td>
                         }
                         <td>
-                            <button @* @onclick="() => EditApplication(ap)" *@><i class="bi bi-pencil"></i></button>
-                            <button @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+                            <button id="edit" @onclick="() => EditApplication(ap.ApplicationId)"><i class="bi bi-pencil"></i></button>
+                            <button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
                 }
@@ -232,6 +241,47 @@ else
         </tbody>
     </table>
 }
+
+<ModalDialog @ref="editDialog" Title="Rediger Ansøgning">
+    <EditForm Model="selectedApplication" OnValidSubmit="SaveApplication" class="container mt-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        @if (selectedApplication.ParentVolunteer.Children != null && selectedApplication.ParentVolunteer.Children.Count > 0)
+        {
+            <div class="mb-3">
+                <label for="editChildName" class="form-label">Barnets Navn</label>
+                <InputText id="editChildName" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Name" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editChildAge" class="form-label">Alder</label>
+                <InputNumber id="editChildAge" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Age" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editClothingSize" class="form-label">Tøjstørrelse</label>
+                <InputText id="editClothingSize" @bind-Value="selectedApplication.ParentVolunteer.Children[0].ClothingSize" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label for="editInterests" class="form-label">Interesser</label>
+                <InputText id="editInterests" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Interests" class="form-control" />
+            </div>
+        }
+        else
+        {
+            <p>No children available for editing.</p>
+        }
+
+        <div class="mb-3">
+            <label for="editComment" class="form-label">Kommentar</label>
+            <InputText id="editComment" @bind-Value="selectedApplication.Comment" class="form-control" />
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @onclick="editDialog.Close">Luk</button>
+            <button type="submit" class="btn btn-primary">Gem ændringer</button>
+        </div>
+    </EditForm>
+</ModalDialog>
+
 
 @code {
     private List<Application> applications;
@@ -241,6 +291,9 @@ else
     private int? selectedPeriod;
     private string serverURL = "https://localhost:7095/";
     private List<int> weeks = new List<int> { 27, 28, 30, 31 };
+    private Application selectedApplication = new Application();
+    private ModalDialog? editDialog { get; set; }
+    private EditContext? editContext;
 
     private bool showCrewNumber = true;
     private bool showParentName = true;
@@ -256,6 +309,9 @@ else
     private bool showEditFinalDate = true;
     private bool showDate = true;
 
+    private string filterButtonText = "Vis alle filtre";
+    private string filterContainerClass = "hidden";
+
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
@@ -267,6 +323,7 @@ else
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         filteredApplications = applications ?? new List<Application>();
         UpdateApplicationCounts();
+        editContext = new EditContext(selectedApplication);
     }
 
     private void FilterApplicationsByWeek(int week)
@@ -309,17 +366,15 @@ else
     }
 
     private int GetApplicationCountForWeek(int week)
-{
-    // Tjek om 'applications' listen er null før forsøget på at anvende LINQ operationer
-    if (applications == null)
     {
-        Console.WriteLine("Ingen applikationer er indlæst.");
-        return 0; // Returner 0, da der ikke kan være nogen applikationer at tælle
+        if (applications == null)
+        {
+            Console.WriteLine("Ingen applikationer er indlæst.");
+            return 0;
+        }
+
+        return applications.Where(ap => ap.FirstPrio.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
     }
-
-    return applications.Where(ap => ap.FirstPrio.Week == week).Sum(ap => ap.ParentVolunteer.Children.Count);
-}
-
 
     private int GetApplicationCountForPeriod(int eventId)
     {
@@ -360,13 +415,12 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
         }
     }
 
     private void UpdateApplicationCounts()
     {
-        // Refresh week and period counts whenever data changes
         foreach (var week in weeks)
         {
             var count = GetApplicationCountForWeek(week);
@@ -379,12 +433,51 @@ else
         var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
         }
     }
 
     private async Task ToYouthPage()
     {
         NavigationManager.NavigateTo("/youth", forceLoad: true);
+    }
+
+    private void ToggleFilters()
+    {
+        if (filterContainerClass == "hidden")
+        {
+            filterContainerClass = "";
+            filterButtonText = "Gem alle filtre";
+        }
+        else
+        {
+            filterContainerClass = "hidden";
+            filterButtonText = "Vis alle filtre";
+        }
+    }
+
+    private void ToHomePage()
+    {
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private void EditApplication(int applicationId)
+    {
+        selectedApplication = applications.FirstOrDefault(a => a.ApplicationId == applicationId);
+        if (selectedApplication != null)
+        {
+            editContext = new EditContext(selectedApplication);
+            editDialog?.Open();
+        }
+    }
+
+    private async Task SaveApplication()
+    {
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updateapplication", selectedApplication);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData();
+            editDialog?.Close();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// AdminController.cs
+using Microsoft.AspNetCore.Mvc;
 using ServerAPI.Repositories.Interfaces;
 using Core.Model;
 using MongoDB.Bson;
@@ -25,11 +26,8 @@ namespace ServerAPI.Controllers
         [Route("getall")]
         public List<Application> GetAllApplication()
         {
-
             var applications = mRepo.GetAllApplication();
             return applications;
-
-
         }
 
         [HttpGet]
@@ -55,7 +53,7 @@ namespace ServerAPI.Controllers
             return mRepo.GetAllEvents();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("updateapplication")]
         public async Task<IActionResult> UpdateApplication([FromBody] Application application)
         {
@@ -72,15 +70,14 @@ namespace ServerAPI.Controllers
         [Route("getallyouthvolunteers")]
         public IActionResult GetAllYouthVolunteers()
         {
-                var volunteers = mRepo.GetAllYouthVolunteers();
-                return Ok(volunteers);
+            var volunteers = mRepo.GetAllYouthVolunteers();
+            return Ok(volunteers);
         }
 
         [HttpDelete("delete/{id}")]
         public void DeleteApplication(int id)
         {
-             mRepo.DeleteApplication(id);
-            
+            mRepo.DeleteApplication(id);
         }
 
         [HttpPut]
@@ -90,5 +87,12 @@ namespace ServerAPI.Controllers
             mRepo.UpdateFinalDate(application);
         }
 
+        [HttpGet]
+        [Route("get/{id}")]
+        public Application GetApplicationById(int id)
+        {
+            var application = mRepo.GetApplicationById(id);
+            return application;
+        }
     }
 }
