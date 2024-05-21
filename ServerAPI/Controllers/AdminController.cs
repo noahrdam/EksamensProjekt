@@ -80,11 +80,19 @@ namespace ServerAPI.Controllers
             mRepo.DeleteApplication(id);
         }
 
+
+
         [HttpPut]
-        [Route("updatefinaldate")]
-        public void UpdateFinalDate(Application application)
+        [Route("updatestatus")]
+        public async Task<IActionResult> UpdateStatus([FromBody] Application application)
         {
-            mRepo.UpdateFinalDate(application);
+            if (application == null)
+            {
+                return BadRequest();
+            }
+
+            await mRepo.UpdateStatus(application);
+            return Ok();
         }
 
         [HttpGet]

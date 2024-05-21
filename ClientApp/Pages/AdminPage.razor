@@ -163,7 +163,7 @@ else
             {
                 @foreach (var child in ap.ParentVolunteer.Children)
                 {
-                    <tr>
+                    <tr class="@(ap.Status.Contains("Venteliste") ? "waitlist" : "")">
                         @if (showCrewNumber)
                         {
                             <td>@ap.ParentVolunteer.CrewNumber</td>
@@ -207,10 +207,11 @@ else
                         @if (showEditFinalDate)
                         {
                             <td>
-                                <select class="form-select" @onchange="(e) => UpdateFinalDate(ap, e.Value.ToString())">
-                                    <option value="">Vælg prioritet</option>
-                                    <option value="1">First Priority</option>
-                                    <option value="2">Second Priority</option>
+                                <select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
+                                    <option value="1.Prioritet">1. Prioritet</option>
+                                    <option value="2.Prioritet">2. Prioritet</option>
+                                    <option value="1.Prioritet Venteliste">Venteliste - 1. Prioritet </option>
+                                    <option value="2.Prioritet Venteliste">Venteliste - 2. Prioritet</option>
                                 </select>
                             </td>
                         }
@@ -289,6 +290,7 @@ else
     private List<Event> events;
     private int? selectedWeek;
     private int? selectedPeriod;
+    private string selectedStatus;
     private string serverURL = "https://localhost:7095/";
     private List<int> weeks = new List<int> { 27, 28, 30, 31 };
     private Application selectedApplication = new Application();
@@ -339,6 +341,12 @@ else
         FilterApplications();
     }
 
+    private void OnStatusChanged(ChangeEventArgs e)
+    {
+        selectedStatus = e.Value.ToString();
+        FilterApplications();
+    }
+
     private void FilterApplications()
     {
         if (selectedWeek.HasValue)
@@ -359,6 +367,7 @@ else
             filteredApplications = applications ?? new List<Application>();
         }
     }
+
 
     private List<Event> GetPeriodsForWeek(int week)
     {
@@ -383,22 +392,16 @@ else
 
     private string GetButtonClassForWeekCount(int count)
     {
-        if (count < 13)
-            return "btn-green";
-        else if (count < 18)
-            return "btn-yellow";
-        else
-            return "btn-red";
+        if (count < 13) return "btn-green";
+        if (count < 18) return "btn-yellow";
+        return "btn-red";
     }
 
     private string GetButtonClassForPeriodCount(int count)
     {
-        if (count < 6)
-            return "btn-green";
-        else if (count < 10)
-            return "btn-yellow";
-        else
-            return "btn-red";
+        if (count < 6) return "btn-green";
+        if (count < 10) return "btn-yellow";
+        return "btn-red";
     }
 
     private async Task UpdateFinalDate(Application application, string prio)
@@ -412,7 +415,7 @@ else
             application.FirstPrio = application.SecondPrio;
         }
 
-        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatefinaldate", application);
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
         if (response.IsSuccessStatusCode)
         {
             await LoadData();
