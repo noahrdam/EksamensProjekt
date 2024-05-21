@@ -170,7 +170,9 @@ else
 			{
 				@foreach (var child in ap.ParentVolunteer.Children)
 				{
-					<tr style="@(ap.Status.Contains("Venteliste") ? "background-color:yellow" : "")">
+					<tr style="@(ap.Status.Contains("Venteliste") ? "background-color:yellow" : "")"
+						onmouseover="if (this.style.backgroundColor==='yellow')this.style.backgroundColor='darkorange';"
+						onmouseout="if (this.style.backgroundColor==='darkorange')this.style.backgroundColor='yellow';">
 						@if (showCrewNumber)
 						{
 							<td>@ap.ParentVolunteer.CrewNumber</td>
