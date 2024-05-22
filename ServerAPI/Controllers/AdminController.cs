@@ -31,39 +31,10 @@ namespace ServerAPI.Controllers
         }
 
         [HttpGet]
-        [Route("getbyweek")]
-        public IActionResult GetApplicationsByWeek([FromQuery] int week, [FromQuery] string from = null, [FromQuery] string to = null)
-        {
-            FilterDefinition<Application> filter = Builders<Application>.Filter.Eq("FirstPrio.Week", week);
-
-            if (!string.IsNullOrEmpty(from) && !string.IsNullOrEmpty(to))
-            {
-                filter &= Builders<Application>.Filter.Eq("FirstPrio.From", from) &
-                          Builders<Application>.Filter.Eq("FirstPrio.To", to);
-            }
-
-            var applications = mRepo.GetFilteredApplications(filter);
-            return Ok(applications);
-        }
-
-        [HttpGet]
         [Route("getallevents")]
         public List<Event> GetAllEvents()
         {
             return mRepo.GetAllEvents();
-        }
-
-        [HttpPut]
-        [Route("updateapplication")]
-        public async Task<IActionResult> UpdateApplication([FromBody] Application application)
-        {
-            if (application == null)
-            {
-                return BadRequest();
-            }
-
-            await mRepo.UpdateApplication(application);
-            return Ok();
         }
 
         [HttpGet]
@@ -95,12 +66,18 @@ namespace ServerAPI.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("get/{id}")]
-        public Application GetApplicationById(int id)
+		[HttpGet("getfilteredbyweek")]
+		public List<Application> GetFilteredApplicationsByWeek([FromQuery]int week)
+		{
+			var applications = mRepo.GetFilteredApplicationsByWeek(week);
+            return applications;
+		}
+
+        [HttpGet("getfilteredbyperiod")]
+        public List<Application> GetFilteredApplicationsByPeriod([FromQuery] int week, [FromQuery] string from, [FromQuery] string to)
         {
-            var application = mRepo.GetApplicationById(id);
-            return application;
+            var applications = mRepo.GetFilteredApplicationsByPeriod(week, from, to);
+            return applications;
         }
-    }
+	}
 }

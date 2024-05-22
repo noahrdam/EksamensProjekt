@@ -11,7 +11,8 @@ public class AdminRepository : IAdminRepository
 
     public AdminRepository()
     {
-        var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+        //var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+        var mongoUri = "mongodb://localhost:27017";
         client = new MongoClient(mongoUri);
 
         var database = client.GetDatabase("ChildClub");
@@ -36,11 +37,6 @@ public class AdminRepository : IAdminRepository
         return eventcollection.Find(Builders<Event>.Filter.Empty).ToList();
     }
 
-    public async Task UpdateApplication(Application application)
-    {
-        var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
-        await applicationcollection.ReplaceOneAsync(filter, application);
-    }
 
 	public async Task UpdateStatus(Application application)
 	{
@@ -62,9 +58,41 @@ public class AdminRepository : IAdminRepository
         applicationcollection.DeleteOne(filter);
     }
 
-    public Application GetApplicationById(int id)
-    {
-        var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, id);
-        return applicationcollection.Find(filter).FirstOrDefault();
+
+	public List<Application> GetFilteredApplicationsByWeek(int week)
+	{
+        var filter = Builders<Application>.Filter.Or(
+            Builders<Application>.Filter.And(
+                Builders<Application>.Filter.Eq(ap => ap.FirstPrio.Week, week),
+                Builders<Application>.Filter.Eq(ap => ap.Status, "1.Prioritet")
+            ),
+            Builders<Application>.Filter.And(
+                Builders<Application>.Filter.Eq(ap => ap.SecondPrio.Week, week),
+                Builders<Application>.Filter.Eq(ap => ap.Status, "2.Prioritet")
+            )
+        );
+
+        return applicationcollection.Find(filter).ToList();
     }
+
+    public List<Application> GetFilteredApplicationsByPeriod(int week, string from, string to)
+    {
+        var filter = Builders<Application>.Filter.Or(
+            Builders<Application>.Filter.And(
+                Builders<Application>.Filter.Eq(ap => ap.FirstPrio.Week, week),
+                Builders<Application>.Filter.Eq(ap => ap.FirstPrio.From, from),
+                Builders<Application>.Filter.Eq(ap => ap.FirstPrio.To, to),
+                Builders<Application>.Filter.Eq(ap => ap.Status, "1.Prioritet")
+            ),
+            Builders<Application>.Filter.And(
+                Builders<Application>.Filter.Eq(ap => ap.SecondPrio.Week, week),
+                Builders<Application>.Filter.Eq(ap => ap.SecondPrio.From, from),
+                Builders<Application>.Filter.Eq(ap => ap.SecondPrio.To, to),
+                Builders<Application>.Filter.Eq(ap => ap.Status, "2.Prioritet")
+            )
+        );
+
+        return applicationcollection.Find(filter).ToList();
+    }
+
 }

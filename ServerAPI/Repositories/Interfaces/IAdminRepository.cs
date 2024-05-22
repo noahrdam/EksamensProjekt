@@ -11,11 +11,14 @@ namespace ServerAPI.Repositories.Interfaces
         List<Application> GetAllApplication();
         List<Application> GetFilteredApplications(FilterDefinition<Application> filter);
         List<Event> GetAllEvents();
-        Task UpdateApplication(Application application);
-
 		Task UpdateStatus(Application application);
         void DeleteApplication(int id);
         List<YouthVolunteer> GetAllYouthVolunteers();
-        Application GetApplicationById(int id);
+
+        List<Application> GetFilteredApplicationsByWeek(int week);
+
+        List<Application> GetFilteredApplicationsByPeriod(int week, string from, string to);
+
+
     }
 }

@@ -1,502 +1,386 @@
 ﻿@page "/admin"
 @using Core.Model
+@using System.Net.Http.Json
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
 <head>
-	<link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="css/admin.css" />
 </head>
 
 <header>
-	<div style="text-align: right;">
-		<button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick="ToYouthPage"> Til frivilige 16-18</button>
-		<button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage"></button>
-	</div>
+    <div style="text-align: right;">
+        <button id="navigate" class="bi bi-arrow-right-circle-fill" @onclick="ToYouthPage"> Til frivilige 16-18</button>
+        <button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage"></button>
+    </div>
 </header>
 
 <div class="margin">
-	<h1>Børneklubbens ansøgninger</h1>
+    <h1>Børneklubbens ansøgninger</h1>
 </div>
 
 <div class="margin">
-	<button id="navigate" class="" @onclick="GetAll">Alle ansøgninger</button>
-</div>
-
-<div class="margin">
-	<h3>Uger:</h3>
-	@foreach (var week in weeks)
-	{
-		var weekCount = GetApplicationCountForWeek(week);
-		var weekClass = GetButtonClassForWeekCount(weekCount);
-		<button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">
-			Uge @week (@weekCount)
-		</button>
-	}
+    <h3>Uger:</h3>
+    <div>
+        @if (weeks != null)
+        {
+            @foreach (var week in weeks)
+            {
+                var weekCount = GetApplicationCountForWeek(week);
+                var weekClass = GetButtonClassForWeekCount(weekCount);
+                <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass" >Uge @week (@GetApplicationCountForWeek(week))</button>
+            }
+        }
+    </div>
 </div>
 
 @if (selectedWeek.HasValue)
 {
-	<div class="margin">
-		<h3>Perioder i uge @selectedWeek:</h3>
-		@foreach (var period in GetPeriodsForWeek(selectedWeek.Value))
-		{
-			var periodCount = GetApplicationCountForPeriod(period.EventId);
-			var periodClass = GetButtonClassForPeriodCount(periodCount);
-			<button @onclick="() => FilterApplicationsByPeriod(period.EventId)" class="btn btn-secondary m-1 @periodClass">
-				@period.From - @period.To (@periodCount)
-			</button>
-		}
-	</div>
+    <div class="margin">
+        <h3>Perioder i uge @selectedWeek:</h3>
+        @foreach (var ev in events.Where(e => e.Week == selectedWeek))
+        {
+            var periodCount = GetApplicationCountForPeriod(selectedWeek.Value,ev.From,ev.To);
+            var periodClass = GetButtonClassForPeriodCount(periodCount);
+            <button @onclick="() => FilterApplicationsByPeriod(selectedWeek.Value, ev.From, ev.To)" class="btn btn-secondary m-1 @periodClass">@ev.From - @ev.To (@GetApplicationCountForPeriod(selectedWeek.Value, ev.From, ev.To))</button>
+        }
+    </div>
 }
 else
 {
-	Console.WriteLine("No week selected");
+    Console.WriteLine("No week selected");
 }
+
 <div class="margin">
-	<button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
+    <button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
 </div>
 
 <div id="filters-container" class="margin @filterContainerClass">
-	<div class="checkbox-button-group">
-		<input type="checkbox" id="showCrewNumber" @bind="showCrewNumber" class="checkbox-input" />
-		<label for="showCrewNumber" class="checkbox-label">Kræv nummer</label>
+    <div class="checkbox-button-group">
+        <input type="checkbox" id="showCrewNumber" @bind="showCrewNumber" class="checkbox-input" />
+        <label for="showCrewNumber" class="checkbox-label">Kræv nummer</label>
 
-		<input type="checkbox" id="showParentName" @bind="showParentName" class="checkbox-input" />
-		<label for="showParentName" class="checkbox-label">Forældre navn</label>
+        <input type="checkbox" id="showParentName" @bind="showParentName" class="checkbox-input" />
+        <label for="showParentName" class="checkbox-label">Forældre navn</label>
 
-		<input type="checkbox" id="showMail" @bind="showMail" class="checkbox-input" />
-		<label for="showMail" class="checkbox-label">Mail</label>
+        <input type="checkbox" id="showMail" @bind="showMail" class="checkbox-input" />
+        <label for="showMail" class="checkbox-label">Mail</label>
 
-		<input type="checkbox" id="showConsent" @bind="showConsent" class="checkbox-input" />
-		<label for="showConsent" class="checkbox-label">Samtykke</label>
+        <input type="checkbox" id="showConsent" @bind="showConsent" class="checkbox-input" />
+        <label for="showConsent" class="checkbox-label">Samtykke</label>
 
-		<input type="checkbox" id="showChildName" @bind="showChildName" class="checkbox-input" />
-		<label for="showChildName" class="checkbox-label">Barnets navn</label>
+        <input type="checkbox" id="showChildName" @bind="showChildName" class="checkbox-input" />
+        <label for="showChildName" class="checkbox-label">Barnets navn</label>
 
-		<input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
-		<label for="showAge" class="checkbox-label">Alder</label>
-	</div>
-	<div class="checkbox-button-group">
-		<input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
-		<label for="showClothingSize" class="checkbox-label">Tøjstørrelse</label>
+        <input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
+        <label for="showAge" class="checkbox-label">Alder</label>
+    </div>
+    <div class="checkbox-button-group">
+        <input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
+        <label for="showClothingSize" class="checkbox-label">Tøjstørrelse</label>
 
-		<input type="checkbox" id="showInterests" @bind="showInterests" class="checkbox-input" />
-		<label for="showInterests" class="checkbox-label">Interesser</label>
+        <input type="checkbox" id="showInterests" @bind="showInterests" class="checkbox-input" />
+        <label for="showInterests" class="checkbox-label">Interesser</label>
 
-		<input type="checkbox" id="showComment" @bind="showComment" class="checkbox-input" />
-		<label for="showComment" class="checkbox-label">Kommentar</label>
+        <input type="checkbox" id="showComment" @bind="showComment" class="checkbox-input" />
+        <label for="showComment" class="checkbox-label">Kommentar</label>
 
-		<input type="checkbox" id="showFirstPriority" @bind="showFirstPriority" class="checkbox-input" />
-		<label for="showFirstPriority" class="checkbox-label">1. Prioritet</label>
+        <input type="checkbox" id="showFirstPriority" @bind="showFirstPriority" class="checkbox-input" />
+        <label for="showFirstPriority" class="checkbox-label">1. Prioritet</label>
 
-		<input type="checkbox" id="showSecondPriority" @bind="showSecondPriority" class="checkbox-input" />
-		<label for="showSecondPriority" class="checkbox-label">2. Prioritet</label>
+        <input type="checkbox" id="showSecondPriority" @bind="showSecondPriority" class="checkbox-input" />
+        <label for="showSecondPriority" class="checkbox-label">2. Prioritet</label>
 
-		<input type="checkbox" id="showEditFinalDate" @bind="showStatus" class="checkbox-input" />
-		<label for="showEditFinalDate" class="checkbox-label">Opdater Status</label>
+        <input type="checkbox" id="showEditFinalDate" @bind="showStatus" class="checkbox-input" />
+        <label for="showEditFinalDate" class="checkbox-label">Opdater Status</label>
 
-		<input type="checkbox" id="showDate" @bind="showDate" class="checkbox-input" />
-		<label for="showDate" class="checkbox-label">Dato</label>
-	</div>
+        <input type="checkbox" id="showDate" @bind="showDate" class="checkbox-input" />
+        <label for="showDate" class="checkbox-label">Dato</label>
+    </div>
 </div>
 
-@if (applications == null)
+@if (filteredApplications == null)
 {
-	<p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else if (!filteredApplications.Any())
 {
-	<p><em>No applications found.</em></p>
+    <p><em>No applications found.</em></p>
 }
 else
 {
-	<table>
-		<thead>
-			<tr>
-				@if (showCrewNumber)
-				{
-					<th>Kræv Nummer</th>
-				}
-				@if (showParentName)
-				{
-					<th>Forældre navn</th>
-				}
-				@if (showMail)
-				{
-					<th>Mail</th>
-				}
-				@if (showChildName)
-				{
-					<th>Barn Navn</th>
-				}
-				@if (showAge)
-				{
-					<th>Barn Alder</th>
-				}
-				@if (showClothingSize)
-				{
-					<th>Barn Tøjstørrelse</th>
-				}
-				@if (showInterests)
-				{
-					<th>Barn Interesser</th>
-				}
-				@if (showComment)
-				{
-					<th>Kommentar</th>
-				}
-				@if (showFirstPriority)
-				{
-					<th>Første prio</th>
-				}
-				@if (showSecondPriority)
-				{
-					<th>Anden prio</th>
-				}
-				@if (showStatus)
-				{
-					<th>Opdater status</th>
-				}
-				@if (showDate)
-				{
-					<th>Dato</th>
-				}
-				@if (showConsent)
-				{
-					<th>Samtykke</th>
-				}
-				<th>Rediger</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var ap in filteredApplications)
-			{
-				@foreach (var child in ap.ParentVolunteer.Children)
-				{
-					<tr style="@(ap.Status.Contains("Venteliste") ? "background-color:yellow" : "")"
-						onmouseover="if (this.style.backgroundColor==='yellow')this.style.backgroundColor='darkorange';"
-						onmouseout="if (this.style.backgroundColor==='darkorange')this.style.backgroundColor='yellow';">
-						@if (showCrewNumber)
-						{
-							<td>@ap.ParentVolunteer.CrewNumber</td>
-						}
-						@if (showParentName)
-						{
-							<td>@ap.ParentVolunteer.Name</td>
-						}
-						@if (showMail)
-						{
-							<td>@ap.ParentVolunteer.Mail</td>
-						}
-						@if (showChildName)
-						{
-							<td>@child.Name</td>
-						}
-						@if (showAge)
-						{
-							<td>@child.Age</td>
-						}
-						@if (showClothingSize)
-						{
-							<td>@child.ClothingSize</td>
-						}
-						@if (showInterests)
-						{
-							<td>@child.Interests</td>
-						}
-						@if (showComment)
-						{
-							<td>@ap.Comment</td>
-						}
-						@if (showFirstPriority)
-						{
-							<td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
-						}
-						@if (showSecondPriority)
-						{
-							<td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
-						}
-						@if (showStatus)
-						{
-							<td>
-								<select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
-									<option value="1.Prioritet">1. Prioritet</option>
-									<option value="2.Prioritet">2. Prioritet</option>
-									<option value="Venteliste">Venteliste</option>
-								</select>
-							</td>
-						}
-						@if (showDate)
-						{
-							<td>@ap.DateOfApplication</td>
-						}
-						@if (showConsent)
-						{
-							<td>
-								@if (!string.IsNullOrEmpty(ap.ConsentForm))
-								{
-									<img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
-								}
-								else
-								{
-									<p>No signature</p>
-								}
-							</td>
-						}
-						<td>
-							<button id="edit" @onclick="() => EditApplication(ap.ApplicationId)"><i class="bi bi-pencil"></i></button>
-							<button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
-						</td>
-					</tr>
-				}
-			}
-		</tbody>
-	</table>
+    <table>
+        <thead>
+            <tr>
+                @if (showCrewNumber)
+                {
+                    <th>Kræv Nummer</th>
+                }
+                @if (showParentName)
+                {
+                    <th>Forældre navn</th>
+                }
+                @if (showMail)
+                {
+                    <th>Mail</th>
+                }
+                @if (showChildName)
+                {
+                    <th>Barn Navn</th>
+                }
+                @if (showAge)
+                {
+                    <th>Barn Alder</th>
+                }
+                @if (showClothingSize)
+                {
+                    <th>Barn Tøjstørrelse</th>
+                }
+                @if (showInterests)
+                {
+                    <th>Barn Interesser</th>
+                }
+                @if (showComment)
+                {
+                    <th>Kommentar</th>
+                }
+                @if (showFirstPriority)
+                {
+                    <th>Første prio</th>
+                }
+                @if (showSecondPriority)
+                {
+                    <th>Anden prio</th>
+                }
+                @if (showStatus)
+                {
+                    <th>Opdater status</th>
+                }
+                @if (showDate)
+                {
+                    <th>Dato</th>
+                }
+                @if (showConsent)
+                {
+                    <th>Samtykke</th>
+                }
+                <th>Rediger</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ap in filteredApplications)
+            {
+                @foreach (var child in ap.ParentVolunteer.Children)
+                {
+                    <tr style="@(ap.Status.Contains("Venteliste") ? "background-color:yellow" : "")"
+                        onmouseover="if (this.style.backgroundColor==='yellow')this.style.backgroundColor='darkorange';"
+                        onmouseout="if (this.style.backgroundColor==='darkorange')this.style.backgroundColor='yellow';">
+                        @if (showCrewNumber)
+                        {
+                            <td>@ap.ParentVolunteer.CrewNumber</td>
+                        }
+                        @if (showParentName)
+                        {
+                            <td>@ap.ParentVolunteer.Name</td>
+                        }
+                        @if (showMail)
+                        {
+                            <td>@ap.ParentVolunteer.Mail</td>
+                        }
+                        @if (showChildName)
+                        {
+                            <td>@child.Name</td>
+                        }
+                        @if (showAge)
+                        {
+                            <td>@child.Age</td>
+                        }
+                        @if (showClothingSize)
+                        {
+                            <td>@child.ClothingSize</td>
+                        }
+                        @if (showInterests)
+                        {
+                            <td>@child.Interests</td>
+                        }
+                        @if (showComment)
+                        {
+                            <td>@ap.Comment</td>
+                        }
+                        @if (showFirstPriority)
+                        {
+                            <td>@ap.FirstPrio.From - @ap.FirstPrio.To (Uge @ap.FirstPrio.Week)</td>
+                        }
+                        @if (showSecondPriority)
+                        {
+                            <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+                        }
+                        @if (showStatus)
+                        {
+                            <td>
+                                <select class="form-select" value="@ap.Status" @onchange="(e) => UpdateStatus(ap, e.Value.ToString())">
+                                    <option value="1.Prioritet">1. Prioritet</option>
+                                    <option value="2.Prioritet">2. Prioritet</option>
+                                    <option value="Venteliste">Venteliste</option>
+                                </select>
+                            </td>
+                        }
+                        @if (showDate)
+                        {
+                            <td>@ap.DateOfApplication</td>
+                        }
+                        @if (showConsent)
+                        {
+                            <td>
+                                @if (!string.IsNullOrEmpty(ap.ConsentForm))
+                                {
+                                    <img src="@ap.ConsentForm" alt="Signature" style="width:200px; height:100px;" />
+                                }
+                                else
+                                {
+                                    <p>No signature</p>
+                                }
+                            </td>
+                        }
+                        <td>
+                            <button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 }
 
-<ModalDialog @ref="editDialog" Title="Rediger Ansøgning">
-	<EditForm Model="selectedApplication" OnValidSubmit="SaveApplication" class="container mt-3">
-		<DataAnnotationsValidator />
-		<ValidationSummary />
-
-		@if (selectedApplication.ParentVolunteer.Children != null && selectedApplication.ParentVolunteer.Children.Count > 0)
-		{
-			<div class="mb-3">
-				<label for="editChildName" class="form-label">Barnets Navn</label>
-				<InputText id="editChildName" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Name" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editChildAge" class="form-label">Alder</label>
-				<InputNumber id="editChildAge" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Age" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editClothingSize" class="form-label">Tøjstørrelse</label>
-				<InputText id="editClothingSize" @bind-Value="selectedApplication.ParentVolunteer.Children[0].ClothingSize" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editInterests" class="form-label">Interesser</label>
-				<InputText id="editInterests" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Interests" class="form-control" />
-			</div>
-		}
-		else
-		{
-			<p>No children available for editing.</p>
-		}
-
-		<div class="mb-3">
-			<label for="editComment" class="form-label">Kommentar</label>
-			<InputText id="editComment" @bind-Value="selectedApplication.Comment" class="form-control" />
-		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" @onclick="editDialog.Close">Luk</button>
-			<button type="submit" class="btn btn-primary">Gem ændringer</button>
-		</div>
-	</EditForm>
-</ModalDialog>
-
-
 @code {
-	private List<Application> applications;
-	private List<Application> filteredApplications;
-	private List<Event> events;
-	private int? selectedWeek;
-	private int? selectedPeriod;
-	private string selectedStatus;
-	private string serverURL = "https://localhost:7095/";
-	private List<int> weeks = new List<int> { 27, 28, 30, 31 };
-	private Application selectedApplication = new Application();
-	private ModalDialog? editDialog { get; set; }
-	private EditContext? editContext;
+    private List<Application> applications;
+    private List<Application> filteredApplications;
+    private List<Event> events;
+    private List<int> weeks;
+    private string selectedStatus;
+    private string serverURL = "https://localhost:7095/";
+    private Application selectedApplication = new Application();
+    private ModalDialog? editDialog { get; set; }
+    private EditContext? editContext;
+    private int? selectedWeek;
 
-	private bool showCrewNumber = true;
-	private bool showParentName = true;
-	private bool showMail = true;
-	private bool showConsent = false;
-	private bool showChildName = true;
-	private bool showAge = true;
-	private bool showClothingSize = false;
-	private bool showInterests = false;
-	private bool showComment = true;
-	private bool showFirstPriority = true;
-	private bool showSecondPriority = true;
-	private bool showStatus = true;
-	private bool showDate = true;
+    private bool showCrewNumber = true;
+    private bool showParentName = true;
+    private bool showMail = true;
+    private bool showConsent = false;
+    private bool showChildName = true;
+    private bool showAge = true;
+    private bool showClothingSize = false;
+    private bool showInterests = false;
+    private bool showComment = true;
+    private bool showFirstPriority = true;
+    private bool showSecondPriority = true;
+    private bool showStatus = true;
+    private bool showDate = true;
 
-	private string filterButtonText = "Vis alle filtre";
-	private string filterContainerClass = "hidden";
+    private string filterButtonText = "Vis alle filtre";
+    private string filterContainerClass = "hidden";
 
-	protected override async Task OnInitializedAsync()
-	{
-		await LoadData();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
 
-	private async Task GetAll()
-	{
-		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-	}
+    private async Task LoadData()
+    {
+        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+        events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+        weeks = events.Select(e => e.Week).Distinct().ToList();
+        filteredApplications = applications;
+        FilterApplications();
 
-	private async Task LoadData()
-	{
-		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-		events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-		filteredApplications = applications ?? new List<Application>();
-		UpdateApplicationCounts();
-		FilterApplications(); // Ensure to filter the applications after loading
-	}
+    }
 
+    private async Task FilterApplicationsByWeek(int week)
+    {
+        selectedWeek = week;
+        filteredApplications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyweek?week={week}");
+        StateHasChanged();
+    }
 
-	private void FilterApplicationsByWeek(int week)
-	{
-		selectedWeek = week;
-		selectedPeriod = null;
-		FilterApplications();
-	}
+    private async Task FilterApplicationsByPeriod(int week, string from, string to)
+    {
+        filteredApplications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyperiod?week={week}&from={from}&to={to}");
+        StateHasChanged();
+    }
 
-	private void FilterApplicationsByPeriod(int eventId)
-	{
-		selectedPeriod = eventId;
-		FilterApplications();
-	}
+    private void FilterApplications()
+    {
+        filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ToList();
+    }
 
-	private void OnStatusChanged(ChangeEventArgs e)
-	{
-		selectedStatus = e.Value.ToString();
-		FilterApplications();
-	}
+    private async Task UpdateStatus(Application application, string prio)
+    {
+        application.Status = prio;
 
-	private void FilterApplications()
-	{
-		if (applications == null) return;
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData(); // Reload data to reflect the update immediately
+        }
+    }
 
-		filteredApplications = applications
-			.Where(ap => string.IsNullOrEmpty(selectedStatus) || ap.Status == selectedStatus)
-			.Where(ap => !selectedWeek.HasValue ||
-							(ap.FirstPrio.Week == selectedWeek && ap.Status == "1.Prioritet") ||
-							(ap.SecondPrio.Week == selectedWeek && ap.Status == "2.Prioritet"))
-			.Where(ap => !selectedPeriod.HasValue ||
-							(ap.FirstPrio.EventId == selectedPeriod && ap.Status == "1.Prioritet") ||
-							(ap.SecondPrio.EventId == selectedPeriod && ap.Status == "2.Prioritet"))
-			.OrderBy(ap => ap.Status == "Venteliste")
-			.ToList();
-	}
+    private int GetApplicationCountForWeek(int week)
+    {
+        return applications.Count(ap => (ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                                        (ap.SecondPrio.Week == week && ap.Status == "2.Prioritet"));
+    }
 
+    private int GetApplicationCountForPeriod(int week, string from, string to)
+    {
+        return applications.Count(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
+                                        (ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"));
+    }
 
-	private List<Event> GetPeriodsForWeek(int week)
-	{
-		return (events ?? new List<Event>()).Where(e => e.Week == week).ToList();
-	}
+    private string GetButtonClassForWeekCount(int count)
+    {
+        if (count < 13) return "btn-green";
+        if (count < 18) return "btn-yellow";
+        return "btn-red";
+    }
 
-	private int GetApplicationCountForWeek(int week)
-	{
-		if (applications == null) return 0;
+    private string GetButtonClassForPeriodCount(int count)
+    {
+        if (count < 6) return "btn-green";
+        if (count < 10) return "btn-yellow";
+        return "btn-red";
+    }
 
-		return applications
-			.Where(ap => ap.Status != "Venteliste" &&
-							((ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
-								(ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
-			.Sum(ap => ap.ParentVolunteer.Children.Count);
-	}
+    private async Task DeleteApplication(int applicationId)
+    {
+        var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadData();
+        }
+    }
 
-	private int GetApplicationCountForPeriod(int eventId)
-	{
-		if (applications == null) return 0;
+    private async Task ToYouthPage()
+    {
+        NavigationManager.NavigateTo("/youth", forceLoad: true);
+    }
 
-		return applications
-			.Where(ap => ap.Status != "Venteliste" &&
-							((ap.FirstPrio.EventId == eventId && ap.Status == "1.Prioritet") ||
-								(ap.SecondPrio.EventId == eventId && ap.Status == "2.Prioritet")))
-			.Sum(ap => ap.ParentVolunteer.Children.Count);
-	}
+    private void ToggleFilters()
+    {
+        if (filterContainerClass == "hidden")
+        {
+            filterContainerClass = "";
+            filterButtonText = "Gem alle filtre";
+        }
+        else
+        {
+            filterContainerClass = "hidden";
+            filterButtonText = "Vis alle filtre";
+        }
+    }
 
-
-	private string GetButtonClassForWeekCount(int count)
-	{
-		if (count < 13) return "btn-green";
-		if (count < 18) return "btn-yellow";
-		return "btn-red";
-	}
-
-	private string GetButtonClassForPeriodCount(int count)
-	{
-		if (count < 6) return "btn-green";
-		if (count < 10) return "btn-yellow";
-		return "btn-red";
-	}
-
-	private async Task UpdateStatus(Application application, string prio)
-	{
-		application.Status = prio;
-
-		var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
-		if (response.IsSuccessStatusCode)
-		{
-			await LoadData(); // Reload data to reflect the update immediately
-			FilterApplications(); // Ensure the filteredApplications list is updated after the reload
-		}
-	}
-
-	private void UpdateApplicationCounts()
-	{
-		if (applications == null) return;
-
-		// Refresh week and period counts whenever data changes
-		foreach (var week in weeks)
-		{
-			var count = GetApplicationCountForWeek(week);
-			Console.WriteLine($"Week {week}: {count} children based on FinalDate");
-		}
-	}
-
-	private async Task DeleteApplication(int applicationId)
-	{
-		var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
-		if (response.IsSuccessStatusCode)
-		{
-			await LoadData();
-		}
-	}
-
-	private async Task ToYouthPage()
-	{
-		NavigationManager.NavigateTo("/youth", forceLoad: true);
-	}
-
-	private void ToggleFilters()
-	{
-		if (filterContainerClass == "hidden")
-		{
-			filterContainerClass = "";
-			filterButtonText = "Gem alle filtre";
-		}
-		else
-		{
-			filterContainerClass = "hidden";
-			filterButtonText = "Vis alle filtre";
-		}
-	}
-
-	private void ToHomePage()
-	{
-		NavigationManager.NavigateTo("/", forceLoad: true);
-	}
-
-	private void EditApplication(int applicationId)
-	{
-		selectedApplication = applications.FirstOrDefault(a => a.ApplicationId == applicationId);
-		if (selectedApplication != null)
-		{
-			editContext = new EditContext(selectedApplication);
-			editDialog?.Open();
-		}
-	}
-
-	private async Task SaveApplication()
-	{
-		var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updateapplication", selectedApplication);
-		if (response.IsSuccessStatusCode)
-		{
-			await LoadData();
-			editDialog?.Close();
-		}
-	}
+    private void ToHomePage()
+    {
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
 }
