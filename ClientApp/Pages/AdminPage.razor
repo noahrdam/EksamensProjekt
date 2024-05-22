@@ -96,6 +96,9 @@ else
 
         <input type="checkbox" id="showDate" @bind="showDate" class="checkbox-input" />
         <label for="showDate" class="checkbox-label">Dato</label>
+
+        <input type="checkbox" id="showPublished" @bind="showPublished" class="checkbox-input" />
+        <label for="showPublished" class="checkbox-label">Offentliggørelse</label>
     </div>
 </div>
 
@@ -164,6 +167,10 @@ else
                 {
                     <th>Samtykke</th>
                 }
+                @if (showPublished)
+				{
+					<th>Offentliggjort</th>
+				}
                 <th>Rediger</th>
             </tr>
         </thead>
@@ -242,6 +249,19 @@ else
                                 }
                             </td>
                         }
+                        @if (showPublished)
+                        {
+                            <td>
+                                @if (ap.IsPublished)
+                                {
+                                    <span class="bi bi-circle-fill" style="color: green;"></span>
+                                }
+                                else
+                                {
+                                    <span class="bi bi-circle-fill" style="color: gray;"></span>
+                                }
+                            </td>
+                        }
                         <td>
                             <button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
                         </td>
@@ -281,6 +301,7 @@ else
     private bool showSecondPriority = true;
     private bool showStatus = true;
     private bool showDate = true;
+    private bool showPublished = true;
 
     private string filterButtonText = "Vis alle filtre";
     private string filterContainerClass = "hidden";
@@ -370,7 +391,7 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/publishall", applications);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine("All applications published successfully");
+            await LoadData();
         }
     }
 

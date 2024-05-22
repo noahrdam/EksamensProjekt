@@ -41,7 +41,17 @@
 					<div class="status-body">
 						<p><strong>Kræw Nummer:</strong> @application.ParentVolunteer.CrewNumber</p>
 						<p><strong>Mail:</strong> @application.ParentVolunteer.Mail</p>
-						<p><strong>Barnets Navn:</strong> @(application.ParentVolunteer.Children.Any() ? application.ParentVolunteer.Children[0].Name : "N/A")</p>
+						<p>
+
+							@if (application.ParentVolunteer.Children.Count() == 1)
+							{
+							<p><strong>Banets Navn: </strong>@application.ParentVolunteer.Children[0].Name</p>
+							}
+							else
+							{
+							<p><strong>Børnenes Navn:</strong> @application.ParentVolunteer.Children[0].Name & @application.ParentVolunteer.Children[1].Name</p>
+							}
+						</p>
 						@if (application.IsPublished == false)
 						{
 							<p><strong>Status:</strong>  Under Behandling </p>
@@ -53,14 +63,12 @@
 
 						@if (application.Status == "2.Prioritet")
 						{
-							<p><strong>2.Prioritet:</strong> @application.SecondPrio.From - @application.SecondPrio.To (Uge @application.SecondPrio.Week)</p>
+							<p><strong>2. Prioritet:</strong> @application.SecondPrio.From - @application.SecondPrio.To (Uge @application.SecondPrio.Week)</p>
 						}
-
 						else if (application.Status == "1.Prioritet")
 						{
-							<p><strong>1.Prioritet:</strong> @application.FirstPrio.From - @application.FirstPrio.To (Uge @application.FirstPrio.Week)</p>
+							<p><strong>1. Prioritet:</strong> @application.FirstPrio.From - @application.FirstPrio.To (Uge @application.FirstPrio.Week)</p>
 						}
-
 					</div>
 				</div>
 			}
