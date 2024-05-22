@@ -537,7 +537,7 @@ else
         {
             var lowerSearchTerm = searchTerm.ToLower();
             filteredApplications = applications
-                .Where(v => v.ParentVolunteer.CrewNumber.ToString().Contains(lowerSearchTerm) || v.ParentVolunteer.Name.ToLower().Contains(lowerSearchTerm)) 
+                .Where(v => v.ParentVolunteer.CrewNumber.ToString().Contains(lowerSearchTerm) || v.ParentVolunteer.Name.ToLower().Contains(lowerSearchTerm) || v.ParentVolunteer.Mail.ToLower().Contains(lowerSearchTerm))
                 .ToList();
         }
     }
