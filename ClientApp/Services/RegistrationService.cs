@@ -3,29 +3,32 @@ using Core.Model;
 
 namespace ClientApp.Services
 {
-    public class RegistrationService: IRegistrationService
+    public class RegistrationService : IRegistrationService
     {
         HttpClient http;
+        private string _serverUrl = "https://localhost:7095";
 
-        private string serverUrl = "https://localhost:7095";
-
-        private RegistrationService(HttpClient http)
+        public RegistrationService(HttpClient http)
         {
-            this.http = http;
+           this.http = http;
         }
 
-        public async Task<bool> RegisterApplication(Application application)
+        public async Task<List<Event>> GetAllEvents()
         {
-            var response = await http.PostAsJsonAsync($"{serverUrl}/api/registration", application);
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<List<Event>> GetEvents()
-        {
-            var events = await http.GetFromJsonAsync<List<Event>>($"{serverUrl}/api/registration/getallevents");
+            var events = await http.GetFromJsonAsync<List<Event>>($"{_serverUrl}/api/registration/getallevents");
             return events;
         }
 
+        public async Task<bool> SaveApplication(Application application)
+        {
+            var response = await http.PostAsJsonAsync($"{_serverUrl}/api/registration/register", application);
+            return response.IsSuccessStatusCode;
+        }
 
+        public async Task<bool> SaveYouthApplication(YouthVolunteer youthVolunteer)
+        {
+            var response = await http.PostAsJsonAsync($"{_serverUrl}/api/registration/registerYouthVolunteer", youthVolunteer);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

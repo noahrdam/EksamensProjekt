@@ -5,8 +5,8 @@ namespace ClientApp.Services
 {
     public interface IRegistrationService
     {
-        Task<bool> RegisterApplication(Application application);
-
-        Task<List<Event>> GetEvents();
+        Task<List<Event>> GetAllEvents();
+        Task<bool> SaveApplication(Application application);
+        Task<bool> SaveYouthApplication(YouthVolunteer youthVolunteer);
     }
 }

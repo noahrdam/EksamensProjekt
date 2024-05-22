@@ -1,7 +1,9 @@
 ﻿@page "/"
+@using ClientApp.Services
 @using Core.Model
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
+@inject IRegistrationService RegistrationService
 @inject IJSRuntime JS
 
 <head>
@@ -381,7 +383,7 @@
     {
         createEditContext = new EditContext(application);
         createYouthEditContext = new EditContext(youthVolunteer);
-        events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
+        events = await RegistrationService.GetAllEvents();
 
         // Ensure there's always one child ready to be filled out
         if (application.ParentVolunteer.Children.Count == 0)
@@ -429,8 +431,8 @@
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
 
-        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
-        if (response.IsSuccessStatusCode)
+        var response = await RegistrationService.SaveApplication(application);
+        if (response)
         {
             submissionMessage = "Application submitted successfully!";
             isSubmissionSuccessful = true;
@@ -438,8 +440,7 @@
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            submissionMessage = $"Failed to submit application: {errorMessage}";
+            submissionMessage = $"Failed to submit application";
             isSubmissionSuccessful = false;
         }
     }
@@ -460,8 +461,8 @@
         var youthSignatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "youth-signature-pad");
         youthVolunteer.ConsentForm = youthSignatureDataUrl;
 
-        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
-        if (response.IsSuccessStatusCode)
+        var success = await RegistrationService.SaveYouthApplication(youthVolunteer);
+        if (success)
         {
             submissionMessage = "Youth application submitted successfully!";
             isSubmissionSuccessful = true;
