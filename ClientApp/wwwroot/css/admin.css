@@ -167,3 +167,22 @@ th {
 .waitlist{
     background-color: yellow;
 }
+
+.searchApplications {
+    margin-top: 50px;
+    display: flex;
+    justify-content: left;
+    margin-bottom: 1rem;
+    
+}
+
+.searchApplications-inputgroup {
+    display: flex;
+    justify-content: left;
+    gap: 5px;
+    width: 400px; /* Begræns bredden af søgefeltet */
+}
+
+.form-control {
+    flex: 1; /* Tilføj dette for at sikre, at input-felterne udvider sig tilgængeligt plads */
+}
