@@ -55,15 +55,10 @@ namespace ServerAPI.Controllers
 
         [HttpPut]
         [Route("updatestatus")]
-        public async Task<IActionResult> UpdateStatus([FromBody] Application application)
+        public void UpdateStatus(Application application)
         {
-            if (application == null)
-            {
-                return BadRequest();
-            }
-
-            await mRepo.UpdateStatus(application);
-            return Ok();
+            mRepo.UpdateStatus(application);
+            
         }
 
 		[HttpGet("getfilteredbyweek")]

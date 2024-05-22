@@ -9,9 +9,8 @@ namespace ServerAPI.Repositories.Interfaces
     public interface IAdminRepository
     {
         List<Application> GetAllApplication();
-        List<Application> GetFilteredApplications(FilterDefinition<Application> filter);
         List<Event> GetAllEvents();
-		Task UpdateStatus(Application application);
+		void UpdateStatus(Application application);
         void DeleteApplication(int id);
         List<YouthVolunteer> GetAllYouthVolunteers();
 

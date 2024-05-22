@@ -27,22 +27,17 @@ public class AdminRepository : IAdminRepository
         return applicationcollection.Find(Builders<Application>.Filter.Empty).ToList();
     }
 
-    public List<Application> GetFilteredApplications(FilterDefinition<Application> filter)
-    {
-        return applicationcollection.Find(filter).ToList();
-    }
-
     public List<Event> GetAllEvents()
     {
         return eventcollection.Find(Builders<Event>.Filter.Empty).ToList();
     }
 
 
-	public async Task UpdateStatus(Application application)
+	public void UpdateStatus(Application application)
 	{
 		var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
 		var update = Builders<Application>.Update.Set(a => a.Status, application.Status);
-		await applicationcollection.UpdateOneAsync(filter, update);
+		applicationcollection.UpdateOneAsync(filter, update);
 	}
 
 	public List<YouthVolunteer> GetAllYouthVolunteers()
