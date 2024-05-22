@@ -79,7 +79,6 @@
 @code {
 	private List<Application> applications;
 	private List<Application> filteredApplications;
-	private List<Event> events;
 	private string searchName = string.Empty;
 	private string searchCrewNumber = string.Empty;
 	private string serverURL = "https://localhost:7095/";
@@ -92,7 +91,6 @@
 	private async Task LoadData()
 	{
 		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-		events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
 		filteredApplications = new List<Application>();
 	}
 
