@@ -56,6 +56,10 @@ else
 	<button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
 </div>
 
+<div class="margin">
+	<button id="publishAll" class="btn btn-success" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
+</div>
+
 <div id="filters-container" class="margin @filterContainerClass">
 	<div class="checkbox-button-group">
 		<input type="checkbox" id="showCrewNumber" @bind="showCrewNumber" class="checkbox-input" />
@@ -487,6 +491,15 @@ else
 		{
 			editContext = new EditContext(selectedApplication);
 			editDialog?.Open();
+		}
+	}
+
+	private async Task PublishAllApplications()
+	{
+		var response = await httpClient.PutAsync($"{serverURL}api/aps/publishall", null);
+		if (response.IsSuccessStatusCode)
+		{
+			Console.WriteLine("All applications published successfully");
 		}
 	}
 

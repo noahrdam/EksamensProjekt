@@ -102,5 +102,19 @@ namespace ServerAPI.Controllers
             var application = mRepo.GetApplicationById(id);
             return application;
         }
-    }
+
+		[HttpPut]
+		[Route("publishall")]
+		public void PublishAllApplications()
+		{
+			var applications = mRepo.GetAllApplication();
+			foreach (var application in applications)
+			{
+				application.IsPublished = true;
+			}
+
+            mRepo.PublishAllApplications(applications);
+		}
+
+	}
 }

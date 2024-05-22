@@ -1,5 +1,4 @@
-﻿// IAdminRepository.cs
-using Core.Model;
+﻿using Core.Model;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,5 +16,7 @@ namespace ServerAPI.Repositories.Interfaces
         void DeleteApplication(int id);
         List<YouthVolunteer> GetAllYouthVolunteers();
         Application GetApplicationById(int id);
-    }
+        void PublishAllApplications(List<Application> applications);
+
+	}
 }

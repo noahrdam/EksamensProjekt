@@ -4,108 +4,112 @@
 @inject NavigationManager NavigationManager
 
 <head>
-    <link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/styles.css" />
 </head>
 
 <div class="wrapper">
-    @* <div style="text-align: right;">
-        <button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage">Tilbage</button>
-    </div> *@
+	<h1 class="hovedtitel">Status på ansøgning</h1>
+	<p style="text-align: center">Her kan du tjekke status på din ansøgning ved at indtaste dit navn og kræw nummer. <br /> Sørg for at begge felter er udfyldt korrekt for at få vist din ansøgning.</p>
 
-    <h1 class="hovedtitel">Status på ansøgning</h1>
-    <p style="text-align: center">Her kan du tjekke status på din ansøgning ved at indtaste dit navn og kræw nummer. <br /> Sørg for at begge felter er udfyldt korrekt for at få vist din ansøgning.</p>
+	<div class="search-container">
+		<EditForm Model="this" OnValidSubmit="PerformSearch">
+			<div class="input-group search-input-group">
+				<InputText class="form-control" placeholder="Indtast navn" @bind-Value="searchName" />
+				<InputText class="form-control" placeholder="Indtast kræw nummer" @bind-Value="searchCrewNumber" />
+				<button type="submit" class="btn btn-primary">Søg</button>
+			</div>
+		</EditForm>
+	</div>
 
-    <div class="search-container">
-        <EditForm Model="this" OnValidSubmit="PerformSearch">
-            <div class="input-group search-input-group">
-                <InputText class="form-control" placeholder="Indtast navn" @bind-Value="searchName" />
-                <InputText class="form-control" placeholder="Indtast kræw nummer" @bind-Value="searchCrewNumber" />
-                <button type="submit" class="btn btn-primary">Søg</button>
-            </div>
-        </EditForm>
-    </div>
+	@if (applications == null)
+	{
+		<p class="fejlbesked"><em>Loading...</em></p>
+	}
+	else if (!filteredApplications.Any())
+	{
+		<p class="fejlbesked"><em>Ingen ansøgning fundet.</em></p>
+	}
+	else
+	{
+		<div class="status-container">
+			@foreach (var application in filteredApplications)
+			{
+				<div class="status">
+					<div class="status-header">
+						<h5>@application.ParentVolunteer.Name</h5>
+					</div>
+					<div class="status-body">
+						<p><strong>Kræw Nummer:</strong> @application.ParentVolunteer.CrewNumber</p>
+						<p><strong>Mail:</strong> @application.ParentVolunteer.Mail</p>
+						<p><strong>Barnets Navn:</strong> @(application.ParentVolunteer.Children.Any() ? application.ParentVolunteer.Children[0].Name : "N/A")</p>
+						@if (application.IsPublished == false)
+						{
+							<p><strong>Status:</strong>  Under Behandling </p>
+						}
+						else
+						{
+							<p><strong>Status:</strong>  @application.Status </p>
+						}
 
-    @if (applications == null)
-    {
-        <p class="fejlbesked"><em>Loading...</em></p>
-    }
-    else if (!filteredApplications.Any())
-    {
-        <p class="fejlbesked"><em>Ingen ansøgning fundet.</em></p>
-    }
-    else
-    {
-        <div class="status-container">
-            @foreach (var application in filteredApplications)
-            {
-                <div class="status">
-                    <div class="status-header">
-                        <h5>@application.ParentVolunteer.Name</h5>
-                    </div>
-                    <div class="status-body">
-                        <p><strong>Kræw Nummer:</strong> @application.ParentVolunteer.CrewNumber</p>
-                        <p><strong>Mail:</strong> @application.ParentVolunteer.Mail</p>
-                        <p><strong>Barnets Navn:</strong> @(application.ParentVolunteer.Children.Any() ? application.ParentVolunteer.Children[0].Name : "N/A")</p>
-                        <p><strong>Status:</strong> @application.Status</p>
-                        @if (application.Status == "2.Prioritet")
-                        {
-                            <p><strong>2.Prioritet:</strong> @application.SecondPrio.From - @application.SecondPrio.To (Uge @application.SecondPrio.Week)</p>
-                        }
+						@if (application.Status == "2.Prioritet")
+						{
+							<p><strong>2.Prioritet:</strong> @application.SecondPrio.From - @application.SecondPrio.To (Uge @application.SecondPrio.Week)</p>
+						}
 
-                        else if (application.Status == "1.Prioritet")
-                        {
-                            <p><strong>1.Prioritet:</strong> @application.FirstPrio.From - @application.FirstPrio.To (Uge @application.FirstPrio.Week)</p>
-                        }
-                        
-                    </div>
-                </div>
-            }
-        </div>
-    }
+						else if (application.Status == "1.Prioritet")
+						{
+							<p><strong>1.Prioritet:</strong> @application.FirstPrio.From - @application.FirstPrio.To (Uge @application.FirstPrio.Week)</p>
+						}
+
+					</div>
+				</div>
+			}
+		</div>
+	}
 </div>
 
 @code {
-    private List<Application> applications;
-    private List<Application> filteredApplications;
-    private List<Event> events;
-    private string searchName = string.Empty;
-    private string searchCrewNumber = string.Empty;
-    private string serverURL = "https://localhost:7095/";
+	private List<Application> applications;
+	private List<Application> filteredApplications;
+	private List<Event> events;
+	private string searchName = string.Empty;
+	private string searchCrewNumber = string.Empty;
+	private string serverURL = "https://localhost:7095/";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadData();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadData();
+	}
 
-    private async Task LoadData()
-    {
-        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-        events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-        filteredApplications = new List<Application>();
-    }
+	private async Task LoadData()
+	{
+		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+		events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+		filteredApplications = new List<Application>();
+	}
 
-    private void FilterApplications()
-    {
-        if (!string.IsNullOrEmpty(searchName) && !string.IsNullOrEmpty(searchCrewNumber))
-        {
-            var lowerSearchName = searchName.ToLower();
-            filteredApplications = applications
-                .Where(v => v.ParentVolunteer.CrewNumber.ToString() == searchCrewNumber && v.ParentVolunteer.Name.ToLower() == lowerSearchName)
-                .ToList();
-        }
-        else
-        {
-            filteredApplications = new List<Application>();
-        }
-    }
+	private void FilterApplications()
+	{
+		if (!string.IsNullOrEmpty(searchName) && !string.IsNullOrEmpty(searchCrewNumber))
+		{
+			var lowerSearchName = searchName.ToLower();
+			filteredApplications = applications
+				.Where(v => v.ParentVolunteer.CrewNumber.ToString() == searchCrewNumber && v.ParentVolunteer.Name.ToLower() == lowerSearchName)
+				.ToList();
+		}
+		else
+		{
+			filteredApplications = new List<Application>();
+		}
+	}
 
-    private void PerformSearch()
-    {
-        FilterApplications();
-    }
+	private void PerformSearch()
+	{
+		FilterApplications();
+	}
 
-    private void ToHomePage()
-    {
-        NavigationManager.NavigateTo("/", forceLoad: true);
-    }
+	private void ToHomePage()
+	{
+		NavigationManager.NavigateTo("/", forceLoad: true);
+	}
 }
