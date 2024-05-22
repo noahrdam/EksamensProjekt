@@ -272,7 +272,7 @@ else
     </table>
 
     <div class="margin">
-        <button id="publishAll" class="btn btn-success" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
+        <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
     </div>
 }
 
@@ -353,14 +353,18 @@ else
 
     private int GetApplicationCountForWeek(int week)
     {
-        return applications.Count(ap => (ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
-                                        (ap.SecondPrio.Week == week && ap.Status == "2.Prioritet"));
+        return applications
+             .Where(ap => (ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                          (ap.SecondPrio.Week == week && ap.Status == "2.Prioritet"))
+             .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
     private int GetApplicationCountForPeriod(int week, string from, string to)
     {
-        return applications.Count(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
-                                        (ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"));
+        return applications
+            .Where(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
+                         (ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
     }
 
     private string GetButtonClassForWeekCount(int count)
