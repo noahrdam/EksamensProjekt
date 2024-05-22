@@ -250,6 +250,10 @@ else
             }
         </tbody>
     </table>
+
+    <div class="margin">
+        <button id="publishAll" class="btn btn-success" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
+    </div>
 }
 
 @code {
@@ -292,6 +296,7 @@ else
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         weeks = events.Select(e => e.Week).Distinct().ToList();
         filteredApplications = applications;
+
         FilterApplications();
 
     }
@@ -357,6 +362,15 @@ else
         if (response.IsSuccessStatusCode)
         {
             await LoadData();
+        }
+    }
+
+    private async Task PublishAllApplications()
+    {
+        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/publishall", applications);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("All applications published successfully");
         }
     }
 

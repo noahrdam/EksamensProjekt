@@ -28,6 +28,8 @@ namespace Core.Model
 
         public string Status { get; set; } = "Under behandling"; 
 
+        public bool IsPublished { get; set; } = false;
+
         public DateTime DateOfApplication { get; set; } = DateTime.Now;
 
         public Application()

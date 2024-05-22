@@ -74,5 +74,12 @@ namespace ServerAPI.Controllers
             var applications = mRepo.GetFilteredApplicationsByPeriod(week, from, to);
             return applications;
         }
-	}
+
+        [HttpPut]
+        [Route("publishall")]
+        public void PublishAllApplications(List<Application> applications)
+        {
+            mRepo.PublishAllApplications(applications);
+        }
+    }
 }

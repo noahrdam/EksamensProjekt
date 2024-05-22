@@ -90,4 +90,13 @@ public class AdminRepository : IAdminRepository
         return applicationcollection.Find(filter).ToList();
     }
 
+    public void PublishAllApplications(List<Application> applications)
+    {
+        foreach (var application in applications)
+        {
+            var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, application.ApplicationId);
+            var update = Builders<Application>.Update.Set(a => a.IsPublished, true);
+            applicationcollection.UpdateOneAsync(filter, update);
+        }
+    }
 }
