@@ -1,8 +1,10 @@
 ﻿@page "/admin"
 @using Core.Model
+@using ClientApp.Services
 @using System.Net.Http.Json
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject IAdminService AdminService
 
 <head>
     <link rel="stylesheet" href="css/admin.css" />
@@ -313,11 +315,10 @@ else
 
     private async Task LoadData()
     {
-        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-        events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+        applications = await AdminService.GetAllApplications();
+        events = await AdminService.GetAllEvents();
         weeks = events.Select(e => e.Week).Distinct().ToList();
         filteredApplications = applications;
-
         FilterApplications();
 
     }
@@ -325,13 +326,13 @@ else
     private async Task FilterApplicationsByWeek(int week)
     {
         selectedWeek = week;
-        filteredApplications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyweek?week={week}");
+        filteredApplications = await AdminService.GetFilteredApplicationsByWeek(week);
         StateHasChanged();
     }
 
     private async Task FilterApplicationsByPeriod(int week, string from, string to)
     {
-        filteredApplications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyperiod?week={week}&from={from}&to={to}");
+        filteredApplications = await AdminService.GetFilteredApplicationsByPeriod(week, from, to);
         StateHasChanged();
     }
 
@@ -344,8 +345,8 @@ else
     {
         application.Status = prio;
 
-        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
-        if (response.IsSuccessStatusCode)
+        var success = await AdminService.UpdateStatus(application);
+        if (success)
         {
             await LoadData(); // Reload data to reflect the update immediately
         }
@@ -383,8 +384,8 @@ else
 
     private async Task DeleteApplication(int applicationId)
     {
-        var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
-        if (response.IsSuccessStatusCode)
+        var success = await AdminService.DeleteApplication(applicationId);
+        if (success)
         {
             await LoadData();
         }
@@ -392,8 +393,8 @@ else
 
     private async Task PublishAllApplications()
     {
-        var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/publishall", applications);
-        if (response.IsSuccessStatusCode)
+        var success = await AdminService.PublishAllApplications(applications);
+        if (success)
         {
             await LoadData();
         }

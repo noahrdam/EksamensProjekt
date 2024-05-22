@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Core.Model;
+﻿using Core.Model;
 namespace ClientApp.Services
 {
     public interface IRegistrationService
