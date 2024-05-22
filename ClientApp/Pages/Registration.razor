@@ -149,6 +149,9 @@
     </p>
 </div>
 
+<div id="notification" class="notification">Ansøgning indsendt med succes!</div>
+
+
 <ModalDialog @ref="@addDialog" Title="Send ansøgning for dit barn til Børneklubben">
 
     <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
@@ -421,10 +424,11 @@
             isSubmissionSuccessful = false;
             return;
         }
+
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
-        
+
         // Get signature data URL
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
@@ -435,14 +439,18 @@
             submissionMessage = "Application submitted successfully!";
             isSubmissionSuccessful = true;
             addDialog?.Close();
+            await JS.InvokeVoidAsync("showNotification", "Ansøgning indsendt med succes!");
         }
         else
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
             submissionMessage = $"Failed to submit application: {errorMessage}";
             isSubmissionSuccessful = false;
+            await JS.InvokeVoidAsync("showNotification", "Kunne ikke indsende ansøgning: " + errorMessage);
         }
     }
+
+
 
     private async Task ClearSignature()
     {
