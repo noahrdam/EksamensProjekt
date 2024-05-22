@@ -17,5 +17,6 @@ namespace ServerAPI.Repositories.Interfaces
         void DeleteApplication(int id);
         List<YouthVolunteer> GetAllYouthVolunteers();
         Application GetApplicationById(int id);
+        List<ParentVolunteer> GetNewsGroup();
     }
 }

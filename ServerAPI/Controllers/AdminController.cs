@@ -80,8 +80,6 @@ namespace ServerAPI.Controllers
             mRepo.DeleteApplication(id);
         }
 
-
-
         [HttpPut]
         [Route("updatestatus")]
         public async Task<IActionResult> UpdateStatus([FromBody] Application application)
@@ -101,6 +99,13 @@ namespace ServerAPI.Controllers
         {
             var application = mRepo.GetApplicationById(id);
             return application;
+        }
+
+        [HttpGet]
+        [Route("getnewsgroup")]
+        public List<ParentVolunteer> GetNewsGroup()
+        {
+            return mRepo.GetNewsGroup();
         }
     }
 }

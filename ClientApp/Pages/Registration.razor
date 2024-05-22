@@ -274,6 +274,7 @@
                     </div>
                 </div>
             </div>
+             
             <!-- Signature -->
             <div class="card-body">
                 <p>Jeg tillader at mit barn må opholde sig i Børneklubben på valgte perioder<br />
@@ -291,6 +292,11 @@
             </label>
         </div>
 
+        <div class="col-md-6 mb-3">
+                <label for="beenBefore">Vil du tilmelde dig nyhedsgruppen?</label>
+                <InputCheckbox id="newsgroup" @bind-Value="application.ParentVolunteer.newsgroup" class="form-check-input" />
+        </div>
+             
         <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
@@ -432,14 +438,13 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
-            submissionMessage = "Application submitted successfully!";
+            submissionMessage = "Ansøgningen er oprettet";
             isSubmissionSuccessful = true;
-            addDialog?.Close();
+
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            submissionMessage = $"Failed to submit application: {errorMessage}";
+            submissionMessage = $"Fejl i processen af oprettelse af ansøgningen";
             isSubmissionSuccessful = false;
         }
     }

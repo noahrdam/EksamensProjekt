@@ -97,6 +97,9 @@ else
 
 		<input type="checkbox" id="showDate" @bind="showDate" class="checkbox-input" />
 		<label for="showDate" class="checkbox-label">Dato</label>
+
+		<input type="checkbox" id="filterNewsGroup" @bind="filterNewsGroup" class="checkbox-input"/>
+        <label for="filterNewsGroup" class="checkbox-label">Nyhedsgruppe</label>
 	</div>
 </div>
 
@@ -244,7 +247,6 @@ else
 							</td>
 						}
 						<td>
-							<button id="edit" @onclick="() => EditApplication(ap.ApplicationId)"><i class="bi bi-pencil"></i></button>
 							<button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
 						</td>
 					</tr>
@@ -253,46 +255,6 @@ else
 		</tbody>
 	</table>
 }
-
-<ModalDialog @ref="editDialog" Title="Rediger Ansøgning">
-	<EditForm Model="selectedApplication" OnValidSubmit="SaveApplication" class="container mt-3">
-		<DataAnnotationsValidator />
-		<ValidationSummary />
-
-		@if (selectedApplication.ParentVolunteer.Children != null && selectedApplication.ParentVolunteer.Children.Count > 0)
-		{
-			<div class="mb-3">
-				<label for="editChildName" class="form-label">Barnets Navn</label>
-				<InputText id="editChildName" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Name" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editChildAge" class="form-label">Alder</label>
-				<InputNumber id="editChildAge" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Age" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editClothingSize" class="form-label">Tøjstørrelse</label>
-				<InputText id="editClothingSize" @bind-Value="selectedApplication.ParentVolunteer.Children[0].ClothingSize" class="form-control" />
-			</div>
-			<div class="mb-3">
-				<label for="editInterests" class="form-label">Interesser</label>
-				<InputText id="editInterests" @bind-Value="selectedApplication.ParentVolunteer.Children[0].Interests" class="form-control" />
-			</div>
-		}
-		else
-		{
-			<p>No children available for editing.</p>
-		}
-
-		<div class="mb-3">
-			<label for="editComment" class="form-label">Kommentar</label>
-			<InputText id="editComment" @bind-Value="selectedApplication.Comment" class="form-control" />
-		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" @onclick="editDialog.Close">Luk</button>
-			<button type="submit" class="btn btn-primary">Gem ændringer</button>
-		</div>
-	</EditForm>
-</ModalDialog>
 
 
 @code {
@@ -307,6 +269,8 @@ else
 	private Application selectedApplication = new Application();
 	private ModalDialog? editDialog { get; set; }
 	private EditContext? editContext;
+	private List<ParentVolunteer> newsGroup;
+
 
 	private bool showCrewNumber = true;
 	private bool showParentName = true;
@@ -321,6 +285,7 @@ else
 	private bool showSecondPriority = true;
 	private bool showStatus = true;
 	private bool showDate = true;
+	private bool filterNewsGroup = false;
 
 	private string filterButtonText = "Vis alle filtre";
 	private string filterContainerClass = "hidden";
@@ -498,5 +463,11 @@ else
 			await LoadData();
 			editDialog?.Close();
 		}
+	}
+
+	private async Task GetNewsGroup()
+	{
+		newsGroup = await httpClient.GetFromJsonAsync<List<ParentVolunteer>>($"{serverURL}api/aps/getnewsgroup");
+		Console.WriteLine(newsGroup.Count);
 	}
 }

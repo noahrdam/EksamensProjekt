@@ -11,7 +11,8 @@ public class AdminRepository : IAdminRepository
 
     public AdminRepository()
     {
-        var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+        //var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
+        var mongoUri = "mongodb://localhost:27017";
         client = new MongoClient(mongoUri);
 
         var database = client.GetDatabase("ChildClub");
@@ -66,5 +67,12 @@ public class AdminRepository : IAdminRepository
     {
         var filter = Builders<Application>.Filter.Eq(a => a.ApplicationId, id);
         return applicationcollection.Find(filter).FirstOrDefault();
+    }
+
+    public List<ParentVolunteer> GetNewsGroup()
+    {
+        var filter = Builders<Volunteer>.Filter.Eq("newsgroup", true);
+        var volunteers = volunteercollection.Find(filter).ToList();
+        return volunteers.ConvertAll(v => (ParentVolunteer)v);
     }
 }

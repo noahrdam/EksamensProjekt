@@ -11,5 +11,6 @@ namespace Core.Model
     public class ParentVolunteer : Volunteer
     {
         public List<Child> Children { get; set; } = new List<Child>();
+        public bool newsgroup { get; set; }
     }
 }
