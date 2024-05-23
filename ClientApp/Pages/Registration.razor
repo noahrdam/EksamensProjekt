@@ -375,14 +375,16 @@
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
     private bool userConsent = false;  // To track if the user has checked the consent box
     private List<Application> applications;
+    private List<Application> allAps;
 
     protected override async Task OnInitializedAsync()
     {
         createEditContext = new EditContext(application);
         createYouthEditContext = new EditContext(youthVolunteer);
         events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
+        applications = await Http.GetFromJsonAsync<List<Application>>("https://localhost:7095/api/aps/getall");
 
-        // Ensure there's always one child ready to be filled out
+        
         if (application.ParentVolunteer.Children.Count == 0)
         {
             application.ParentVolunteer.Children.Add(new Child());
@@ -489,11 +491,10 @@
         }
 
         var count = applications
-            .Where(ap => ap.FirstPrio.EventId == eventId)
-            .Sum(ap => ap.ParentVolunteer.Children.Count);
+        .Where(ap => (ap.FirstPrio.EventId == eventId && ap.Status == "1.Prioritet") ||
+                     (ap.SecondPrio.EventId == eventId && ap.Status == "2.Prioritet"))
+        .Sum(ap => ap.ParentVolunteer.Children.Count);
 
-        // Log the count to the console
-        Console.WriteLine($"Event ID: {eventId}, First Priority Count: {count}");
 
         return count;
     }
@@ -502,7 +503,7 @@
     private string GetColorCircleForPeriodCount(int count)
     {
         if (count < 6) return "🟢"; // Green circle
-        if (count < 10) return "🟡"; // Yellow circle
+        if (count < 12) return "🟡"; // Yellow circle
         return "🔴"; // Red circle
     }
 
