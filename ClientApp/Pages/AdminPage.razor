@@ -549,10 +549,13 @@ else
     {
         SearchApplications();
     }
+
+    private async Task ReloadApplications()
+    {
+        selectedWeek = null;
+        await LoadData();
+    }
+
 }
 
-     private async Task ReloadApplications()
- {
-     selectedWeek = null;
-     await LoadData();
- }
+ 
