@@ -149,7 +149,7 @@
     </p>
 </div>
 
-<div id="notification" class="notification">Ansøgning indsendt med succes!</div>
+<div id="notification" class="notification">@submissionMessage</div>
 
 
 <ModalDialog @ref="@addDialog" Title="Send ansøgning for dit barn til Børneklubben">
@@ -436,7 +436,7 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
-            submissionMessage = "Application submitted successfully!";
+            submissionMessage = "Ansøgning indsendt med succes!";
             isSubmissionSuccessful = true;
             addDialog?.Close();
             await JS.InvokeVoidAsync("showNotification", "Ansøgning indsendt med succes!");
@@ -471,14 +471,17 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
         if (response.IsSuccessStatusCode)
         {
-            submissionMessage = "Youth application submitted successfully!";
+            submissionMessage = "Underskrift indsendt med succes!";
             isSubmissionSuccessful = true;
             addYouthDialog?.Close();
+            await JS.InvokeVoidAsync("showNotification", "Ansøgning indsendt med succes!");
         }
         else
         {
+            var errorMessage = await response.Content.ReadAsStringAsync();
             submissionMessage = "Failed to submit youth application. Please try again.";
             isSubmissionSuccessful = false;
+            
         }
     }
 

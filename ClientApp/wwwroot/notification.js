@@ -1,6 +1,5 @@
 ﻿window.showNotification = (message) => {
     var notification = document.getElementById("notification");
-    notification.textContent = message || "Ansøgning indsendt med succes!";
     notification.classList.add("show");
     setTimeout(function () {
         notification.classList.remove("show");
