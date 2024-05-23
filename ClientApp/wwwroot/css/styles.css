@@ -209,4 +209,33 @@ html, body {
     background-color: yellow;
 }
 
+.notification {
+    display: none;
+    position: fixed;
+    top: -50px; /* Start lidt over toppen */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Grøn farve for succes */
+    color: white;
+    padding: 15px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    z-index: 1000;
+    border-radius: 0.5rem;
+    transition: top 1s ease-out, opacity 1s ease-out;
+    opacity: 0; /* Start usynlig */
+    font-size: 2.2em; /* Gør notifikationen lidt større */
+    width: 80%; /* Gør boksen bredere */
+    max-width: 500px; /* Men ikke bredere end 500px */
+    text-align: center; /* Center texten */
+    font-family: "Mister Sinatra Slim";
+}
+
+    .notification.show {
+        display: block;
+        top: 20px; /* Flyt den ned fra toppen */
+        opacity: 1; /* Gør den synlig */
+    }
+
 
