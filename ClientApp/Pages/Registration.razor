@@ -256,11 +256,15 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="firstPrioEvent">Første Prioritet</label>
-                        <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control">
+                        <InputSelect id="firstPrioEvent" @bind-Value="application.FirstPrio.EventId" class="form-control" @onchange="StateHasChanged">
                             <option value="">Vælg Dato</option>
                             @foreach (var e in events)
                             {
-                                <option value="@e.EventId"  disabled="@(application.SecondPrio.EventId == e.EventId)">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                                var firstPriorityCount = GetFirstPriorityCountForEvent(e.EventId);
+                                var colorCircle = GetColorCircleForPeriodCount(firstPriorityCount);
+                                <option value="@e.EventId">
+                                    @colorCircle @e.Location, @e.From - @e.To (Uge @e.Week)
+                                </option>
                             }
                         </InputSelect>
                     </div>
@@ -270,7 +274,11 @@
                             <option value="">Vælg Dato</option>
                             @foreach (var e in events)
                             {
-                                <option value="@e.EventId" disabled="@(application.FirstPrio.EventId == e.EventId)">@e.Location, @e.From - @e.To (Uge @e.Week)</option>
+                                var firstPriorityCount = GetFirstPriorityCountForEvent(e.EventId);
+                                var colorCircle = GetColorCircleForPeriodCount(firstPriorityCount);
+                                <option value="@e.EventId" disabled="@(application.FirstPrio.EventId == e.EventId)">
+                                    @colorCircle @e.Location, @e.From - @e.To (Uge @e.Week)
+                                </option>
                             }
                         </InputSelect>
                     </div>
@@ -378,6 +386,7 @@
     private string submissionMessage = "";  // To store the message for the user
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
     private bool userConsent = false;  // To track if the user has checked the consent box
+    private List<Application> applications;
 
     protected override async Task OnInitializedAsync()
     {
@@ -473,6 +482,32 @@
             submissionMessage = "Failed to submit youth application. Please try again.";
             isSubmissionSuccessful = false;
         }
+    }
+
+    private int GetFirstPriorityCountForEvent(int eventId)
+    {
+        if (applications == null)
+        {
+            Console.WriteLine("Applications data is null.");
+            return 0;
+        }
+
+        var count = applications
+            .Where(ap => ap.FirstPrio.EventId == eventId)
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
+
+        // Log the count to the console
+        Console.WriteLine($"Event ID: {eventId}, First Priority Count: {count}");
+
+        return count;
+    }
+
+
+    private string GetColorCircleForPeriodCount(int count)
+    {
+        if (count < 6) return "🟢"; // Green circle
+        if (count < 10) return "🟡"; // Yellow circle
+        return "🔴"; // Red circle
     }
 
     private async Task Login()
