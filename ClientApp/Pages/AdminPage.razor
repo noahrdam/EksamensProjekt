@@ -39,7 +39,8 @@ else
             @foreach (var week in weeks)
             {
                 var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(week);
-                var weekClass = GetButtonClassForWeekCount(weekdayCount + weekendCount);
+                var maxCount = Math.Max(weekdayCount, weekendCount);
+                var weekClass = GetButtonClassForWeekCount(maxCount);
                 <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">Uge @week (Hverdag: @weekdayCount / Weekend: @weekendCount)</button>
             }
         }
@@ -423,11 +424,17 @@ else
 
     private int GetApplicationCountForPeriod(int week, string from, string to)
     {
-        return applications
+        var aa = allAps;
+
+        if (aa == null) return (0);
+        var count = aa
             .Where(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
                          (ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
+
+        return count;
     }
+
 
     private string GetButtonClassForWeekCount(int count)
     {
@@ -442,6 +449,7 @@ else
         if (count < 10) return "btn-yellow";
         return "btn-red";
     }
+
 
     private async Task DeleteApplication(int applicationId)
     {
