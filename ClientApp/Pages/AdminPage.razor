@@ -340,7 +340,7 @@ else
             weeks = events.Select(e => e.Week).Distinct().ToList();
             filteredApplications = applications ?? new List<Application>();
             FilterApplications();
-            UpdateApplicationCounts();
+            StateHasChanged();
         }else
         {
             applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyweek?week={selectedWeek}");
@@ -384,21 +384,10 @@ else
         if (response.IsSuccessStatusCode)
         {
             await LoadData();
-
+            StateHasChanged();
         }
     }
 
-    private void UpdateApplicationCounts()
-    {
-        if (applications == null) return;
-
-        // Refresh week and period counts whenever data changes
-        foreach (var week in weeks)
-        {
-            var count = GetApplicationCountsForWeek(week);
-
-        }
-    }
 
     private (int, int) GetApplicationCountsForWeek(int week)
     {
@@ -422,7 +411,7 @@ else
                           (weekendsEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
 
-        int weekCount = applications
+        int weekCount = aa
             .Where(ap => ap.Status != "Venteliste" &&
                      ((weekEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
                       (weekEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
