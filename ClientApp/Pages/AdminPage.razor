@@ -63,6 +63,16 @@ else
     Console.WriteLine("No week selected");
 }
 
+
+<div class="searchApplications">
+    <EditForm Model="this" OnValidSubmit="PerformSearch">
+        <div class="searchApplications-inputgroup">
+            <InputText class="form-control" placeholder="Søg efter kræw nummer eller navn" @bind-Value="searchTerm" />
+            <button type="submit" class="btn btn-primary">Søg</button>
+        </div>
+    </EditForm>
+</div>
+
 <div class="margin">
     <button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
 </div>
@@ -275,7 +285,7 @@ else
                             </td>
                         }
                         <td>
-                            <button id="delete" @onclick="() => DeleteApplication(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+                            <button id="delete" @onclick="() => ConfirmDelete(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
                         </td>
                     </tr>
                 }
@@ -286,6 +296,17 @@ else
     <div class="margin">
         <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
     </div>
+
+    <ModalDialog @ref="deleteDialog">
+        <div class="container mt-3">
+            <div class="mb-3">
+                <p style="font-size: 1.5rem;">Er du sikker på, at du vil slette ansøgningen?</p>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmDeleteApplication">Slet</button>
+                <button type="button" class="btn btn-primary" @onclick="deleteDialog.Close">Annuller</button>
+            </div>
+        </div>
+    </ModalDialog>
+
 }
 
 @code {
@@ -299,8 +320,13 @@ else
     private Application selectedApplication = new Application();
     private ModalDialog? editDialog { get; set; }
     private EditContext? editContext;
+    private ModalDialog? deleteDialog { get; set; }
     private int? selectedWeek;
     private Admin adminUser;
+    private string searchTerm = string.Empty;
+    private int deleteApplicationId;
+
+
     private bool showCrewNumber = true;
     private bool showParentName = true;
     private bool showMail = true;
@@ -315,6 +341,7 @@ else
     private bool showStatus = true;
     private bool showDate = true;
     private bool showPublished = true;
+    
 
     private string filterButtonText = "Vis alle filtre";
     private string filterContainerClass = "hidden";
@@ -442,12 +469,19 @@ else
         return "btn-red";
     }
 
-    private async Task DeleteApplication(int applicationId)
+    private void ConfirmDelete(int applicationId)
     {
-        var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{applicationId}");
+        deleteApplicationId = applicationId;
+        deleteDialog?.Open();
+    }
+
+    private async Task ConfirmDeleteApplication()
+    {
+        var response = await httpClient.DeleteAsync($"{serverURL}api/aps/delete/{deleteApplicationId}");
         if (response.IsSuccessStatusCode)
         {
             await LoadData();
+            deleteDialog?.Close();
         }
     }
 
@@ -493,5 +527,25 @@ else
     {
         await localStorage.RemoveItemAsync("adminUser");
         NavigationManager.NavigateTo("/login");
+    }
+
+    private void SearchApplications()
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            filteredApplications = applications;
+        }
+        else
+        {
+            var lowerSearchTerm = searchTerm.ToLower();
+            filteredApplications = applications
+                .Where(v => v.ParentVolunteer.CrewNumber.ToString().Contains(lowerSearchTerm) || v.ParentVolunteer.Name.ToLower().Contains(lowerSearchTerm) || v.ParentVolunteer.Mail.ToLower().Contains(lowerSearchTerm))
+                .ToList();
+        }
+    }
+
+    private void PerformSearch()
+    {
+        SearchApplications();
     }
 }

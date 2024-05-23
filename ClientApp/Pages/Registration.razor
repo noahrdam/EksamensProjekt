@@ -149,6 +149,8 @@
     </p>
 </div>
 
+<div id="notification" class="notification">@submissionMessage</div>
+
 <ModalDialog @ref="@addDialog" Title="Send ansøgning for dit barn til Børneklubben">
 
     <EditForm EditContext="createEditContext" OnValidSubmit="@SaveApplication" class="container mt-3">
@@ -302,12 +304,6 @@
         <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
-                @if (!string.IsNullOrEmpty(submissionMessage))
-                {
-                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
-                        @submissionMessage
-                    </div>
-                }
                 <button type="submit" class="btn btn-primary" disabled="@(!userConsent)">Indsend Ansøgning</button>
             </div>
         </div>
@@ -361,12 +357,6 @@
         <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
-                @if (!string.IsNullOrEmpty(submissionMessage))
-                {
-                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
-                        @submissionMessage
-                    </div>
-                }
                 <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
             </div>
         </div>
@@ -430,10 +420,11 @@
             isSubmissionSuccessful = false;
             return;
         }
+
         // Map selected EventIds to actual Event objects
         application.FirstPrio = events.FirstOrDefault(e => e.EventId == application.FirstPrio.EventId);
         application.SecondPrio = events.FirstOrDefault(e => e.EventId == application.SecondPrio.EventId);
-        
+
         // Get signature data URL
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
@@ -441,15 +432,17 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
         if (response.IsSuccessStatusCode)
         {
-            submissionMessage = "Application submitted successfully!";
+            submissionMessage = "Ansøgning indsendt med succes!";
             isSubmissionSuccessful = true;
             addDialog?.Close();
+            await JS.InvokeVoidAsync("showNotification");
         }
         else
         {
             var errorMessage = await response.Content.ReadAsStringAsync();
             submissionMessage = $"Failed to submit application: {errorMessage}";
             isSubmissionSuccessful = false;
+            await JS.InvokeVoidAsync("showNotification", "Kunne ikke indsende ansøgning: " + errorMessage);
         }
     }
 
@@ -472,16 +465,20 @@
         var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
         if (response.IsSuccessStatusCode)
         {
-            submissionMessage = "Youth application submitted successfully!";
+            submissionMessage = "Underskrift indsendt med succes!";
             isSubmissionSuccessful = true;
             addYouthDialog?.Close();
+            await JS.InvokeVoidAsync("showNotification");
         }
         else
         {
+            var errorMessage = await response.Content.ReadAsStringAsync();
             submissionMessage = "Failed to submit youth application. Please try again.";
             isSubmissionSuccessful = false;
+
         }
     }
+
 
     private int GetFirstPriorityCountForEvent(int eventId)
     {
