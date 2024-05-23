@@ -297,12 +297,6 @@
         <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
-                @if (!string.IsNullOrEmpty(submissionMessage))
-                {
-                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
-                        @submissionMessage
-                    </div>
-                }
                 <button type="submit" class="btn btn-primary" disabled="@(!userConsent)">Indsend Ansøgning</button>
             </div>
         </div>
@@ -356,12 +350,6 @@
         <!-- Submit Button -->
         <div class="row">
             <div class="col-12 text-center">
-                @if (!string.IsNullOrEmpty(submissionMessage))
-                {
-                    <div class="alert @(isSubmissionSuccessful ? "alert-success" : "alert-danger")">
-                        @submissionMessage
-                    </div>
-                }
                 <button type="submit" class="btn btn-primary">Indsend Ansøgning</button>
             </div>
         </div>
@@ -439,7 +427,7 @@
             submissionMessage = "Ansøgning indsendt med succes!";
             isSubmissionSuccessful = true;
             addDialog?.Close();
-            await JS.InvokeVoidAsync("showNotification", "Ansøgning indsendt med succes!");
+            await JS.InvokeVoidAsync("showNotification");
         }
         else
         {
@@ -474,7 +462,7 @@
             submissionMessage = "Underskrift indsendt med succes!";
             isSubmissionSuccessful = true;
             addYouthDialog?.Close();
-            await JS.InvokeVoidAsync("showNotification", "Ansøgning indsendt med succes!");
+            await JS.InvokeVoidAsync("showNotification");
         }
         else
         {
