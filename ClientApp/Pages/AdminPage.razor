@@ -290,6 +290,7 @@ else
 
 @code {
     private List<Application> applications;
+    private List<Application> allAps;
     private List<Application> filteredApplications;
     private List<Event> events;
     private List<int> weeks;
@@ -330,14 +331,28 @@ else
     }
 
     private async Task LoadData()
-    {
-        applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
-        events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
-        weeks = events.Select(e => e.Week).Distinct().ToList();
-        filteredApplications = applications ?? new List<Application>();
+    { 
+        if (selectedWeek == null)
+        {
+            applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+            allAps = applications;
+            events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+            weeks = events.Select(e => e.Week).Distinct().ToList();
+            filteredApplications = applications ?? new List<Application>();
+            FilterApplications();
+            UpdateApplicationCounts();
+        }else
+        {
+            applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyweek?week={selectedWeek}");
 
-        FilterApplications();
-        UpdateApplicationCounts();
+            allAps = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+
+            events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
+            weeks = events.Select(e => e.Week).Distinct().ToList();
+            filteredApplications = applications ?? new List<Application>();
+            FilterApplications();
+            StateHasChanged();
+        }
 
     }
 
@@ -357,7 +372,7 @@ else
 
     private void FilterApplications()
     {
-        
+
         filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ToList();
     }
 
@@ -369,7 +384,7 @@ else
         if (response.IsSuccessStatusCode)
         {
             await LoadData();
-            
+
         }
     }
 
@@ -381,25 +396,27 @@ else
         foreach (var week in weeks)
         {
             var count = GetApplicationCountsForWeek(week);
-            
+
         }
     }
 
     private (int, int) GetApplicationCountsForWeek(int week)
     {
-        if (applications == null) return (0, 0);
+        var aa = allAps;
+
+        if (aa == null) return (0, 0);
 
         var weekdaysEvents = events.Where(e => e.Week == week && (e.From == "Onsdag" && e.To == "Fredag")).Select(e => e.EventId).ToList();
         var weekendsEvents = events.Where(e => e.Week == week && (e.From == "Lørdag" && e.To == "Søndag")).Select(e => e.EventId).ToList();
         var weekEvents = events.Where(e => e.Week == week && (e.From == "Onsdag" && e.To == "Søndag")).Select(e => e.EventId).ToList();
 
-        int weekdayCount = applications
+        int weekdayCount = aa
             .Where(ap => ap.Status != "Venteliste" &&
                          ((weekdaysEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
                           (weekdaysEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
             .Sum(ap => ap.ParentVolunteer.Children.Count);
 
-        int weekendCount = applications
+        int weekendCount = aa
             .Where(ap => ap.Status != "Venteliste" &&
                          ((weekendsEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
                           (weekendsEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
