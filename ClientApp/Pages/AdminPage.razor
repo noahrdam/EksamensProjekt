@@ -42,7 +42,7 @@ else
             {
                 var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(week);
                 var weekClass = GetButtonClassForWeekCount(weekdayCount + weekendCount);
-                <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">Uge @week (W: @weekdayCount / WE: @weekendCount)</button>
+                <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">Uge @week (Hverdag: @weekdayCount / Weekend: @weekendCount)</button>
             }
         }
     </div>
@@ -376,7 +376,7 @@ else
         var success = await AdminService.UpdateStatus(application);
         if (success)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData(); 
         }
     }
 
