@@ -167,3 +167,23 @@ th {
 .waitlist{
     background-color: yellow;
 }
+
+.logout-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #dc3545; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .logout-button:hover {
+        background-color: #c82333; 
+    }
+
+    .logout-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+    }

@@ -1,27 +1,33 @@
 ﻿@page "/login"
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@using Core.Model
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService localStorage // Inject local storage service
-@using Core.Model
 
 <head>
     <link rel="stylesheet" href="css/login.css" />
 </head>
 
+<header>
+    <div style="text-align: right;">
+        <button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage"></button>
+    </div>
+</header>
+
 <div class="login-container">
     <div class="login-card">
         <img id="loginlogo" src="børneklubben_logo.png" alt="Børneklubben Logo">
         <h3>Admin Login</h3>
-        <EditForm EditContext="@editContext" OnValidSubmit="@HandleLogin">
+        <EditForm EditContext="@loginEditContext" OnValidSubmit="@HandleLogin">
             <DataAnnotationsValidator />
             <ValidationSummary />
             <div>
                 <label for="LoginUsername">Username</label>
-                <InputText id="LoginUsername" @bind-Value="adminLogin.Username" class="form-control" />
+                <InputText id="LoginUsername" @bind-Value="loginUser.Username" class="form-control" />
             </div>
             <div>
                 <label for="LoginPassword">Password</label>
-                <InputText id="LoginPassword" @bind-Value="adminLogin.Password" type="password" class="form-control" />
+                <InputText id="LoginPassword" @bind-Value="loginUser.Password" type="password" class="form-control" />
             </div>
             <div>
                 <button type="submit" class="btn btn-primary">Log in</button>
@@ -35,75 +41,32 @@
 </div>
 
 @code {
-    private Admin adminLogin = new Admin();
-    private EditContext? editContext;
+    private Admin loginUser = new Admin();
+    private EditContext loginEditContext;
     private string loginMessage = "";
-    private readonly string serverUrl = "https://localhost:7095"; // Adjust to your API URL
-    private List<Admin>? admins;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        // Initialize the edit context and fetch all admins
-        editContext = new EditContext(adminLogin);
-
-        try
-        {
-            admins = await Http.GetFromJsonAsync<List<Admin>>($"{serverUrl}/api/admins/getall");
-        }
-        catch (Exception ex)
-        {
-            // Handle the case where the API is unreachable or errors occur
-            loginMessage = $"Error loading admins: {ex.Message}";
-            admins = null;
-        }
-    }
-
-    private async Task<bool> VerifyLogin(string username, string password)
-    {
-        try
-        {
-            return await Http.GetFromJsonAsync<bool>($"{serverUrl}/api/admins/verify?username={username}&password={password}");
-        }
-        catch (Exception)
-        {
-            return false; // Return false if there's an error during verification
-        }
-    }
-
-    private async Task<Admin?> GetAdmin(string username)
-    {
-        try
-        {
-            return await Http.GetFromJsonAsync<Admin>($"{serverUrl}/api/admins/getadmin?username={username}");
-        }
-        catch (Exception)
-        {
-            return null; // Return null if the user cannot be fetched
-        }
+        loginEditContext = new EditContext(loginUser);
     }
 
     private async Task HandleLogin()
     {
-        bool isVerified = await VerifyLogin(adminLogin.Username, adminLogin.Password);
-
-        if (isVerified)
+        var response = await Http.GetFromJsonAsync<bool>($"https://localhost:7095/api/admins/verify?username={loginUser.Username}&password={loginUser.Password}");
+        if (response)
         {
-            // Attempt to fetch the full user details after verification
-            var thisUser = await GetAdmin(adminLogin.Username);
-            if (thisUser != null)
-            {
-                await localStorage.SetItemAsync("loginUser", thisUser);
-                loginMessage = "User logged in successfully";
-                NavigationManager.NavigateTo("/admin");
-            }
-            else
-            {
-                loginMessage = "User account could not be fetched after verification.";
-            }
+            var admin = await Http.GetFromJsonAsync<Admin>($"https://localhost:7095/api/admins/getadmin?username={loginUser.Username}");
+            await localStorage.SetItemAsync("adminUser", admin);
+            NavigationManager.NavigateTo("/admin");
         }
         else
         {
-            loginMessage = "Failed to log in. Make sure you have an account.";
+            loginMessage = "Invalid username or password.";
         }
+    }
+
+    private void ToHomePage()
+    {
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 }

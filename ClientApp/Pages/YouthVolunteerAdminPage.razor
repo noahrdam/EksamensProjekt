@@ -2,15 +2,28 @@
 @using Core.Model
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <head>
     <link rel="stylesheet" href="css/admin.css" />
 </head>
 
+@if (adminUser == null)
+{
+    <h3>Du skal være logget ind for at se denne side.</h3>
+    <button @onclick="RedirectToLogin">Go to Login</button>
+}
+else
+{
+    <h3>Velkommen, @adminUser.Username</h3>
+    <button class="logout-button" @onclick="Logout">Logout</button>
+}
+
 
 <header>
 <div style="text-align: right;">
     <button id="navigate" class="bi bi-arrow-left-circle-fill" @onclick=ToAdminPage>  Tilbage</button>
+    <button id="navigate" class="bi bi-house-door-fill" @onclick="ToHomePage"></button>
 </div>
 </header>
 
@@ -78,11 +91,28 @@ else
     private List<YouthVolunteer> youthVolunteers;
     private List<YouthVolunteer> filteredYouthVolunteers;
     private string searchTerm = string.Empty;
+    private Admin adminUser;
 
     protected override async Task OnInitializedAsync()
     {
         youthVolunteers = await httpClient.GetFromJsonAsync<List<YouthVolunteer>>("https://localhost:7095/api/aps/getallyouthvolunteers");
         filteredYouthVolunteers = youthVolunteers;
+        adminUser = await localStorage.GetItemAsync<Admin>("adminUser");
+        if (adminUser == null)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("adminUser");
+        NavigationManager.NavigateTo("/login");
     }
 
     private void FilterVolunteers()
@@ -106,9 +136,10 @@ else
     }
 
 
-
-
-
+    private void ToHomePage()
+    {
+        NavigationManager.NavigateTo("/", forceLoad: true);
+    }
 
 
     private async Task ToAdminPage()
