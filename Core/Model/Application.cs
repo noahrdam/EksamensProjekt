@@ -16,6 +16,7 @@ namespace Core.Model
 
         public bool BeenBefore { get; set; }
 
+        [Required(ErrorMessage = "Kommentar-felt skal angives")]
         public string Comment { get; set; }
 
         public string ConsentForm { get; set; }
@@ -26,7 +27,7 @@ namespace Core.Model
 
         public Event SecondPrio { get; set; } = new Event();
 
-        public string Status { get; set; } = "Under behandling"; 
+        public string Status { get; set; } = "1.Prioritet"; 
 
         public bool IsPublished { get; set; } = false;
 

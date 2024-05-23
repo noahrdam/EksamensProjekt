@@ -3,10 +3,22 @@
 @using System.Net.Http.Json
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <head>
     <link rel="stylesheet" href="css/admin.css" />
 </head>
+
+@if (adminUser == null)
+{
+    <h3>Du skal være logget ind for at se denne side.</h3>
+    <button @onclick="RedirectToLogin">Go to Login</button>
+}
+else
+{
+    <h3>Velkommen, @adminUser.Username</h3>
+    <button class="btn btn-danger" @onclick="Logout">Logout</button>
+}
 
 <header>
     <div style="text-align: right;">
@@ -26,9 +38,9 @@
         {
             @foreach (var week in weeks)
             {
-                var weekCount = GetApplicationCountForWeek(week);
-                var weekClass = GetButtonClassForWeekCount(weekCount);
-                <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass" >Uge @week (@GetApplicationCountForWeek(week))</button>
+                var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(week);
+                var weekClass = GetButtonClassForWeekCount(weekdayCount + weekendCount);
+                <button @onclick="() => FilterApplicationsByWeek(week)" class="btn m-1 @weekClass">Uge @week (Hverdag: @weekdayCount / Weekend: @weekendCount)</button>
             }
         }
     </div>
@@ -287,7 +299,7 @@ else
     private ModalDialog? editDialog { get; set; }
     private EditContext? editContext;
     private int? selectedWeek;
-
+    private Admin adminUser;
     private bool showCrewNumber = true;
     private bool showParentName = true;
     private bool showMail = true;
@@ -309,6 +321,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
+
+        adminUser = await localStorage.GetItemAsync<Admin>("adminUser");
+        if (adminUser == null)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
     }
 
     private async Task LoadData()
@@ -316,9 +334,10 @@ else
         applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
         events = await httpClient.GetFromJsonAsync<List<Event>>($"{serverURL}api/aps/getallevents");
         weeks = events.Select(e => e.Week).Distinct().ToList();
-        filteredApplications = applications;
+        filteredApplications = applications ?? new List<Application>();
 
         FilterApplications();
+        UpdateApplicationCounts();
 
     }
 
@@ -331,12 +350,14 @@ else
 
     private async Task FilterApplicationsByPeriod(int week, string from, string to)
     {
+        selectedWeek = week;
         filteredApplications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getfilteredbyperiod?week={week}&from={from}&to={to}");
         StateHasChanged();
     }
 
     private void FilterApplications()
     {
+        
         filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ToList();
     }
 
@@ -347,16 +368,50 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
+            
         }
     }
 
-    private int GetApplicationCountForWeek(int week)
+    private void UpdateApplicationCounts()
     {
-        return applications
-             .Where(ap => (ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
-                          (ap.SecondPrio.Week == week && ap.Status == "2.Prioritet"))
-             .Sum(ap => ap.ParentVolunteer.Children.Count);
+        if (applications == null) return;
+
+        // Refresh week and period counts whenever data changes
+        foreach (var week in weeks)
+        {
+            var count = GetApplicationCountsForWeek(week);
+            
+        }
+    }
+
+    private (int, int) GetApplicationCountsForWeek(int week)
+    {
+        if (applications == null) return (0, 0);
+
+        var weekdaysEvents = events.Where(e => e.Week == week && (e.From == "Onsdag" && e.To == "Fredag")).Select(e => e.EventId).ToList();
+        var weekendsEvents = events.Where(e => e.Week == week && (e.From == "Lørdag" && e.To == "Søndag")).Select(e => e.EventId).ToList();
+        var weekEvents = events.Where(e => e.Week == week && (e.From == "Onsdag" && e.To == "Søndag")).Select(e => e.EventId).ToList();
+
+        int weekdayCount = applications
+            .Where(ap => ap.Status != "Venteliste" &&
+                         ((weekdaysEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                          (weekdaysEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
+
+        int weekendCount = applications
+            .Where(ap => ap.Status != "Venteliste" &&
+                         ((weekendsEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                          (weekendsEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
+
+        int weekCount = applications
+            .Where(ap => ap.Status != "Venteliste" &&
+                     ((weekEvents.Contains(ap.FirstPrio.EventId) && ap.FirstPrio.Week == week && ap.Status == "1.Prioritet") ||
+                      (weekEvents.Contains(ap.SecondPrio.EventId) && ap.SecondPrio.Week == week && ap.Status == "2.Prioritet")))
+            .Sum(ap => ap.ParentVolunteer.Children.Count);
+
+        return (weekdayCount+weekCount, weekendCount+weekCount);
     }
 
     private int GetApplicationCountForPeriod(int week, string from, string to)
@@ -421,5 +476,16 @@ else
     private void ToHomePage()
     {
         NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private void RedirectToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+
+    private async Task Logout()
+    {
+        await localStorage.RemoveItemAsync("adminUser");
+        NavigationManager.NavigateTo("/login");
     }
 }

@@ -18,6 +18,7 @@ namespace ServerAPI.Repositories.Interfaces
 
         List<Application> GetFilteredApplicationsByPeriod(int week, string from, string to);
 
+
         void PublishAllApplications(List<Application> applications);
 
     }
