@@ -347,7 +347,7 @@ else
         var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/updatestatus", application);
         if (response.IsSuccessStatusCode)
         {
-            await LoadData(); // Reload data to reflect the update immediately
+            await LoadData();
         }
     }
 
