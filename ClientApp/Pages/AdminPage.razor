@@ -294,7 +294,8 @@ else
     </table>
 
     <div class="margin">
-        <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button> <!-- Add the publish all button -->
+        <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
+        <button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button> 
     </div>
 
     <ModalDialog @ref="deleteDialog">
@@ -549,3 +550,9 @@ else
         SearchApplications();
     }
 }
+
+     private async Task ReloadApplications()
+ {
+     selectedWeek = null;
+     await LoadData();
+ }
