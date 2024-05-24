@@ -92,6 +92,7 @@ th {
 
 .margin {
     margin-top: 20px;
+    
 }
 
 .hidden {
@@ -184,4 +185,8 @@ th {
 
 .form-control {
     flex: 1; /* Tilføj dette for at sikre, at input-felterne udvider sig tilgængeligt plads */
+}
+
+.published-td {
+    text-align: center; /* Centrer indholdet */
 }

@@ -76,7 +76,10 @@ else
 
 <div class="margin">
     <button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
+    <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
+    <button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
 </div>
+
 
 <div id="filters-container" class="margin @filterContainerClass">
     <div class="checkbox-button-group">
@@ -97,6 +100,12 @@ else
 
         <input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
         <label for="showAge" class="checkbox-label">Alder</label>
+
+        <input type="checkbox" id="showBeenBefore" @bind="showBeenBefore" class="checkbox-input" />
+        <label for="showBeenBefore" class="checkbox-label">Været med før</label>
+
+        <input type="checkbox" id="showEdit" @bind="showEdit" class="checkbox-input" />
+        <label for="showEdit" class="checkbox-label">Rediger</label>
     </div>
     <div class="checkbox-button-group">
         <input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
@@ -178,6 +187,10 @@ else
                 {
                     <th>Anden prio</th>
                 }
+                @if (showBeenBefore)
+                {
+                    <th>Været med før</th>
+                }
                 @if (showStatus)
                 {
                     <th>Opdater status</th>
@@ -194,7 +207,10 @@ else
 				{
 					<th>Offentliggjort</th>
 				}
-                <th>Rediger</th>
+                @if (showEdit)
+                {
+                    <th>Rediger</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -245,6 +261,10 @@ else
                         {
                             <td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
                         }
+                        @if (showBeenBefore)
+                        {
+                            <td>@ap.BeenBefore</td>
+                        }
                         @if (showStatus)
                         {
                             <td>
@@ -274,7 +294,7 @@ else
                         }
                         @if (showPublished)
                         {
-                            <td>
+                            <td class="published-td">
                                 @if (ap.IsPublished)
                                 {
                                     <span class="bi bi-circle-fill" style="color: green;"></span>
@@ -285,19 +305,19 @@ else
                                 }
                             </td>
                         }
+                        @if (showEdit)
+                        {
                         <td>
                             <button id="delete" @onclick="() => ConfirmDelete(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
                         </td>
+                        }
                     </tr>
                 }
             }
         </tbody>
     </table>
 
-    <div class="margin">
-        <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
-        <button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button> 
-    </div>
+    
 
     <ModalDialog @ref="deleteDialog">
         <div class="container mt-3">
@@ -343,6 +363,8 @@ else
     private bool showStatus = true;
     private bool showDate = true;
     private bool showPublished = true;
+    private bool showBeenBefore = true;
+    private bool showEdit = true;
     
 
     private string filterButtonText = "Vis alle filtre";
