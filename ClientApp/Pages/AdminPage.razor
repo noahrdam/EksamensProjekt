@@ -106,6 +106,9 @@ else
 
         <input type="checkbox" id="showEdit" @bind="showEdit" class="checkbox-input" />
         <label for="showEdit" class="checkbox-label">Rediger</label>
+
+        <input type="checkbox" id="showPhone" @bind="showPhone" class="checkbox-input" />
+        <label for="showPhone" class="checkbox-label">Telefonnummer</label>
     </div>
     <div class="checkbox-button-group">
         <input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
@@ -158,6 +161,10 @@ else
                 @if (showMail)
                 {
                     <th>Mail</th>
+                }
+                @if (showPhone)
+                {
+                    <th>Telefonnummer</th>
                 }
                 @if (showChildName)
                 {
@@ -232,6 +239,10 @@ else
                         @if (showMail)
                         {
                             <td>@ap.ParentVolunteer.Mail</td>
+                        }
+                        @if (showPhone)
+                        {
+                            <td>@ap.ParentVolunteer.Phone</td>
                         }
                         @if (showChildName)
                         {
@@ -353,6 +364,7 @@ else
     private bool showParentName = true;
     private bool showMail = true;
     private bool showConsent = false;
+    private bool showPhone = false;
     private bool showChildName = true;
     private bool showAge = true;
     private bool showClothingSize = false;
