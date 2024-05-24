@@ -76,7 +76,17 @@ else
 
 <div class="margin">
     <button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
+    <button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
+    <select class="sort" @onchange="SortApplications">
+        <option class="sort-item" value="newest">Sortér efter nyeste</option>
+        <option class="sort-item" value="oldest">Sortér efter ældste</option>
+        <option class="sort-item" value="beenBefore">Sortér efter tidligere Børneklubbere</option>
+    </select>
 </div>
+
+
+    
+
 
 <div id="filters-container" class="margin @filterContainerClass">
     <div class="checkbox-button-group">
@@ -296,7 +306,6 @@ else
 
     <div class="margin">
         <button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
-        <button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button> 
     </div>
 
     <ModalDialog @ref="deleteDialog">
@@ -403,6 +412,33 @@ else
     {
 
         filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ToList();
+    }
+
+    private async Task SortApplications(ChangeEventArgs e)
+    {
+        var sortOrder = e.Value.ToString();
+        if (sortOrder == "newest")
+        {
+            filteredApplications = filteredApplications
+                .OrderBy(ap => ap.Status == "Venteliste")
+                .ThenByDescending(ap => ap.DateOfApplication)
+                .ToList();
+        }
+        else if (sortOrder == "oldest")
+        {
+            filteredApplications = filteredApplications
+                .OrderBy(ap => ap.Status == "Venteliste")
+                .ThenBy(ap => ap.DateOfApplication)
+                .ToList();
+        }
+        else if (sortOrder == "beenBefore")
+        {
+            filteredApplications = filteredApplications
+                .OrderBy(ap => ap.Status == "Venteliste")
+                .ThenBy(ap => ap.DateOfApplication)
+                .ThenByDescending(ap => ap.BeenBefore)
+                .ToList();
+        }
     }
 
     private async Task UpdateStatus(Application application, string prio)
