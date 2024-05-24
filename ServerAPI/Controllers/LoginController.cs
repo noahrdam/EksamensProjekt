@@ -16,13 +16,6 @@ namespace ServerAPI.Controllers
         }
 
         [HttpGet]
-        [Route("getall")]
-        public List<Admin> GetAllAdmins()
-        {
-            return _repo.GetAllAdmins();
-        }
-
-        [HttpGet]
         [Route("verify")]
         public bool VerifyLogin([FromQuery] string username, [FromQuery] string password)
         {

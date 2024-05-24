@@ -25,11 +25,6 @@ namespace ServerAPI.Repositories
             return _adminCollection.Find(filter).SingleOrDefault();
         }
 
-        public List<Admin> GetAllAdmins()
-        {
-            return _adminCollection.Find(Builders<Admin>.Filter.Empty).ToList();
-        }
-
         public bool VerifyLogin(string username, string password)
         {
             var filter = Builders<Admin>.Filter.Eq("Username", username) & Builders<Admin>.Filter.Eq("Password", password);
