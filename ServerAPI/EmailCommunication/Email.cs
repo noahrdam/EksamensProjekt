@@ -3,7 +3,7 @@ using System.Net;
 
 namespace ServerAPI.EmailCommunication
 {
-    public class EmailService : IEmailService
+    public class Email : IEmail
     {
         public void SendEmail(string toEmail, string subject, string body)
         {

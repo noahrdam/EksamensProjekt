@@ -296,7 +296,7 @@ else
 	</table>
 
 	<div class="margin">
-		<button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
+		<button id="publishAll" class="btn btn-primary" @onclick="SendEmails">Offentliggør alle ansøgninger</button>
 		<button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
 	</div>
 
@@ -326,7 +326,7 @@ else
 					<InputTextArea id="body" class="form-control" @bind-Value="email.Body" />
 				</div>
 				<div class="mb-3">
-					<button type="submit" class="btn btn-primary" @onclick="SendEmail">Send</button>
+					<button type="submit" class="btn btn-primary" @onclick="SendEmails">Send</button>
 					<button type="button" class="btn btn-secondary" @onclick="emailDialog.Close">Luk</button>
 				</div>
 			</EditForm>
@@ -528,11 +528,11 @@ else
 
 	private async Task PublishAllApplications()
 	{
+
 		var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/publishall", applications);
 		if (response.IsSuccessStatusCode)
 		{
 			await LoadData();
-			await SendEmails();
 		}
 	}
 
@@ -541,7 +541,7 @@ else
 		var response = await httpClient.PostAsJsonAsync($"{serverURL}api/aps/sendmanyemails", applications);
 		if (response.IsSuccessStatusCode)
 		{
-			await LoadData();
+			PublishAllApplications();
 		}
 	}
 

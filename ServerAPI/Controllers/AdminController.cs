@@ -12,9 +12,9 @@ namespace ServerAPI.Controllers
     public class AdminController : ControllerBase
     {
         private IAdminRepository mRepo;
-        private IEmailService _emailService;
+        private IEmail _emailService;
 
-        public AdminController(IAdminRepository repo, IEmailService emailService)
+        public AdminController(IAdminRepository repo, IEmail emailService)
         {
             mRepo = repo;
             _emailService = emailService;
@@ -86,7 +86,7 @@ namespace ServerAPI.Controllers
         {
             foreach (var application in applications)
             {
-                if (application.IsPublished)
+                if (!application.IsPublished)
                 {
                     var subject = "Bekræftelse på din ansøgning";
                     string body;
@@ -130,7 +130,7 @@ namespace ServerAPI.Controllers
                     else
                     {
            
-                        body = $"♥ Kære {application.ParentVolunteer.Name}♥\n\n" +
+                        body = $"♥ Kære {application.ParentVolunteer.Name}♥\n\n" + 
                                $"Vi har modtaget jeres ansøgning til børneklubben for\n" +
                                $"{application.FirstPrio.From} til {application.FirstPrio.To} i uge {application.FirstPrio.Week} i {application.FirstPrio.Location}\n\n" +
                                $"Desværre er alle pladser i jeres første- og andenprioritet fyldt op på nuværende tidspunkt, og I er derfor blevet placeret på ventelisten.\n\n" +
@@ -146,7 +146,7 @@ namespace ServerAPI.Controllers
 
         [HttpPost]
         [Route("sendemail")]
-        public void SendEmail(Email email)
+        public void SendEmail(Core.Model.Email email)
         {
             _emailService.SendEmail(email.To, email.Subject, email.Body);
         }

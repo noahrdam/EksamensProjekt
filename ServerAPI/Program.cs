@@ -15,7 +15,7 @@ namespace ServerAPI
             builder.Services.AddSingleton<ILoginRepository, LoginRepository>();
             builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
             builder.Services.AddSingleton<IRegistrationRepository, RegistrationRepository>();
-            builder.Services.AddSingleton<IEmailService, EmailService>();
+            builder.Services.AddSingleton<IEmail, Email>();
 
 
 
