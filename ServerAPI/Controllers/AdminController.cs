@@ -82,7 +82,7 @@ namespace ServerAPI.Controllers
 
         [HttpPost]
         [Route("sendmanyemails")]
-        public void SendManylEmails(List<Application> applications)
+        public void SendEmails(List<Application> applications)
         {
             foreach (var application in applications)
             {
