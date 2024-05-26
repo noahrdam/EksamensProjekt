@@ -11,5 +11,7 @@ namespace ClientApp.Services
         Task<bool> UpdateStatus(Application application);
         Task<bool> DeleteApplication(int applicationId);
         Task<bool> PublishAllApplications(List<Application> applications);
-    }
+		Task<bool> SendManyEmails(List<Application> applications);
+		Task<bool> SendEmail(Email email);
+	}
 }

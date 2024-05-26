@@ -50,5 +50,22 @@ namespace ClientApp.Services
             var response = await http.PutAsJsonAsync($"{_serverUrl}/api/aps/publishall", applications);
             return response.IsSuccessStatusCode;
         }
-    }
+
+
+		public async Task<bool> SendManyEmails(List<Application> applications)
+		{
+			var response = await http.PostAsJsonAsync($"{_serverUrl}/api/aps/sendmanyemails", applications);
+			return response.IsSuccessStatusCode;
+		}
+
+		public async Task<bool> SendEmail(Email email)
+		{
+			var response = await http.PostAsJsonAsync($"{_serverUrl}/api/aps/sendemail", email);
+			return response.IsSuccessStatusCode;
+		}
+
+
+
+
+	}
 }

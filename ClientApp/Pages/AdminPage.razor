@@ -288,6 +288,7 @@ else
 						}
 						<td>
 							<button id="delete" @onclick="() => ConfirmDelete(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+							<button id="sendEmail" @onclick="() => OpenEmailModal(ap)"><i class="bi bi-envelope"></i></button>
 						</td>
 					</tr>
 				}
@@ -296,7 +297,7 @@ else
 	</table>
 
 	<div class="margin">
-		<button id="publishAll" class="btn btn-primary" @onclick="PublishAllApplications">Offentliggør alle ansøgninger</button>
+		<button id="publishAll" class="btn btn-primary" @onclick="SendEmails">Offentliggør alle ansøgninger</button>
 		<button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
 	</div>
 
@@ -307,6 +308,29 @@ else
 				<button type="button" class="btn btn-danger" @onclick="ConfirmDeleteApplication">Slet</button>
 				<button type="button" class="btn btn-primary" @onclick="deleteDialog.Close">Annuller</button>
 			</div>
+		</div>
+	</ModalDialog>
+
+	<ModalDialog @ref="emailDialog">
+		<div class="container mt-3">
+			<EditForm EditContext="editContext" OnValidSubmit="SendEmail">
+				<div class="mb-3">
+					<label for="toEmail" class="form-label">To</label>
+					<InputText id="toEmail" class="form-control" @bind-Value="email.To" readonly />
+				</div>
+				<div class="mb-3">
+					<label for="subject" class="form-label">Subject</label>
+					<InputText id="subject" class="form-control" @bind-Value="email.Subject" />
+				</div>
+				<div class="mb-3">
+					<label for="body" class="form-label">Body</label>
+					<InputTextArea id="body" class="form-control" @bind-Value="email.Body" />
+				</div>
+				<div class="mb-3">
+					<button type="submit" class="btn btn-primary" @onclick="SendEmail">Send</button>
+					<button type="button" class="btn btn-secondary" @onclick="emailDialog.Close">Luk</button>
+				</div>
+			</EditForm>
 		</div>
 	</ModalDialog>
 
@@ -321,12 +345,15 @@ else
 	private string? selectedStatus;
 	private Application selectedApplication = new Application();
 	private ModalDialog? editDialog { get; set; }
-	private EditContext? editContext;
 	private ModalDialog? deleteDialog { get; set; }
+	private ModalDialog? emailDialog { get; set; }
 	private int? selectedWeek;
 	private Admin? adminUser;
 	private string searchTerm = string.Empty;
 	private int deleteApplicationId;
+	private Email email = new Email();
+	private EditContext? editContext;
+	private string serverURL = "https://localhost:7095/";
 
 
 	private bool showCrewNumber = true;
@@ -353,6 +380,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
+		editContext = new EditContext(email);
 		await LoadData();
 
 		adminUser = await localStorage.GetItemAsync<Admin>("adminUser");
@@ -503,11 +531,45 @@ else
 
 	private async Task PublishAllApplications()
 	{
-		var response = await AdminService.PublishAllApplications(applications);
-		if (response)
+
+		var response = await httpClient.PutAsJsonAsync($"{serverURL}api/aps/publishall", applications);
+		if (response.IsSuccessStatusCode)
 		{
 			await LoadData();
 		}
+	}
+
+	private async Task SendEmails()
+	{
+		var response = await AdminService.SendManyEmails(applications);
+		if (response)
+		{
+			await PublishAllApplications();
+		}
+	}
+
+	public async Task SendEmail()
+	{
+		var newemail = new Email
+			{
+				To = email.To,
+				Subject = email.Subject,
+				Body = email.Body
+			};
+
+		var response = await AdminService.SendEmail(newemail);
+		if (response)
+		{
+			emailDialog?.Close();
+		}
+	}
+
+	private void OpenEmailModal(Application application)
+	{
+		email.To = application.ParentVolunteer.Mail;
+		email.Subject = "";
+		email.Body = "";
+		emailDialog.Open();
 	}
 
 	private async Task ToYouthPage()
