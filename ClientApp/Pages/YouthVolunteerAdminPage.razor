@@ -1,5 +1,6 @@
 ﻿@page "/youth"
 @using Core.Model
+@using ClientApp.Services
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
@@ -92,9 +93,12 @@ else
     private string searchTerm = string.Empty;
     private Admin adminUser;
 
+    [Inject]
+    private IYouthVolunteerAdminService YouthVolunteerAdminService { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        youthVolunteers = await httpClient.GetFromJsonAsync<List<YouthVolunteer>>("https://localhost:7095/api/aps/getallyouthvolunteers");
+        youthVolunteers = await YouthVolunteerAdminService.GetAllYouthVolunteers();
         filteredYouthVolunteers = youthVolunteers;
         adminUser = await localStorage.GetItemAsync<Admin>("adminUser");
         if (adminUser == null)

@@ -5,27 +5,37 @@ namespace ClientApp.Services
 {
     public class RegistrationService: IRegistrationService
     {
-        HttpClient http;
+		HttpClient http;
+		private string _serverUrl = "https://localhost:7095";
 
-        private string serverUrl = "https://localhost:7095";
+		public RegistrationService(HttpClient http)
+		{
+			this.http = http;
+		}
 
-        private RegistrationService(HttpClient http)
-        {
-            this.http = http;
+		public async Task<List<Event>> GetAllEvents()
+		{
+			var events = await http.GetFromJsonAsync<List<Event>>($"{_serverUrl}/api/registration/getallevents");
+			return events;
+		}
+
+		public async Task<bool> SaveApplication(Application application)
+		{
+			var response = await http.PostAsJsonAsync($"{_serverUrl}/api/registration/register", application);
+			return response.IsSuccessStatusCode;
+		}
+
+		public async Task<bool> SaveYouthApplication(YouthVolunteer youthVolunteer)
+		{
+			var response = await http.PostAsJsonAsync($"{_serverUrl}/api/registration/registerYouthVolunteer", youthVolunteer);
+			return response.IsSuccessStatusCode;
+		}
+
+
+		public async Task<List<Application>> GetAllApplications()
+		{
+            var applications = await http.GetFromJsonAsync<List<Application>>($"{_serverUrl}/api/aps/getall");
+            return applications;
         }
-
-        public async Task<bool> RegisterApplication(Application application)
-        {
-            var response = await http.PostAsJsonAsync($"{serverUrl}/api/registration", application);
-            return response.IsSuccessStatusCode;
-        }
-
-        public async Task<List<Event>> GetEvents()
-        {
-            var events = await http.GetFromJsonAsync<List<Event>>($"{serverUrl}/api/registration/getallevents");
-            return events;
-        }
-
-
-    }
+	}
 }

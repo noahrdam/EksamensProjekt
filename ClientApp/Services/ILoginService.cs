@@ -1,10 +1,12 @@
-﻿
-using Core.Model;
+﻿using Core.Model;
 
 namespace ClientApp.Services
 {
-    public class ILoginService
+    public interface ILoginService
     {
+        Task<bool> VerifyLogin(string username, string password);
+        Task<Admin> GetAdmin(string username);
+
 
     }
 }

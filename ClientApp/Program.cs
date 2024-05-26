@@ -15,14 +15,20 @@ namespace ClientApp
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            // Register the HttpClient
             builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             builder.Services.AddSingleton<IRegistrationService, RegistrationService>();
 
+            builder.Services.AddSingleton<IAdminService, AdminService>();
+
+            builder.Services.AddSingleton<ILoginService, LoginService>();
+
+            builder.Services.AddSingleton<IYouthVolunteerAdminService, YouthVolunteerAdminService>();
+
+            builder.Services.AddSingleton<IApplicationStatusService,ApplicationStatusService>();
+
             builder.Services.AddBlazoredLocalStorage();
 
-            builder.Services.AddScoped<ILoginService, LoginService>();
 
             await builder.Build().RunAsync();
         }

@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Core.Model
+@using ClientApp.Services
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
@@ -375,16 +376,17 @@
     private bool isSubmissionSuccessful = false;  // To track if the submission was successful
     private bool userConsent = false;  // To track if the user has checked the consent box
     private List<Application> applications;
-    private List<Application> allAps;
+
+    [Inject]
+    private IRegistrationService RegistrationService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         createEditContext = new EditContext(application);
         createYouthEditContext = new EditContext(youthVolunteer);
-        events = await Http.GetFromJsonAsync<List<Event>>("https://localhost:7095/api/registration/getallevents");
-        applications = await Http.GetFromJsonAsync<List<Application>>("https://localhost:7095/api/aps/getall");
+        events = await RegistrationService.GetAllEvents();
+        applications = await RegistrationService.GetAllApplications();
 
-        
         if (application.ParentVolunteer.Children.Count == 0)
         {
             application.ParentVolunteer.Children.Add(new Child());
@@ -431,8 +433,8 @@
         var signatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "signature-pad");
         application.ConsentForm = signatureDataUrl;
 
-        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/register", application);
-        if (response.IsSuccessStatusCode)
+        var response = await RegistrationService.SaveApplication(application);
+        if (response)
         {
             submissionMessage = "Ansøgning indsendt med succes!";
             isSubmissionSuccessful = true;
@@ -441,10 +443,10 @@
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            submissionMessage = $"Failed to submit application: {errorMessage}";
+            //var errorMessage = await response.Content.ReadAsStringAsync();
+            submissionMessage = $"Fejl i processen af oprettelse af ansøgningen";
             isSubmissionSuccessful = false;
-            await JS.InvokeVoidAsync("showNotification", "Kunne ikke indsende ansøgning: " + errorMessage);
+            await JS.InvokeVoidAsync("showNotification", "Kunne ikke indsende ansøgning" /* + errorMessage */);
         }
     }
 
@@ -464,8 +466,8 @@
         var youthSignatureDataUrl = await JS.InvokeAsync<string>("getSignatureDataUrl", "youth-signature-pad");
         youthVolunteer.ConsentForm = youthSignatureDataUrl;
 
-        var response = await Http.PostAsJsonAsync("https://localhost:7095/api/registration/registerYouthVolunteer", youthVolunteer);
-        if (response.IsSuccessStatusCode)
+        var response = await RegistrationService.SaveYouthApplication(youthVolunteer);
+        if (response)
         {
             submissionMessage = "Underskrift indsendt med succes!";
             isSubmissionSuccessful = true;
@@ -474,8 +476,8 @@
         }
         else
         {
-            var errorMessage = await response.Content.ReadAsStringAsync();
-            submissionMessage = "Failed to submit youth application. Please try again.";
+            //var errorMessage = await response.Content.ReadAsStringAsync();
+            submissionMessage = "Fejl i processen af indsendelsen af samtykkeerklæringen";
             isSubmissionSuccessful = false;
 
         }

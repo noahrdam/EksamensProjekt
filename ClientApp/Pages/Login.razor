@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @using Core.Model
+@using ClientApp.Services
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 
@@ -45,6 +46,9 @@
     private EditContext loginEditContext;
     private string loginMessage = "";
 
+    [Inject]
+    private ILoginService LoginService { get; set; }
+
     protected override void OnInitialized()
     {
         loginEditContext = new EditContext(loginUser);
@@ -52,11 +56,11 @@
 
     private async Task HandleLogin()
     {
-        var response = await Http.GetFromJsonAsync<bool>($"https://localhost:7095/api/admins/verify?username={loginUser.Username}&password={loginUser.Password}");
+        var response = await LoginService.VerifyLogin(loginUser.Username, loginUser.Password);
         if (response)
         {
-            var admin = await Http.GetFromJsonAsync<Admin>($"https://localhost:7095/api/admins/getadmin?username={loginUser.Username}");
-            await localStorage.SetItemAsync("adminUser", admin);
+            var admin = await LoginService.GetAdmin(loginUser.Username);
+            await localStorage.SetItemAsync("adminUser", admin); 
             NavigationManager.NavigateTo("/admin");
         }
         else

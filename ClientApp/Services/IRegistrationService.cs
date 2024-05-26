@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Core.Model;
+﻿using Core.Model;
 namespace ClientApp.Services
 {
     public interface IRegistrationService
     {
-        Task<bool> RegisterApplication(Application application);
+		Task<List<Event>> GetAllEvents();
 
-        Task<List<Event>> GetEvents();
-    }
+        Task<List<Application>> GetAllApplications();
+        Task<bool> SaveApplication(Application application);
+		Task<bool> SaveYouthApplication(YouthVolunteer youthVolunteer);
+	}
 }

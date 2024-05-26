@@ -1,5 +1,6 @@
 ﻿@page "/status"
 @using Core.Model
+@using ClientApp.Services
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 
@@ -81,7 +82,9 @@
 	private List<Application> filteredApplications;
 	private string searchName = string.Empty;
 	private string searchCrewNumber = string.Empty;
-	private string serverURL = "https://localhost:7095/";
+
+	[Inject]
+	private IApplicationStatusService ApplicationStatusService { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -90,7 +93,7 @@
 
 	private async Task LoadData()
 	{
-		applications = await httpClient.GetFromJsonAsync<List<Application>>($"{serverURL}api/aps/getall");
+		applications = await ApplicationStatusService.GetAllApplications();
 		filteredApplications = new List<Application>();
 	}
 
