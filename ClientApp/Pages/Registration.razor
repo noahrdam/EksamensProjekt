@@ -296,10 +296,14 @@
         </div>
 
         <div class="card-body">
+            <InputCheckbox id="newsLetter" @bind-Value="application.Newsletter" class="form-check-input" />
+            <label for="newsLetter" class="form-check-label">Tilmeld Børneklubbens nyhedsgruppe</label>
+        </div>
+
+
+        <div class="card-body">
             <InputCheckbox @bind-Value="userConsent" class="form-check-input" />
-            <label for="userConsent" class="form-check-label">
-                Jeg er indforstået med, at de datoer jeg tilmelder mine børn til børneklubben, er de dage jeg selv arbejder som frivillig.
-            </label>
+            <label for="userConsent" class="form-check-label"> Jeg er indforstået med, at de datoer jeg tilmelder mine børn til børneklubben, er de dage jeg selv arbejder som frivillig.</label>
         </div>
 
         <!-- Submit Button -->
