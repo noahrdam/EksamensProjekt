@@ -315,16 +315,16 @@ else
 		<div class="container mt-3">
 			<EditForm EditContext="editContext" OnValidSubmit="SendEmail">
 				<div class="mb-3">
-					<label for="toEmail" class="form-label">To</label>
-					<InputText id="toEmail" class="form-control" @bind-Value="email.To" readonly />
+					<label for="Til" class="form-label">Til</label>
+					<InputText id="Til" class="form-control" @bind-Value="email.To" readonly />
 				</div>
 				<div class="mb-3">
-					<label for="subject" class="form-label">Subject</label>
-					<InputText id="subject" class="form-control" @bind-Value="email.Subject" />
+					<label for="Emne" class="form-label">Emne</label>
+					<InputText id="Emne" class="form-control" @bind-Value="email.Subject" />
 				</div>
 				<div class="mb-3">
-					<label for="body" class="form-label">Body</label>
-					<InputTextArea id="body" class="form-control" @bind-Value="email.Body" />
+					<label for="Indhold" class="form-label">Indhold</label>
+					<InputTextArea id="Indhold" class="form-control" @bind-Value="email.Body" />
 				</div>
 				<div class="mb-3">
 					<button type="submit" class="btn btn-primary" @onclick="SendEmail">Send</button>
