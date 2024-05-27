@@ -77,12 +77,15 @@ else
 
 <div class="margin">
 	<button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
+	<button id="publishAll" class="btn btn-primary" @onclick="ConfirmPublish">Offentliggør alle ansøgninger</button>
+	<button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
 </div>
+
 
 <div id="filters-container" class="margin @filterContainerClass">
 	<div class="checkbox-button-group">
 		<input type="checkbox" id="showCrewNumber" @bind="showCrewNumber" class="checkbox-input" />
-		<label for="showCrewNumber" class="checkbox-label">Kræv nummer</label>
+		<label for="showCrewNumber" class="checkbox-label">Kræw nummer</label>
 
 		<input type="checkbox" id="showParentName" @bind="showParentName" class="checkbox-input" />
 		<label for="showParentName" class="checkbox-label">Forældre navn</label>
@@ -98,8 +101,18 @@ else
 
 		<input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
 		<label for="showAge" class="checkbox-label">Alder</label>
-	</div>
-	<div class="checkbox-button-group">
+		</div>
+
+		<div class="checkbox-button-group">
+		<input type="checkbox" id="showBeenBefore" @bind="showBeenBefore" class="checkbox-input" />
+		<label for="showBeenBefore" class="checkbox-label">Været med før</label>
+
+		<input type="checkbox" id="showEdit" @bind="showEdit" class="checkbox-input" />
+		<label for="showEdit" class="checkbox-label">Rediger</label>
+
+		<input type="checkbox" id="showPhone" @bind="showPhone" class="checkbox-input" />
+		<label for="showPhone" class="checkbox-label">Telefonnummer</label>
+	
 		<input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
 		<label for="showClothingSize" class="checkbox-label">Tøjstørrelse</label>
 
@@ -108,7 +121,9 @@ else
 
 		<input type="checkbox" id="showComment" @bind="showComment" class="checkbox-input" />
 		<label for="showComment" class="checkbox-label">Kommentar</label>
+		</div>
 
+		<div class="checkbox-button-group">
 		<input type="checkbox" id="showFirstPriority" @bind="showFirstPriority" class="checkbox-input" />
 		<label for="showFirstPriority" class="checkbox-label">1. Prioritet</label>
 
@@ -141,7 +156,7 @@ else
 			<tr>
 				@if (showCrewNumber)
 				{
-					<th>Kræv Nummer</th>
+					<th>Kræw Nummer</th>
 				}
 				@if (showParentName)
 				{
@@ -150,6 +165,10 @@ else
 				@if (showMail)
 				{
 					<th>Mail</th>
+				}
+				@if (showPhone)
+				{
+					<th>Telefonnummer</th>
 				}
 				@if (showChildName)
 				{
@@ -179,6 +198,10 @@ else
 				{
 					<th>Anden prio</th>
 				}
+				@if (showBeenBefore)
+				{
+					<th>Været med før</th>
+				}
 				@if (showStatus)
 				{
 					<th>Opdater status</th>
@@ -195,7 +218,10 @@ else
 				{
 					<th>Offentliggjort</th>
 				}
-				<th>Rediger</th>
+				@if (showEdit)
+				{
+					<th>Rediger</th>
+				}
 			</tr>
 		</thead>
 		<tbody>
@@ -217,6 +243,10 @@ else
 						@if (showMail)
 						{
 							<td>@ap.ParentVolunteer.Mail</td>
+						}
+						@if (showPhone)
+						{
+							<td>@ap.ParentVolunteer.Phone</td>
 						}
 						@if (showChildName)
 						{
@@ -245,6 +275,10 @@ else
 						@if (showSecondPriority)
 						{
 							<td>@ap.SecondPrio.From - @ap.SecondPrio.To (Uge @ap.SecondPrio.Week)</td>
+						}
+						@if (showBeenBefore)
+						{
+							<td>@ap.BeenBefore</td>
 						}
 						@if (showStatus)
 						{
@@ -275,7 +309,7 @@ else
 						}
 						@if (showPublished)
 						{
-							<td>
+							<td class="published-td">
 								@if (ap.IsPublished)
 								{
 									<span class="bi bi-circle-fill" style="color: green;"></span>
@@ -286,15 +320,19 @@ else
 								}
 							</td>
 						}
-						<td>
-							<button id="delete" @onclick="() => ConfirmDelete(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
-							<button id="sendEmail" @onclick="() => OpenEmailModal(ap)"><i class="bi bi-envelope"></i></button>
-						</td>
+						@if (showEdit)
+						{
+							<td class="edit-td">
+								<button id="delete" @onclick="() => ConfirmDelete(ap.ApplicationId)"><i class="bi bi-trash"></i></button>
+								<button id="sendEmail" @onclick="() => OpenEmailModal(ap)"><i class="bi bi-envelope"></i></button>
+							</td>
+						}
 					</tr>
 				}
 			}
 		</tbody>
 	</table>
+
 
 	<div class="margin">
 		<button id="publishAll" class="btn btn-primary" @onclick="SendEmails">Offentliggør alle ansøgninger</button>
@@ -307,6 +345,16 @@ else
 				<p style="font-size: 1.5rem;">Er du sikker på, at du vil slette ansøgningen?</p>
 				<button type="button" class="btn btn-danger" @onclick="ConfirmDeleteApplication">Slet</button>
 				<button type="button" class="btn btn-primary" @onclick="deleteDialog.Close">Annuller</button>
+			</div>
+		</div>
+	</ModalDialog>
+
+	<ModalDialog @ref="publishDialog">
+		<div class="container mt-3">
+			<div class="mb-3">
+				<p style="font-size: 1.5rem;">Er du sikker på, at du vil offentliggøre alle valgte ansøgninger?</p>
+				<button type="button" class="btn btn-success" @onclick="SendEmails">Offentliggør alle ansøgninger</button>
+				<button type="button" class="btn btn-primary" @onclick="publishDialog.Close">Annuller</button>
 			</div>
 		</div>
 	</ModalDialog>
@@ -347,6 +395,7 @@ else
 	private ModalDialog? editDialog { get; set; }
 	private ModalDialog? deleteDialog { get; set; }
 	private ModalDialog? emailDialog { get; set; }
+	private ModalDialog? publishDialog { get; set; }
 	private int? selectedWeek;
 	private Admin? adminUser;
 	private string searchTerm = string.Empty;
@@ -361,7 +410,7 @@ else
 	private bool showMail = true;
 	private bool showConsent = false;
 	private bool showChildName = true;
-	private bool showAge = true;
+	private bool showAge = false;
 	private bool showClothingSize = false;
 	private bool showInterests = false;
 	private bool showComment = true;
@@ -370,6 +419,9 @@ else
 	private bool showStatus = true;
 	private bool showDate = true;
 	private bool showPublished = true;
+	private bool showBeenBefore = false;
+	private bool showEdit = true;
+	private bool showPhone = false;
 
 
 	private string filterButtonText = "Vis alle filtre";
@@ -536,7 +588,13 @@ else
 		if (response.IsSuccessStatusCode)
 		{
 			await LoadData();
+			publishDialog?.Close();
 		}
+	}
+
+	private void ConfirmPublish()
+	{
+		publishDialog?.Open();
 	}
 
 	private async Task SendEmails()

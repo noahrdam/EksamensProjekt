@@ -66,7 +66,7 @@ th {
     opacity: 0.8;
 }
 
-#edit {
+#sendEmail {
     cursor: pointer;
     outline: 0;
     color: #fff;
@@ -184,4 +184,9 @@ th {
 
 .form-control {
     flex: 1; /* Tilføj dette for at sikre, at input-felterne udvider sig tilgængeligt plads */
+}
+
+.edit-td,
+.published-td {
+    text-align: center; /* Centrer indholdet */
 }
