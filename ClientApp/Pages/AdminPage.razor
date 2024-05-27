@@ -79,6 +79,11 @@ else
 	<button id="filterbutton" class="bi bi-sliders" @onclick="ToggleFilters">&nbsp;@filterButtonText</button>
 	<button id="publishAll" class="btn btn-primary" @onclick="ConfirmPublish">Offentliggør alle ansøgninger</button>
 	<button id="reloadApplications" class="btn btn-primary" @onclick="ReloadApplications">Hent alle ansøgninger</button>
+	<select class="sort" @onchange="SortApplications">
+		<option class="sort-item" value="newest">Sortér efter nyeste</option>
+		<option class="sort-item" value="oldest">Sortér efter ældste</option>
+		<option class="sort-item" value="beenBefore">Sortér efter tidligere Børneklubbere</option>
+	</select>
 </div>
 
 
@@ -485,7 +490,7 @@ else
 	private void FilterApplications()
 	{
 
-		filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ToList();
+		filteredApplications = filteredApplications.OrderBy(ap => ap.Status == "Venteliste").ThenBy(ap => ap.Status).ThenByDescending(ap => ap.DateOfApplication).ToList();
 	}
 
 	private async Task UpdateStatus(Application application, string prio)
@@ -563,6 +568,32 @@ else
 		if (count < 6) return "btn-green";
 		if (count < 10) return "btn-yellow";
 		return "btn-red";
+	}
+
+	private async Task SortApplications(ChangeEventArgs e)
+	{
+		var sortOrder = e.Value.ToString();
+		if (sortOrder == "newest")
+		{
+			filteredApplications = filteredApplications
+				.OrderBy(ap => ap.Status == "Venteliste")
+				.ThenByDescending(ap => ap.DateOfApplication)
+				.ToList();
+		}
+		else if (sortOrder == "oldest")
+		{
+			filteredApplications = filteredApplications
+				.OrderBy(ap => ap.Status == "Venteliste")
+				.ThenBy(ap => ap.DateOfApplication)
+				.ToList();
+		}
+		else if (sortOrder == "beenBefore")
+		{
+			filteredApplications = filteredApplications
+				.OrderBy(ap => ap.Status == "Venteliste")
+				.ThenByDescending(ap => ap.BeenBefore)
+				.ToList();
+		}
 	}
 
 	private void ConfirmDelete(int applicationId)
