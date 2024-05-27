@@ -1,10 +1,6 @@
 ﻿using Core.Model;
 using MongoDB.Driver;
-using MongoDB.Bson;
 using ServerAPI.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ServerAPI.Repositories
 {
@@ -17,7 +13,7 @@ namespace ServerAPI.Repositories
         public RegistrationRepository()
         {
             var mongoUri = "mongodb+srv://eaa23fana:4321@childclubdb.qdo9bmh.mongodb.net/?retryWrites=true&w=majority&appName=ChildClubDB";
-            //var mongoUri = "mongodb://localhost:27017";
+           
 
             try
             {
@@ -73,13 +69,13 @@ namespace ServerAPI.Repositories
             {
                 application.ParentVolunteer.VolunteerId = parentVolunteer.VolunteerId;
                 
-                // Check if adding a new child would exceed the limit of 2 children per parent
+                
                 if (parentVolunteer.Children.Count + application.ParentVolunteer.Children.Count > 2)
                 {
                     throw new Exception("A parent can only apply for two children.");
                 }
 
-                // Update parent with the new child only if they have fewer than 2 children
+                
                 foreach (var child in application.ParentVolunteer.Children)
                 {
                     UpdateParentVolunteer(parentVolunteer, child);
@@ -88,11 +84,11 @@ namespace ServerAPI.Repositories
 
             else
             {
-                // If it's a new parent, add them
+                
                 AddParentVolunteer(application.ParentVolunteer);
             }
 
-            // Assign a new application ID
+            
             var max = 0;
             if (applicationCollection.Count(Builders<Application>.Filter.Empty) > 0)
             {
@@ -100,7 +96,7 @@ namespace ServerAPI.Repositories
             }
             application.ApplicationId = max + 1;
 
-            // Insert the application into the collection
+            
             applicationCollection.InsertOne(application);
         }
 

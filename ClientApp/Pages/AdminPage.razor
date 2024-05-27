@@ -403,19 +403,19 @@ else
 	private List<Application>? filteredApplications;
 	private List<Event>? events;
 	private List<int>? weeks;
-	private string? selectedStatus;
-	private Application selectedApplication = new Application();
 	private ModalDialog? editDialog { get; set; }
 	private ModalDialog? deleteDialog { get; set; }
 	private ModalDialog? emailDialog { get; set; }
 	private ModalDialog? publishDialog { get; set; }
-	private int? selectedWeek;
 	private Admin? adminUser;
-	private string searchTerm = string.Empty;
-	private int deleteApplicationId;
 	private Email email = new Email();
 	private EditContext? editContext;
-	private string serverURL = "https://localhost:7095/";
+
+	
+	private string? selectedStatus;
+	private int? selectedWeek;
+	private string searchTerm = string.Empty;
+	private int deleteApplicationId;
 
 
 	private bool showCrewNumber = true;

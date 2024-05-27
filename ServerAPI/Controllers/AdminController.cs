@@ -1,5 +1,4 @@
-﻿// AdminController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ServerAPI.Repositories.Interfaces;
 using Core.Model;
 using ServerAPI.EmailCommunication;
@@ -37,10 +36,10 @@ namespace ServerAPI.Controllers
 
         [HttpGet]
         [Route("getallyouthvolunteers")]
-        public IActionResult GetAllYouthVolunteers()
+        public List<YouthVolunteer> GetAllYouthVolunteers()
         {
             var volunteers = mRepo.GetAllYouthVolunteers();
-            return Ok(volunteers);
+            return volunteers;
         }
 
         [HttpDelete("delete/{id}")]
