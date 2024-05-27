@@ -145,7 +145,7 @@ namespace ServerAPI.Controllers
 
 		[HttpPost]
 		[Route("sendemail")]
-		public void SendEmail(Core.Model.Email email)
+		public void SendEmail(Email email)
 		{
 			_emailService.SendEmail(email.To, email.Subject, email.Body);
 		}

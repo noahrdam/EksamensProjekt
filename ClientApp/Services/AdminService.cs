@@ -64,8 +64,5 @@ namespace ClientApp.Services
 			return response.IsSuccessStatusCode;
 		}
 
-
-
-
 	}
 }
