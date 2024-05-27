@@ -38,7 +38,5 @@ namespace Core.Model
             DateOfApplication = DateTime.Now;
         }
 
-        public bool Newsletter { get; set; }
-
     }
 }

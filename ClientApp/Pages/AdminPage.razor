@@ -69,7 +69,7 @@ else
 <div class="searchApplications">
 	<EditForm Model="this" OnValidSubmit="PerformSearch">
 		<div class="searchApplications-inputgroup">
-			<InputText class="form-control" placeholder="Søg efter kræw nummer eller navn" @bind-Value="searchTerm" />
+			<InputText class="form-control" placeholder="Søg efter kræw nummer, navn eller mail" @bind-Value="searchTerm" />
 			<button type="submit" class="btn btn-primary">Søg</button>
 		</div>
 	</EditForm>
@@ -83,6 +83,7 @@ else
 		<option class="sort-item" value="newest">Sortér efter nyeste</option>
 		<option class="sort-item" value="oldest">Sortér efter ældste</option>
 		<option class="sort-item" value="beenBefore">Sortér efter tidligere Børneklubbere</option>
+		<option class="sort-item" value="newsletter">Sortér efter nyhedsgruppe</option>
 	</select>
 </div>
 
@@ -143,6 +144,10 @@ else
 
 		<input type="checkbox" id="showPublished" @bind="showPublished" class="checkbox-input" />
 		<label for="showPublished" class="checkbox-label">Offentliggørelse</label>
+
+
+		<input type="checkbox" id="showNewsletter" @bind="showNewsletter" class="checkbox-input" />
+		<label for="showNewsletter" class="checkbox-label">Nyhedsgruppe</label>
 	</div>
 </div>
 
@@ -222,6 +227,10 @@ else
 				@if (showPublished)
 				{
 					<th>Offentliggjort</th>
+				}
+				@if (showNewsletter)
+				{
+					<th>Nyhedsgruppe</th>
 				}
 				@if (showEdit)
 				{
@@ -325,6 +334,11 @@ else
 								}
 							</td>
 						}
+						@if (showNewsletter)
+						{
+							<td>@ap.ParentVolunteer.Newsletter</td>
+						}
+
 						@if (showEdit)
 						{
 							<td class="edit-td">
@@ -421,6 +435,7 @@ else
 	private bool showBeenBefore = false;
 	private bool showEdit = true;
 	private bool showPhone = false;
+	private bool showNewsletter = false;
 
 
 	private string filterButtonText = "Vis alle filtre";
@@ -587,6 +602,12 @@ else
 				.OrderBy(ap => ap.Status == "Venteliste")
 				.ThenByDescending(ap => ap.BeenBefore)
 				.ToList();
+		}
+		else if (sortOrder == "newsletter")
+		{
+			filteredApplications = filteredApplications
+			.OrderByDescending(ap => ap.ParentVolunteer.Newsletter)
+			.ToList();
 		}
 	}
 
