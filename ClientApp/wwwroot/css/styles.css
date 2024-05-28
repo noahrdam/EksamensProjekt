@@ -13,12 +13,12 @@
 .header {
     margin: 0;
     padding: 0;
-    width: 100%; /* Ensure they extend fully horizontally */
-    text-align: center; /* Center-align all content within the header */
+    width: 100%; 
+    text-align: center; 
 }
 
 #login {
-    margin-left: auto; /* This ensures that login is pushed to the far right */
+    margin-left: auto; 
     cursor: pointer;
     outline: 0;
     color: #fff;
@@ -55,20 +55,20 @@
 }
 
 #logo2 {
-    max-width: 250px; /* Adjusted size */
+    max-width: 250px; 
     height: auto;
-    margin-right: auto; /* This pushes all other elements to the right */
+    margin-right: auto; 
     float: left;
     padding-left: 50px;
 }
 
 #logo {
-    position: fixed; /* Fixes the logo's position relative to the viewport */
-    top: 10px; /* Adjust this value based on your design needs */
-    left: 50%; /* Centers the logo */
-    transform: translateX(-50%); /* Adjusts horizontal position to truly center it */
-    z-index: 1000; /* Ensures the logo stays above all other content */
-    max-width: 250px; /* Keeps your responsive size */
+    position: absolute; 
+    top: 10px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    z-index: 1000; 
+    max-width: 250px; 
     height: auto;
 }
 
@@ -80,34 +80,34 @@
 
 .footer {
     background-color: steelblue;
-    text-align: center; /* Center align the items in the footer */
-    padding: 20px 0; /* Add some padding to give space within the footer */
+    text-align: center; 
+    padding: 20px 0; 
     margin: 0;
-    width: 100%; /* Ensure they extend fully horizontally */
+    width: 100%; 
 }
 
 #ig,
 #fb {
     color:white;
     background-color: steelblue;
-    border-radius: 50%; /* Makes the button circular */
-    width: 50px; /* Fixed width */
-    height: 50px; /* Fixed height to maintain aspect ratio */
-    display: inline-flex; /* Inline-flex to keep the link inline and center content */
-    align-items: center; /* Center the icon vertically */
-    justify-content: center; /* Center the icon horizontally */
-    border: 1px solid #ccc; /* Optional: Adds a subtle border */
-    text-decoration: none; /* Removes underline from the link */
+    border-radius: 50%; 
+    width: 50px; 
+    height: 50px; 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: 1px solid #ccc; 
+    text-decoration: none; 
 }
     #ig:hover,
     #fb:hover {
-        background-color: #e3e3e3; /* Light grey background on hover */
-        border-color: #aaa; /* Darker border on hover */
+        background-color: #e3e3e3; 
+        border-color: #aaa; 
     }
 
 .bi-instagram,
 .bi-facebook {
-    font-size: 24px; /* Adjust icon size as necessary */
+    font-size: 24px; 
 }
 
 
@@ -115,12 +115,12 @@
     background: rgb(34,193,195);
     background: linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%);
     border-bottom: 1px solid #d6d5d5;
-    justify-content: space-between; /* Make sure this aligns items as intended */
+    justify-content: space-between; 
     height: 9rem;
     display: flex;
     align-items: center;
     position: relative;
-    padding: 0 20px; /* Add some padding on both ends */
+    padding: 0 20px; 
 }
 
 
@@ -142,7 +142,7 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
-    max-width: 500px; /* Begræns bredden af søgefeltet */
+    max-width: 500px; 
     width: 100%;
 }
 
@@ -184,7 +184,7 @@ html, body {
 }
 
 .wrapper {
-    min-height: calc(100vh - 200px); /* Juster denne værdi afhængigt af header + footer højde */
+    min-height: calc(100vh - 200px); 
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -212,10 +212,10 @@ html, body {
 .notification {
     display: none;
     position: fixed;
-    top: -50px; /* Start lidt over toppen */
+    top: -50px; 
     left: 50%;
     transform: translateX(-50%);
-    background-color: #4CAF50; /* Grøn farve for succes */
+    background-color: #4CAF50; 
     color: white;
     padding: 15px;
     border-style: solid;
@@ -224,18 +224,18 @@ html, body {
     z-index: 1000;
     border-radius: 0.5rem;
     transition: top 1s ease-out, opacity 1s ease-out;
-    opacity: 0; /* Start usynlig */
-    font-size: 2.2em; /* Gør notifikationen lidt større */
-    width: 80%; /* Gør boksen bredere */
-    max-width: 500px; /* Men ikke bredere end 500px */
-    text-align: center; /* Center texten */
+    opacity: 0; 
+    font-size: 2.2em; 
+    width: 80%; 
+    max-width: 500px; 
+    text-align: center; 
     font-family: "Mister Sinatra Slim";
 }
 
     .notification.show {
         display: block;
-        top: 20px; /* Flyt den ned fra toppen */
-        opacity: 1; /* Gør den synlig */
+        top: 20px; 
+        opacity: 1;
     }
 
 
