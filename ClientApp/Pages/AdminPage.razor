@@ -55,8 +55,11 @@ else
 		@foreach (var ev in events.Where(e => e.Week == selectedWeek))
 		{
 			var periodCount = GetApplicationCountForPeriod(selectedWeek.Value, ev.From, ev.To);
-			var periodClass = GetButtonClassForPeriodCount(periodCount);
-			<button @onclick="() => FilterApplicationsByPeriod(selectedWeek.Value, ev.From, ev.To)" class="btn btn-secondary m-1 @periodClass">@ev.From - @ev.To (@GetApplicationCountForPeriod(selectedWeek.Value, ev.From, ev.To))</button>
+			var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(selectedWeek.Value);
+			var maxCount = Math.Max(weekdayCount, weekendCount);
+			bool useMaxCountColor = (ev.From == "Onsdag" && ev.To == "Søndag");
+			var periodClass = GetButtonClassForPeriodCount(periodCount, useMaxCountColor, maxCount);
+			<button @onclick="() => FilterApplicationsByPeriod(selectedWeek.Value, ev.From, ev.To)" class="btn btn-secondary m-1 @periodClass">@ev.From - @ev.To (@periodCount)</button>
 		}
 	</div>
 }
@@ -107,9 +110,9 @@ else
 
 		<input type="checkbox" id="showAge" @bind="showAge" class="checkbox-input" />
 		<label for="showAge" class="checkbox-label">Alder</label>
-		</div>
+	</div>
 
-		<div class="checkbox-button-group">
+	<div class="checkbox-button-group">
 		<input type="checkbox" id="showBeenBefore" @bind="showBeenBefore" class="checkbox-input" />
 		<label for="showBeenBefore" class="checkbox-label">Været med før</label>
 
@@ -118,7 +121,7 @@ else
 
 		<input type="checkbox" id="showPhone" @bind="showPhone" class="checkbox-input" />
 		<label for="showPhone" class="checkbox-label">Telefonnummer</label>
-	
+
 		<input type="checkbox" id="showClothingSize" @bind="showClothingSize" class="checkbox-input" />
 		<label for="showClothingSize" class="checkbox-label">Tøjstørrelse</label>
 
@@ -127,9 +130,9 @@ else
 
 		<input type="checkbox" id="showComment" @bind="showComment" class="checkbox-input" />
 		<label for="showComment" class="checkbox-label">Kommentar</label>
-		</div>
+	</div>
 
-		<div class="checkbox-button-group">
+	<div class="checkbox-button-group">
 		<input type="checkbox" id="showFirstPriority" @bind="showFirstPriority" class="checkbox-input" />
 		<label for="showFirstPriority" class="checkbox-label">1. Prioritet</label>
 
@@ -388,7 +391,7 @@ else
 					<InputTextArea id="Indhold" class="form-control" @bind-Value="email.Body" />
 				</div>
 				<div class="mb-3">
-					<button type="submit" class="btn btn-primary">Send</button>
+					<button type="submit" class="btn btn-primary" @onclick="SendEmail">Send</button>
 					<button type="button" class="btn btn-secondary" @onclick="emailDialog.Close">Luk</button>
 				</div>
 			</EditForm>
@@ -411,7 +414,7 @@ else
 	private Email email = new Email();
 	private EditContext? editContext;
 
-	
+
 	private string? selectedStatus;
 	private int? selectedWeek;
 	private string searchTerm = string.Empty;
@@ -555,7 +558,7 @@ else
 	{
 		var aa = allAps;
 
-		if (aa == null) return (0);
+		if (aa == null) return 0;
 		var count = aa
 			.Where(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
 							(ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"))
@@ -565,6 +568,7 @@ else
 	}
 
 
+
 	private string GetButtonClassForWeekCount(int count)
 	{
 		if (count < 13) return "btn-green";
@@ -572,12 +576,25 @@ else
 		return "btn-red";
 	}
 
-	private string GetButtonClassForPeriodCount(int count)
+	private string GetButtonClassForPeriodCount(int count, bool useMaxCountColor, int maxCount)
 	{
-		if (count < 6) return "btn-green";
-		if (count < 10) return "btn-yellow";
-		return "btn-red";
+		if (useMaxCountColor)
+		{
+			
+			if (maxCount < 13) return "btn-green";
+			if (maxCount < 18) return "btn-yellow";
+			return "btn-red";
+		}
+		else
+		{
+			
+			if (count < 6) return "btn-green";
+			if (count < 10) return "btn-yellow";
+			return "btn-red";
+		}
 	}
+
+
 
 	private async Task SortApplications(ChangeEventArgs e)
 	{
@@ -650,7 +667,7 @@ else
 		if (response)
 		{
 			await PublishAllApplications();
-			
+
 		}
 	}
 
