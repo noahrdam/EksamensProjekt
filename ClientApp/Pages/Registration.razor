@@ -264,7 +264,7 @@
                                 var firstPriorityCount = GetFirstPriorityCountForEvent(e.EventId);
                                 var colorCircle = GetColorCircleForPeriodCount(firstPriorityCount);
                                 <option value="@e.EventId">
-                                    @colorCircle @e.Location, @e.From - @e.To (Uge @e.Week)
+                                    @colorCircle @e.Location (Uge @e.Week), @e.From - @e.To
                                 </option>
                             }
                         </InputSelect>
@@ -278,7 +278,7 @@
                                 var firstPriorityCount = GetFirstPriorityCountForEvent(e.EventId);
                                 var colorCircle = GetColorCircleForPeriodCount(firstPriorityCount);
                                 <option value="@e.EventId" disabled="@(application.FirstPrio.EventId == e.EventId)">
-                                    @colorCircle @e.Location, @e.From - @e.To (Uge @e.Week)
+                                    @colorCircle @e.Location (Uge @e.Week), @e.From - @e.To
                                 </option>
                             }
                         </InputSelect>
