@@ -55,8 +55,11 @@ else
 		@foreach (var ev in events.Where(e => e.Week == selectedWeek))
 		{
 			var periodCount = GetApplicationCountForPeriod(selectedWeek.Value, ev.From, ev.To);
-			var periodClass = GetButtonClassForPeriodCount(periodCount);
-			<button @onclick="() => FilterApplicationsByPeriod(selectedWeek.Value, ev.From, ev.To)" class="btn btn-secondary m-1 @periodClass">@ev.From - @ev.To (@GetApplicationCountForPeriod(selectedWeek.Value, ev.From, ev.To))</button>
+			var (weekdayCount, weekendCount) = GetApplicationCountsForWeek(selectedWeek.Value);
+			var maxCount = Math.Max(weekdayCount, weekendCount);
+			bool useMaxCountColor = (ev.From == "Onsdag" && ev.To == "Søndag");
+			var periodClass = GetButtonClassForPeriodCount(periodCount, useMaxCountColor, maxCount);
+			<button @onclick="() => FilterApplicationsByPeriod(selectedWeek.Value, ev.From, ev.To)" class="btn btn-secondary m-1 @periodClass">@ev.From - @ev.To (@periodCount)</button>
 		}
 	</div>
 }
@@ -555,7 +558,7 @@ else
 	{
 		var aa = allAps;
 
-		if (aa == null) return (0);
+		if (aa == null) return 0;
 		var count = aa
 			.Where(ap => (ap.FirstPrio.Week == week && ap.FirstPrio.From == from && ap.FirstPrio.To == to && ap.Status == "1.Prioritet") ||
 							(ap.SecondPrio.Week == week && ap.SecondPrio.From == from && ap.SecondPrio.To == to && ap.Status == "2.Prioritet"))
@@ -565,6 +568,7 @@ else
 	}
 
 
+
 	private string GetButtonClassForWeekCount(int count)
 	{
 		if (count < 13) return "btn-green";
@@ -572,12 +576,25 @@ else
 		return "btn-red";
 	}
 
-	private string GetButtonClassForPeriodCount(int count)
+	private string GetButtonClassForPeriodCount(int count, bool useMaxCountColor, int maxCount)
 	{
-		if (count < 6) return "btn-green";
-		if (count < 10) return "btn-yellow";
-		return "btn-red";
+		if (useMaxCountColor)
+		{
+			// Use maxCount to determine the color for 'onsdag-søndag'
+			if (maxCount < 13) return "btn-green";
+			if (maxCount < 18) return "btn-yellow";
+			return "btn-red";
+		}
+		else
+		{
+			// Regular count-based color logic
+			if (count < 6) return "btn-green";
+			if (count < 10) return "btn-yellow";
+			return "btn-red";
+		}
 	}
+
+
 
 	private async Task SortApplications(ChangeEventArgs e)
 	{
